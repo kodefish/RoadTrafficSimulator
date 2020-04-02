@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using RoadTrafficSimulator.GraphicPrimitives;
+using RoadTrafficSimulator.DataStructures;
+using System;
 
 namespace RoadTrafficSimulator
 {
@@ -15,12 +17,12 @@ namespace RoadTrafficSimulator
 
         // Graphics primitives
         Primitives2D primitives2D;
+        DrawRTSDatastructures rtsRendrer;
         
         
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.IsFullScreen = true;
             Content.RootDirectory = "Content";
         }
 
@@ -32,8 +34,14 @@ namespace RoadTrafficSimulator
         /// </summary>
         protected override void Initialize()
         {
+            graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
+            graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
+            graphics.IsFullScreen = true;
+            graphics.ApplyChanges();
+
             // TODO: Add your initialization logic here
             primitives2D = new Primitives2D();
+            rtsRendrer = new DrawRTSDatastructures();
 
             base.Initialize();
         }
@@ -49,6 +57,7 @@ namespace RoadTrafficSimulator
 
             // Load content for primitive drawer
             primitives2D.LoadContent(GraphicsDevice, spriteBatch);
+            rtsRendrer.LoadContent(GraphicsDevice, spriteBatch);
         }
 
         /// <summary>
@@ -85,19 +94,38 @@ namespace RoadTrafficSimulator
 
             spriteBatch.Begin();
 
+            // Draw2dPrimitives();
+            DrawRTSDatastructures();
+
+            spriteBatch.End();
+        }
+
+        private void DrawRTSDatastructures()
+        {
+            float displayWidth = GraphicsDevice.DisplayMode.Width;
+            float displayHeight = GraphicsDevice.DisplayMode.Height;
+            DataStructures.Vector2 origin = new DataStructures.Vector2(displayWidth / 2, displayHeight / 2);
+            DataStructures.Rectangle rectangle = new DataStructures.Rectangle(
+                origin,
+                displayWidth / 2, displayHeight / 2
+            );
+
+            rtsRendrer.DrawRectangle(rectangle, Color.Red, false);
+        }
+
+        private void Draw2dPrimitives()
+        {
             float displayWidth = GraphicsDevice.DisplayMode.Width;
             float displayHeight = GraphicsDevice.DisplayMode.Height;
             primitives2D.DrawRectangle(
-                displayWidth / 4, displayHeight / 4, 
-                displayWidth / 2, displayHeight / 2, 
+                displayWidth / 4, displayHeight / 4,
+                displayWidth / 2, displayHeight / 2,
                 Color.Red, false);
 
             primitives2D.DrawLine(
                 displayWidth / 4, displayHeight / 2,
                 3 * displayWidth / 4, displayHeight / 2,
                 Color.Green, 5);
-
-            spriteBatch.End();
         }
     }
 }
