@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,10 +10,10 @@ using Microsoft.Xna.Framework.Graphics;
 namespace RoadTrafficSimulator.Graphics
 {
     // Class that draws RTS datastructures using XNA's framework
-    class DrawRTSDatastructures
+    class RTSDatastructuresRenderer
     {
         private readonly Primitives2D primitives2D;
-        public DrawRTSDatastructures(){
+        public RTSDatastructuresRenderer(){
             primitives2D = new Primitives2D();
         }
 
@@ -36,6 +37,7 @@ namespace RoadTrafficSimulator.Graphics
         
         public void DrawRectangle(DataStructures.Rectangle rect, Color c, bool filled = true)
         {
+            Debug.WriteLine("Drawing rectangle: {0}", rect);
             if (filled)
             {
                 float x = rect.TopLeft.X;

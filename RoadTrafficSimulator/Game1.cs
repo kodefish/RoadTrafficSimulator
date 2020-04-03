@@ -15,7 +15,7 @@ namespace RoadTrafficSimulator
 
         // Graphics primitives
         Primitives2D primitives2D;
-        DrawRTSDatastructures rtsRendrer;
+        RTSDatastructuresRenderer rtsRendrer;
         
         
         public Game1()
@@ -39,7 +39,7 @@ namespace RoadTrafficSimulator
 
             // TODO: Add your initialization logic here
             primitives2D = new Primitives2D();
-            rtsRendrer = new DrawRTSDatastructures();
+            rtsRendrer = new RTSDatastructuresRenderer();
 
             base.Initialize();
         }

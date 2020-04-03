@@ -71,5 +71,10 @@ namespace RoadTrafficSimulator.DataStructures
             return Sides[i];
         }
 
+        public override string ToString()
+        {
+            return String.Format("Rectangle: origin {0}, width {1}, length {2}", origin, width, length);
+        }
+
     }
 }

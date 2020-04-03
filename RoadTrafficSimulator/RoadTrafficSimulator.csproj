@@ -42,14 +42,16 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="RoadTrafficSimulator.cs" />
     <Compile Include="DataStructures\BezierCurve.cs" />
-    <Compile Include="GraphicPrimitives\DrawRTSDatastructures.cs" />
+    <Compile Include="Graphics\RTSDatastructuresRenderer.cs" />
     <Compile Include="DataStructures\Vector2.cs" />
     <Compile Include="DataStructures\Rectangle.cs" />
     <Compile Include="DataStructures\Segment.cs" />
     <Compile Include="BezierPlayground.cs" />
     <Compile Include="Game1.cs" />
-    <Compile Include="GraphicPrimitives\Primitives2D.cs" />
+    <Compile Include="Graphics\Primitives2D.cs" />
+    <Compile Include="Graphics\RTSRenderer.cs" />
     <Compile Include="Interfaces\IRTSDimension.cs" />
     <Compile Include="Interfaces\IRTSPosition.cs" />
     <Compile Include="Program.cs" />
@@ -57,7 +59,8 @@
     <Compile Include="Simulator\FourWayIntersection.cs" />
     <Compile Include="Simulator\Road.cs" />
     <Compile Include="Simulator\SimulatorWorld.cs" />
-    <Compile Include="Simulator\WorldManager.cs" />
+    <Compile Include="WorldManager.cs" />
+    <Compile Include="XNAHelpers\Intersection.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

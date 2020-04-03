@@ -11,7 +11,7 @@ namespace RoadTrafficSimulator.Simulator
     /// <summary>
     /// Supports up-to four incoming roads 
     /// </summary>
-    class FourWayIntersection : IRTSDimension
+    class FourWayIntersection : IRTSDimension, IRTSPosition
     {
         // Intersection information
         private readonly IRTSPosition _origin;  // Center of the intersection
@@ -26,7 +26,7 @@ namespace RoadTrafficSimulator.Simulator
         {
             get
             {
-                float maxHorizontalRoadWidth = float.NegativeInfinity;
+                float maxHorizontalRoadWidth = 1;
                 foreach (Road r in roads)
                 {
                     if (!r.IsHorizontal) maxHorizontalRoadWidth = Math.Max(maxHorizontalRoadWidth, r.RoadWidth);
@@ -39,7 +39,7 @@ namespace RoadTrafficSimulator.Simulator
         {
             get
             {
-                float maxVerticalRoadWidth = float.NegativeInfinity;
+                float maxVerticalRoadWidth = 1;
                 foreach (Road r in roads)
                 {
                     if (r.IsHorizontal) maxVerticalRoadWidth = Math.Max(maxVerticalRoadWidth, r.RoadWidth);
@@ -69,6 +69,11 @@ namespace RoadTrafficSimulator.Simulator
         public Vector2 GetDimensions()
         {
             return new Vector2(Width, Height);
+        }
+
+        public Vector2 GetGlobalPosition()
+        {
+            return _origin.GetGlobalPosition();
         }
     }
 }

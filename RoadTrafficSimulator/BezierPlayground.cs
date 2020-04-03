@@ -17,7 +17,7 @@ namespace RoadTrafficSimulator
         float displayWidth, displayHeight;
 
         // Renderer for bezier curve
-        DrawRTSDatastructures rtsRendrer;
+        RTSDatastructuresRenderer rtsRendrer;
 
         // Bezier curve params
         float centerHorL, centerHorR, centerVertL, centerVertR;
@@ -44,7 +44,7 @@ namespace RoadTrafficSimulator
             graphics.IsFullScreen = true;
             graphics.ApplyChanges();
 
-            rtsRendrer = new DrawRTSDatastructures();
+            rtsRendrer = new RTSDatastructuresRenderer();
 
             displayWidth = GraphicsDevice.DisplayMode.Width;
             displayHeight = GraphicsDevice.DisplayMode.Height;

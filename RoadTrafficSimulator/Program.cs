@@ -13,7 +13,7 @@ namespace RoadTrafficSimulator
         [STAThread]
         static void Main()
         {
-            using (var game = new BezierPlayground())
+            using (var game = new RoadTrafficSimulator())
                 game.Run();
         }
     }
