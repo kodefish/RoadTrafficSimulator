@@ -10,17 +10,23 @@ namespace RoadTrafficSimulator
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Game1 : Game
+    public class BezierPlayground : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        // Graphics primitives
-        Primitives2D primitives2D;
+        float displayWidth, displayHeight;
+
+        // Renderer for bezier curve
         DrawRTSDatastructures rtsRendrer;
-        
-        
-        public Game1()
+
+        // Bezier curve params
+        float centerHorL, centerHorR, centerVertL, centerVertR;
+        float spacingVertL, spacingVertR;
+        float step;
+
+
+        public BezierPlayground()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -39,9 +45,19 @@ namespace RoadTrafficSimulator
             graphics.IsFullScreen = true;
             graphics.ApplyChanges();
 
-            // TODO: Add your initialization logic here
-            primitives2D = new Primitives2D();
             rtsRendrer = new DrawRTSDatastructures();
+
+            displayWidth = GraphicsDevice.DisplayMode.Width;
+            displayHeight = GraphicsDevice.DisplayMode.Height;
+
+            centerHorR = 0.25f * displayWidth;
+            centerHorL = 0.75f * displayWidth;
+            centerVertL = 0.5f * displayHeight;
+            centerVertR = 0.5f * displayHeight;
+            spacingVertL =  0.25f * displayHeight;
+            spacingVertR = 0.25f * displayHeight;
+
+            step = displayHeight / 100;
 
             base.Initialize();
         }
@@ -56,7 +72,6 @@ namespace RoadTrafficSimulator
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Load content for primitive drawer
-            primitives2D.LoadContent(GraphicsDevice, spriteBatch);
             rtsRendrer.LoadContent(GraphicsDevice, spriteBatch);
         }
 
@@ -79,8 +94,57 @@ namespace RoadTrafficSimulator
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            KeyboardState kbState = Keyboard.GetState();
+            if (kbState.IsKeyDown(Keys.W))
+            {
+                spacingVertR = Math.Min(spacingVertR + step, 0.5f * displayHeight);
+            }
+            if (kbState.IsKeyDown(Keys.S))
+            {
+                spacingVertR = Math.Max(spacingVertR - step, 0);
+            }
+            if (kbState.IsKeyDown(Keys.Up))
+            {
+                spacingVertL = Math.Min(spacingVertL + step, 0.5f * displayHeight);
+            }
+            if (kbState.IsKeyDown(Keys.Down))
+            {
+                spacingVertL = Math.Max(spacingVertL - step, 0);
+            }
 
+            if (kbState.IsKeyDown(Keys.D))
+            {
+                centerHorR = Math.Min(centerHorR + step, 0.5f * displayWidth);
+            }
+            if (kbState.IsKeyDown(Keys.A))
+            {
+                centerHorR = Math.Max(centerHorR - step, 0);
+            }
+            if (kbState.IsKeyDown(Keys.Right))
+            {
+                centerHorL = Math.Min(centerHorL + step, displayWidth);
+            }
+            if (kbState.IsKeyDown(Keys.Left))
+            {
+                centerHorL = Math.Max(centerHorL - step, 0.5f * displayWidth);
+            }
+
+            if (kbState.IsKeyDown(Keys.Q))
+            {
+                centerVertR = Math.Min(centerVertR - step, displayWidth);
+            }
+            if (kbState.IsKeyDown(Keys.E))
+            {
+                centerVertR = Math.Max(centerVertR + step, 0);
+            }
+            if (kbState.IsKeyDown(Keys.PageUp))
+            {
+                centerVertL = Math.Min(centerVertL - step, displayHeight);
+            }
+            if (kbState.IsKeyDown(Keys.PageDown))
+            {
+                centerVertL = Math.Max(centerVertL + step, 0);
+            }
             base.Update(gameTime);
         }
 
@@ -94,7 +158,6 @@ namespace RoadTrafficSimulator
 
             spriteBatch.Begin();
 
-            // Draw2dPrimitives();
             DrawRTSDatastructures();
 
             spriteBatch.End();
@@ -102,44 +165,17 @@ namespace RoadTrafficSimulator
 
         private void DrawRTSDatastructures()
         {
-
-            float displayWidth = GraphicsDevice.DisplayMode.Width;
-            float displayHeight = GraphicsDevice.DisplayMode.Height;
-
-            DataStructures.Vector2 origin = new DataStructures.Vector2(displayWidth / 2, displayHeight / 2);
-            DataStructures.Rectangle rectangle = new DataStructures.Rectangle(
-                origin,
-                displayWidth / 2, displayHeight / 2
-            );
-
-            rtsRendrer.DrawRectangle(rectangle, Color.Red, false);
-
-            DataStructures.Vector2 p1 = new DataStructures.Vector2(displayWidth * .25f, displayHeight * 0.75f);
-            DataStructures.Vector2 p2 = new DataStructures.Vector2(displayWidth * .25f, displayHeight * 0.25f);
-            DataStructures.Vector2 p3 = new DataStructures.Vector2(displayWidth * .75f, displayHeight * 0.75f);
-            DataStructures.Vector2 p4 = new DataStructures.Vector2(displayWidth * .75f, displayHeight * 0.25f);
+            DataStructures.Vector2 p1 = new DataStructures.Vector2(centerHorL, centerVertL + spacingVertL);
+            DataStructures.Vector2 p2 = new DataStructures.Vector2(centerHorL, centerVertL - spacingVertL);
+            DataStructures.Vector2 p3 = new DataStructures.Vector2(centerHorR, centerVertR + spacingVertR);
+            DataStructures.Vector2 p4 = new DataStructures.Vector2(centerHorR, centerVertR - spacingVertR);
             DataStructures.BezierCurve bCurve = new DataStructures.BezierCurve(p1, p2, p3, p4);
 
             rtsRendrer.DrawPoint(p1, Color.Red, 10);
             rtsRendrer.DrawPoint(p2, Color.Green, 10);
             rtsRendrer.DrawPoint(p3, Color.Blue, 10);
             rtsRendrer.DrawPoint(p4, Color.Purple, 10);
-            rtsRendrer.DrawBezierCurve(bCurve, Color.White, 2, 1/1000f);
-        }
-
-        private void Draw2dPrimitives()
-        {
-            float displayWidth = GraphicsDevice.DisplayMode.Width;
-            float displayHeight = GraphicsDevice.DisplayMode.Height;
-            primitives2D.DrawRectangle(
-                displayWidth / 4, displayHeight / 4,
-                displayWidth / 2, displayHeight / 2,
-                Color.Red, false);
-
-            primitives2D.DrawLine(
-                displayWidth / 4, displayHeight / 2,
-                3 * displayWidth / 4, displayHeight / 2,
-                Color.Green, 5);
+            rtsRendrer.DrawBezierCurve(bCurve, Color.White, 2, 1 / 1000f);
         }
     }
 }

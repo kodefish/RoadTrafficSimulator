@@ -26,9 +26,11 @@ namespace RoadTrafficSimulator.GraphicPrimitives
         }
 
         // Draws a pixel of color col at (x, y)
-        public void DrawPixel(float x, float y, Color color)
+        public void DrawPixel(float x, float y, Color color, float thickness = 1)
         {
-            spriteBatch.Draw(pixelTexture, new Vector2(x, y), color);
+            int adjustedX = (int) (x - (thickness / 2));
+            int adjustedY = (int) (y - (thickness / 2));
+            spriteBatch.Draw(pixelTexture, new Rectangle(adjustedX, adjustedY, (int) thickness, (int) thickness), color);
         }
 
         // Draw line from (x1, y1) to (x2, y2)

@@ -22,9 +22,9 @@ namespace RoadTrafficSimulator
             primitives2D.LoadContent(graphicsDevice, spriteBatch);
         }
 
-        public void DrawPoint(DataStructures.Vector2 point, Color c)
+        public void DrawPoint(DataStructures.Vector2 point, Color c, float thickness = 1)
         {
-            primitives2D.DrawPixel(point.X, point.Y, c);
+            primitives2D.DrawPixel(point.X, point.Y, c, thickness);
         }
 
         public void DrawSegment(DataStructures.Segment segment, Color c)
@@ -49,9 +49,12 @@ namespace RoadTrafficSimulator
             }
         }
 
-        public void DrawBezierCurve(DataStructures.BezierCurve bCurve, Color c)
+        public void DrawBezierCurve(DataStructures.BezierCurve bCurve, Color c, float thickness, float step = 0.01f)
         {
-            throw new NotImplementedException();
+            for (float t = 0; t <= 1; t += step)
+            {
+                DrawPoint(bCurve.GetPosition(t), c, thickness);
+            }
         }
 
     }
