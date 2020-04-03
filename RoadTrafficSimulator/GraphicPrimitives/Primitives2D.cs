@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace RoadTrafficSimulator.GraphicPrimitives
+namespace RoadTrafficSimulator.Graphics
 {
-    // Basic C# code to render pixels, lines and rectangles in 2D
-    // adaptded from: Source: https://www.dreamincode.net/forums/topic/234298-c%23-xna-2d-primitives-pixel-line-rectangle-etc/
+    /// <summary>
+    /// Basic C# code to render pixels, lines and rectangles in 2D
+    /// adaptded from: Source: https://www.dreamincode.net/forums/topic/234298-c%23-xna-2d-primitives-pixel-line-rectangle-etc/
+    /// </summary>
     class Primitives2D
     {
         Texture2D pixelTexture;         // 1x1 white texture, think of it as a paint brush

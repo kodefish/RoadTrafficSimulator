@@ -49,9 +49,14 @@ namespace RoadTrafficSimulator.DataStructures
             return new Vector2(a.x / c, a.y / c);
         }
 
-        public static float Distance(Vector2 a, Vector2 b)
+        public static float SignedDistance(Vector2 a, Vector2 b)
         {
             return (b - a).Length;
+        }
+
+        public static float Distance(Vector2 a, Vector2 b)
+        {
+            return Math.Abs((b - a).Length);
         }
     }
 

@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace RoadTrafficSimulator.DataStructures
 {
-    // Rectangle centered about the origin
+    /// <summary>
+    /// Rectangle centered about the origin 
+    /// </summary>
     class Rectangle
     {
         private readonly Vector2 origin;

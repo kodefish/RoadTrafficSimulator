@@ -1,9 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using RoadTrafficSimulator.GraphicPrimitives;
-using RoadTrafficSimulator.DataStructures;
-using System;
+using RoadTrafficSimulator.Graphics;
 
 namespace RoadTrafficSimulator
 {

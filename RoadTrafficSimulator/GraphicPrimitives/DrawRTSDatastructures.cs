@@ -5,9 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using RoadTrafficSimulator.GraphicPrimitives;
 
-namespace RoadTrafficSimulator
+namespace RoadTrafficSimulator.Graphics
 {
     // Class that draws RTS datastructures using XNA's framework
     class DrawRTSDatastructures
