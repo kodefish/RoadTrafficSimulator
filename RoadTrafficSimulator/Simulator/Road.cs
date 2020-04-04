@@ -28,6 +28,13 @@ namespace RoadTrafficSimulator.Simulator
         public RoadOrientation Orientation { get; }
         public bool IsHorizontal => Orientation == RoadOrientation.Horizontal;
 
+        // Road position
+        public Vector2 Position
+        {
+            get { return (sourceIntersection.Origin + targetIntersection.Origin) / 2; }
+            set { /* Nothing to do here, you can't set the position of a road, you can try, but it will be pointless. */ }
+        }
+
         // Road dimensions
         public float RoadWidth => numLanesSouthbound * LANE_WIDTH + numLanesNorthBound * LANE_WIDTH;
         public float RoadLength
@@ -109,9 +116,5 @@ namespace RoadTrafficSimulator.Simulator
             else  return new Vector2(RoadLength, RoadWidth);
         }
 
-        public Vector2 GetGlobalPosition()
-        {
-            return (sourceIntersection.Origin + targetIntersection.Origin) / 2;
-        }
     }
 }

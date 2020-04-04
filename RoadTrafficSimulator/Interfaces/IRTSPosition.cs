@@ -13,6 +13,6 @@ namespace RoadTrafficSimulator.Interfaces
         /// Get the position of the object, to place it in the RTS simulation world
         /// </summary>
         /// <returns></returns>
-        Vector2 GetGlobalPosition();
+        Vector2 Position { get; set; }
     }
 }

@@ -35,7 +35,7 @@ namespace RoadTrafficSimulator.Graphics
         {
             // Translate into a rectangle 
             DataStructures.Rectangle rect = new DataStructures.Rectangle(
-                origin.GetGlobalPosition() * Scale,
+                origin.Position * Scale,
                 dimension.GetDimensions().X * Scale, dimension.GetDimensions().Y * Scale);
 
             // Draw the rectangle

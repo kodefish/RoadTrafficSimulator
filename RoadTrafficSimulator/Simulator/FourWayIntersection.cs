@@ -15,7 +15,7 @@ namespace RoadTrafficSimulator.Simulator
     {
         // Intersection information
         private readonly IRTSPosition _origin;  // Center of the intersection
-        public Vector2 Origin => _origin.GetGlobalPosition();
+        public Vector2 Origin => _origin.Position;
 
         // Road information
         private static int MAX_ROADS = 4;
@@ -71,9 +71,10 @@ namespace RoadTrafficSimulator.Simulator
             return new Vector2(Width, Height);
         }
 
-        public Vector2 GetGlobalPosition()
+        public Vector2 Position
         {
-            return _origin.GetGlobalPosition();
+            get { return _origin.Position; }
+            set { _origin.Position = value; }
         }
     }
 }

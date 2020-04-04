@@ -10,16 +10,11 @@ namespace RoadTrafficSimulator.XNAHelpers
 {
     class Intersection : IRTSPosition
     {
-        private Vector2 position;
+        public Vector2 Position { get; set; }
 
         public Intersection(Vector2 position)
         {
-            this.position = position;
-        }
-
-        public Vector2 GetGlobalPosition()
-        {
-            return position;
+            this.Position = position;
         }
     }
 }
