@@ -66,10 +66,7 @@ namespace RoadTrafficSimulator.Simulator
 
         public void RemoveRoad(Road road) => roads.Remove(road);
 
-        public Vector2 GetDimensions()
-        {
-            return new Vector2(Width, Height);
-        }
+        public Vector2 Dimensions => new Vector2(Width, Height);
 
         public Vector2 Position
         {

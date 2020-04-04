@@ -28,6 +28,17 @@ namespace RoadTrafficSimulator.Simulator
         public RoadOrientation Orientation { get; }
         public bool IsHorizontal => Orientation == RoadOrientation.Horizontal;
 
+        // Road dimensions
+        public Vector2 Dimensions 
+        {
+            get
+            {
+                if (Orientation == RoadOrientation.Vertical) return new Vector2(RoadWidth, RoadLength);
+                else  return new Vector2(RoadLength, RoadWidth);
+            }
+        }
+
+
         // Road position
         public Vector2 Position
         {
@@ -108,12 +119,6 @@ namespace RoadTrafficSimulator.Simulator
         {
             sourceIntersection.RemoveRoad(this);
             targetIntersection.RemoveRoad(this);
-        }
-
-        public Vector2 GetDimensions()
-        {
-            if (Orientation == RoadOrientation.Vertical) return new Vector2(RoadWidth, RoadLength);
-            else  return new Vector2(RoadLength, RoadWidth);
         }
 
     }
