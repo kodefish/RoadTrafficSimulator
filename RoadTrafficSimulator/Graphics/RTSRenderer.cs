@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using RoadTrafficSimulator.Interfaces;
-using RoadTrafficSimulator.Simulator;
+using RoadTrafficSimulator.Simulator.Interfaces;
+using RoadTrafficSimulator.Simulator.WorldEntities;
+using Rectangle = RoadTrafficSimulator.Simulator.DataStructures.Geometry.Rectangle;
 
 namespace RoadTrafficSimulator.Graphics
 {
@@ -34,7 +30,7 @@ namespace RoadTrafficSimulator.Graphics
         private void DrawRectange(IRTSPosition origin, IRTSDimension dimension, Color c)
         {
             // Translate into a rectangle 
-            DataStructures.Rectangle rect = new DataStructures.Rectangle(
+            Rectangle rect = new Rectangle(
                 origin.Position * Scale,
                 dimension.Dimensions.X * Scale, dimension.Dimensions.Y * Scale);
 

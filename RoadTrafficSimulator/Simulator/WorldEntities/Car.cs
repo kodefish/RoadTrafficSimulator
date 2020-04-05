@@ -1,5 +1,4 @@
-﻿using System;
-using RoadTrafficSimulator.DataStructures;
+﻿using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
 using RoadTrafficSimulator.Simulator.Physics;
 
 namespace RoadTrafficSimulator.Simulator.WorldEntities
@@ -30,4 +29,5 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             Vector2 deltaForce = deltaAcceleration * Mass;
             ApplyForce(deltaForce);
         }
+    }
 }

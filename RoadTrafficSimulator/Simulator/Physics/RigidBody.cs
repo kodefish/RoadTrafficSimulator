@@ -1,4 +1,4 @@
-﻿using RoadTrafficSimulator.DataStructures;
+﻿using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
 
 namespace RoadTrafficSimulator.Simulator.Physics
 {

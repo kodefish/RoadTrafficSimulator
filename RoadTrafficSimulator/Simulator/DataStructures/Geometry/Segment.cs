@@ -1,6 +1,7 @@
 ﻿using System;
+using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
 
-namespace RoadTrafficSimulator.DataStructures
+namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
 {
     class Segment
     {

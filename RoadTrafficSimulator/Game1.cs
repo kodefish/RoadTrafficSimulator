@@ -2,6 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using RoadTrafficSimulator.Graphics;
+using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
+using Vector2 = RoadTrafficSimulator.Simulator.DataStructures.LinAlg.Vector2;
+using Rectangle = RoadTrafficSimulator.Simulator.DataStructures.Geometry.Rectangle;
 
 namespace RoadTrafficSimulator
 {
@@ -104,19 +107,19 @@ namespace RoadTrafficSimulator
             float displayWidth = GraphicsDevice.DisplayMode.Width;
             float displayHeight = GraphicsDevice.DisplayMode.Height;
 
-            DataStructures.Vector2 origin = new DataStructures.Vector2(displayWidth / 2, displayHeight / 2);
-            DataStructures.Rectangle rectangle = new DataStructures.Rectangle(
+            Vector2 origin = new Vector2(displayWidth / 2, displayHeight / 2);
+            Rectangle rectangle = new Rectangle(
                 origin,
                 displayWidth / 2, displayHeight / 2
             );
 
             rtsRendrer.DrawRectangle(rectangle, Color.Red, false);
 
-            DataStructures.Vector2 p1 = new DataStructures.Vector2(displayWidth * .25f, displayHeight * 0.75f);
-            DataStructures.Vector2 p2 = new DataStructures.Vector2(displayWidth * .25f, displayHeight * 0.25f);
-            DataStructures.Vector2 p3 = new DataStructures.Vector2(displayWidth * .75f, displayHeight * 0.75f);
-            DataStructures.Vector2 p4 = new DataStructures.Vector2(displayWidth * .75f, displayHeight * 0.25f);
-            DataStructures.BezierCurve bCurve = new DataStructures.BezierCurve(p1, p2, p3, p4);
+            Vector2 p1 = new Vector2(displayWidth * .25f, displayHeight * 0.75f);
+            Vector2 p2 = new Vector2(displayWidth * .25f, displayHeight * 0.25f);
+            Vector2 p3 = new Vector2(displayWidth * .75f, displayHeight * 0.75f);
+            Vector2 p4 = new Vector2(displayWidth * .75f, displayHeight * 0.25f);
+            BezierCurve bCurve = new BezierCurve(p1, p2, p3, p4);
 
             rtsRendrer.DrawPoint(p1, Color.Red, 10);
             rtsRendrer.DrawPoint(p2, Color.Green, 10);

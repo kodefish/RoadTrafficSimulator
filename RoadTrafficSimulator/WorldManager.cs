@@ -1,14 +1,11 @@
-﻿using System;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RoadTrafficSimulator.Simulator;
-using RoadTrafficSimulator.Graphics;
-using RoadTrafficSimulator.XNAHelpers;
+﻿using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using RoadTrafficSimulator.Simulator;
+using RoadTrafficSimulator.Simulator.WorldEntities;
+using RoadTrafficSimulator.Graphics;
+using RoadTrafficSimulator.XNAHelpers;
+using Vector2 = RoadTrafficSimulator.Simulator.DataStructures.LinAlg.Vector2;
 
 namespace RoadTrafficSimulator
 {
@@ -28,8 +25,8 @@ namespace RoadTrafficSimulator
 
         public void Initialize()
         {
-            // GenerateSquare();
-            GenerateStrip();
+            GenerateSquare();
+            // GenerateStrip();
         }
 
         private void GenerateSquare()
@@ -38,16 +35,16 @@ namespace RoadTrafficSimulator
             // ain't that aboslutely beautiful ?
             rtsRenderer.Scale = 100;
             // Generate the world map here
-            Intersection xnaIntersection1 = new Intersection(new DataStructures.Vector2(1, 1));
+            Intersection xnaIntersection1 = new Intersection(new Vector2(1, 1));
             FourWayIntersection intersection1 = new FourWayIntersection(xnaIntersection1);
 
-            Intersection xnaIntersection2 = new Intersection(new DataStructures.Vector2(1, 6));
+            Intersection xnaIntersection2 = new Intersection(new Vector2(1, 6));
             FourWayIntersection intersection2 = new FourWayIntersection(xnaIntersection2);
 
-            Intersection xnaIntersection3 = new Intersection(new DataStructures.Vector2(6, 1));
+            Intersection xnaIntersection3 = new Intersection(new Vector2(6, 1));
             FourWayIntersection intersection3 = new FourWayIntersection(xnaIntersection3);
 
-            Intersection xnaIntersection4 = new Intersection(new DataStructures.Vector2(6, 6));
+            Intersection xnaIntersection4 = new Intersection(new Vector2(6, 6));
             FourWayIntersection intersection4 = new FourWayIntersection(xnaIntersection4);
 
 
@@ -77,10 +74,10 @@ namespace RoadTrafficSimulator
 
             float padding = 42;
 
-            Intersection xnaIntersection1 = new Intersection(new DataStructures.Vector2(padding, displayHeight / 2));
+            Intersection xnaIntersection1 = new Intersection(new Vector2(padding, displayHeight / 2));
             FourWayIntersection intersection1 = new FourWayIntersection(xnaIntersection1);
 
-            Intersection xnaIntersection2 = new Intersection(new DataStructures.Vector2(displayWidth - padding, displayHeight / 2));
+            Intersection xnaIntersection2 = new Intersection(new Vector2(displayWidth - padding, displayHeight / 2));
             FourWayIntersection intersection2 = new FourWayIntersection(xnaIntersection2);
 
             Road road = new Road(intersection1, intersection2, 5, 6, RoadOrientation.Horizontal);

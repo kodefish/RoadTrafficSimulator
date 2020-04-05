@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RoadTrafficSimulator.DataStructures;
-using RoadTrafficSimulator.Interfaces;
+using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
+using RoadTrafficSimulator.Simulator.Interfaces;
 
 namespace RoadTrafficSimulator.Simulator.WorldEntities
 {

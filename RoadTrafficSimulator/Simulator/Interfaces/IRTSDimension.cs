@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RoadTrafficSimulator.DataStructures;
+﻿using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
 
-namespace RoadTrafficSimulator.Interfaces
+namespace RoadTrafficSimulator.Simulator.Interfaces
 {
     interface IRTSDimension
     {

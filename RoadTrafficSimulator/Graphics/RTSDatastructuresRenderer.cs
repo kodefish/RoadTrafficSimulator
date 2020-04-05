@@ -1,11 +1,9 @@
-﻿using System;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
+using Vector2 = RoadTrafficSimulator.Simulator.DataStructures.LinAlg.Vector2;
+using Rectangle = RoadTrafficSimulator.Simulator.DataStructures.Geometry.Rectangle;
 
 namespace RoadTrafficSimulator.Graphics
 {
@@ -22,12 +20,12 @@ namespace RoadTrafficSimulator.Graphics
             primitives2D.LoadContent(graphicsDevice, spriteBatch);
         }
 
-        public void DrawPoint(DataStructures.Vector2 point, Color c, float thickness = 1)
+        public void DrawPoint(Vector2 point, Color c, float thickness = 1)
         {
             primitives2D.DrawPixel(point.X, point.Y, c, thickness);
         }
 
-        public void DrawSegment(DataStructures.Segment segment, Color c)
+        public void DrawSegment(Segment segment, Color c)
         {
             primitives2D.DrawLine(
                 segment.Source.X, segment.Source.Y,
@@ -35,7 +33,7 @@ namespace RoadTrafficSimulator.Graphics
                 c);
         }
         
-        public void DrawRectangle(DataStructures.Rectangle rect, Color c, bool filled = true)
+        public void DrawRectangle(Rectangle rect, Color c, bool filled = true)
         {
             Debug.WriteLine("Drawing rectangle: {0}", rect);
             if (filled)
@@ -44,13 +42,13 @@ namespace RoadTrafficSimulator.Graphics
                 float y = rect.TopLeft.Y;
                 primitives2D.DrawRectangle(x, y, rect.Width, rect.Length, c, filled);
             }
-            foreach (DataStructures.Segment side in rect.Sides)
+            foreach (Segment side in rect.Sides)
             {
                 DrawSegment(side, c);
             }
         }
 
-        public void DrawBezierCurve(DataStructures.BezierCurve bCurve, Color c, float thickness, float step = 0.01f)
+        public void DrawBezierCurve(BezierCurve bCurve, Color c, float thickness, float step = 0.01f)
         {
             for (float t = 0; t <= 1; t += step)
             {

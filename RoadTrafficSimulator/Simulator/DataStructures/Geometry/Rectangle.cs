@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
 
-namespace RoadTrafficSimulator.DataStructures
+namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
 {
     /// <summary>
     /// Rectangle centered about the origin 

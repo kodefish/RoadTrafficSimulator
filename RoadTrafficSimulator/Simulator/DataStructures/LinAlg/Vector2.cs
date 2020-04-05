@@ -1,5 +1,5 @@
 ﻿using System;
-namespace RoadTrafficSimulator.DataStructures
+namespace RoadTrafficSimulator.Simulator.DataStructures.LinAlg
 {
     class Vector2
     {

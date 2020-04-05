@@ -1,8 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using RoadTrafficSimulator.Graphics;
-using System;
+using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
+using Vector2 = RoadTrafficSimulator.Simulator.DataStructures.LinAlg.Vector2;
 
 namespace RoadTrafficSimulator
 {
@@ -164,11 +166,11 @@ namespace RoadTrafficSimulator
 
         private void DrawRTSDatastructures()
         {
-            DataStructures.Vector2 p1 = new DataStructures.Vector2(centerHorL, centerVertL + spacingVertL);
-            DataStructures.Vector2 p2 = new DataStructures.Vector2(centerHorL, centerVertL - spacingVertL);
-            DataStructures.Vector2 p3 = new DataStructures.Vector2(centerHorR, centerVertR + spacingVertR);
-            DataStructures.Vector2 p4 = new DataStructures.Vector2(centerHorR, centerVertR - spacingVertR);
-            DataStructures.BezierCurve bCurve = new DataStructures.BezierCurve(p1, p2, p3, p4);
+            Vector2 p1 = new Vector2(centerHorL, centerVertL + spacingVertL);
+            Vector2 p2 = new Vector2(centerHorL, centerVertL - spacingVertL);
+            Vector2 p3 = new Vector2(centerHorR, centerVertR + spacingVertR);
+            Vector2 p4 = new Vector2(centerHorR, centerVertR - spacingVertR);
+            BezierCurve bCurve = new BezierCurve(p1, p2, p3, p4);
 
             rtsRendrer.DrawPoint(p1, Color.Red, 10);
             rtsRendrer.DrawPoint(p2, Color.Green, 10);
