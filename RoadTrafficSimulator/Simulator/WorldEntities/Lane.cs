@@ -53,12 +53,17 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             }
         }
 
+        public bool ReachedEndOfLane(Vector2 position)
+        {
+            return Vector2.Distance(Midline.Source, position) / Midline.Length >= 1;
+        }
+
         /// <summary>
         /// Returns how far along the lane the position is, 0 being at the source, 1 being at the target
         /// </summary>
         /// <param name="positon">Position in global coordinates</param>
         /// <returns></returns>
-        public float GetProgreession(Vector2 positon)
+        public float GetProgression(Vector2 positon)
         {
             // check if position is on the line specified by the two points
             if (!Midline.PointOnSegment(positon)) throw new ArgumentException("{0} is not in the lane!");

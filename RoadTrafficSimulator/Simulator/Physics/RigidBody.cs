@@ -8,7 +8,7 @@ namespace RoadTrafficSimulator.Simulator.Physics
     abstract class RigidBody
     {
         public float Mass { get; private set; }                         // In [kg]
-        public Vector2 Positon { get; private set; }                    // In [meters]
+        public Vector2 Positon { get; set; }                    // In [meters]
         public Vector2 Velocity { get; private set; }                   // In [meters/second]
         public Vector2 Force { get; private set; }                      // In [Newtons]
         public Vector2 Acceleration { get { return Force / Mass; } }    // In [meters/second^2]

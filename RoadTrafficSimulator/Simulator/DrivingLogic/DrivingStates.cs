@@ -22,7 +22,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
         public override Vector2 GetTargetAccleration()
         {
             float idmAcc = 5; // Add IDM static class with actual calculations based on vehicle positon + lane state, etc
-            float step = lane.GetProgreession(car.Positon);
+            float step = lane.GetProgression(car.Positon);
             return lane.Trajectory.GetTangent(step).Normalized * idmAcc;
         }
     }

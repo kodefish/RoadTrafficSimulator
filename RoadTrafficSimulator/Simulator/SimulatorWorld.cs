@@ -8,6 +8,7 @@ namespace RoadTrafficSimulator.Simulator
     {
         public List<FourWayIntersection> Intersections { get; private set; }
         public List<Road> Roads { get; private set; }
+        public List<Car> Cars { get; private set; }
 
         // TODO add cars and light controllers
 
@@ -15,6 +16,7 @@ namespace RoadTrafficSimulator.Simulator
         {
             Intersections = new List<FourWayIntersection>();
             Roads = new List<Road>();
+            Cars = new List<Car>();
         }
 
         public void AddIntersection(FourWayIntersection intersection) => Intersections.Add(intersection);
@@ -23,10 +25,17 @@ namespace RoadTrafficSimulator.Simulator
         public void AddRoad(Road road) => Roads.Add(road);
         public void RemoveRoad(Road road) => Roads.Remove(road);
 
+        public void AddCar(Car car) => Cars.Add(car);
+        public void RemoveCar(Car car) => Cars.Remove(car);
+
         public void Update(float deltaTime)
         {
             // TODO Update cars and light controllers
-            throw new NotImplementedException();
+            // Update car decisions
+            foreach (Car c in Cars) c.Update(deltaTime);
+
+            // Apply the decisions
+            foreach (Car c in Cars) c.IntegrateForces(deltaTime);
         }
 
     }

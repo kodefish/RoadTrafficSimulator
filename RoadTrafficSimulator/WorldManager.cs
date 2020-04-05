@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using RoadTrafficSimulator.Simulator;
@@ -25,8 +25,9 @@ namespace RoadTrafficSimulator
 
         public void Initialize()
         {
-            GenerateSquare();
-            // GenerateStrip();
+            // GenerateSquare();
+            GenerateStrip();
+            GenerateCars();
         }
 
         private void GenerateSquare()
@@ -82,12 +83,28 @@ namespace RoadTrafficSimulator
             Intersection xnaIntersection2 = new Intersection(new Vector2(displayWidth - padding, displayHeight / 2));
             FourWayIntersection intersection2 = new FourWayIntersection(xnaIntersection2);
 
-            Road road = new Road(ref intersection1, ref intersection2, 5, 6, RoadOrientation.Horizontal);
+            Road road = new Road(ref intersection1, ref intersection2, 5, 5, RoadOrientation.Horizontal);
 
             world.AddIntersection(intersection1);
             world.AddIntersection(intersection2);
             world.AddRoad(road);
         }
+        
+        private void GenerateCars()
+        {
+            // Spawn some cars
+            Random rng = new Random();
+            int numCars = 500;
+            for (int i = 0; i < numCars; i++)
+            {
+                Road randomRoad = world.Roads[rng.Next(0, world.Roads.Count)];
+                Lane[] lanes = rng.Next() % 2 == 0 ? randomRoad.NorthBoundLanes : randomRoad.SouthBoundLanes;
+                Lane randomLane = lanes[rng.Next(0, lanes.Length)];
+                Car car = new Car(1000, randomLane, (float)rng.NextDouble());
+                world.AddCar(car);
+            }
+        }
+
 
         public void LoadContent(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
         {
@@ -100,12 +117,13 @@ namespace RoadTrafficSimulator
             // Draw the stuff
             foreach (FourWayIntersection intersection in world.Intersections) rtsRenderer.DrawIntersection(intersection);
             foreach (Road road in world.Roads) rtsRenderer.DrawRoad(road);
+            foreach (Car car in world.Cars) rtsRenderer.DrawCar(car);
         }
 
         public void Update(GameTime gameTime)
         {
             //  Update the stuff
-            // world.Update((float) gameTime.ElapsedGameTime.TotalSeconds);
+            world.Update((float) gameTime.ElapsedGameTime.TotalSeconds);
         }
     }
 }
