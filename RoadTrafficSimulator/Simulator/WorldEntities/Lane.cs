@@ -7,6 +7,8 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 {
     class Lane
     {
+        public const float LANE_WIDTH = 2;    // Width of a lane, in meters
+
         private Segment midline;
         private List<Car> cars;
 
@@ -14,7 +16,9 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public BezierCurve Trajectory { get; private set; }
         public Vector2 Direction { get; private set; }
 
-
+        /// <summary>
+        /// Contruct a lane between two segments
+        /// </summary>
         public Lane(Segment source, Segment target)
         {
             Segment midline = new Segment(source.Midpoint, target.Midpoint);

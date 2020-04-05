@@ -5,27 +5,26 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
 {
     class Segment
     {
-        private readonly Vector2 source, target;
+        public Vector2 Source { get; }
+        public Vector2 Target { get; }
 
         public Segment(Vector2 source, Vector2 target)
         {
-            this.source = source;
-            this.target = target;
+            Source = source;
+            Target = target;
         }
 
-        public Vector2 Source { get => source; }
-        public Vector2 Target { get => target; }
-        public Vector2 Vector { get { return target - source; } }
+        public Vector2 Vector { get { return Target - Source; } }
         public float Length { get { return Vector.Length; } }
         public Vector2 Direction { get { return Vector.Normalized; } }
-        public Vector2 Midpoint => (target + source) / 2;
+        public Vector2 Midpoint => (Target + Source) / 2;
         
         // Returns a point on the segment, dist is how far along the segment in percenteage
         public Vector2 GetPointOnSegment(float dist)
         {
             if (dist > 1) throw new ArgumentOutOfRangeException(
                 String.Format("{0} is out of range (0-1)!", dist));
-            return source + Direction * dist;
+            return Source + Direction * dist;
         }
 
         public Segment SubSegment(float a, float b)
@@ -51,13 +50,13 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
 
         public bool PointOnSegment(Vector2 point)
         {
-            return Vector2.Distance(source, point) + Vector2.Distance(point, target) == Vector2.Distance(source, target);
+            return Vector2.Distance(Source, point) + Vector2.Distance(point, Target) == Vector2.Distance(Source, Target);
         }
 
         public float ProgressAlongSegment(Vector2 point)
         {
             if (!PointOnSegment(point)) throw new ArgumentException(String.Format("{0} is not on the segment!", point));
-            return Vector2.Distance(source, point) / Vector2.Distance(source, target);
+            return Vector2.Distance(Source, point) / Vector2.Distance(Source, Target);
         }
     }
 }

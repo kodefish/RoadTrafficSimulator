@@ -11,9 +11,6 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 
     class Road : IRTSDimension, IRTSPosition
     {
-        // TODO: Move this to Lane class
-        public const float LANE_WIDTH = 2;    // Width of a lane, in meters
-
         // Code contract : source.Origin.X < target.Origin.X for horizontal streets
         // Code contract : source.Origin.Y < target.Origin.Y for vertical streets
         private FourWayIntersection sourceIntersection, targetIntersection;
@@ -43,7 +40,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         }
 
         // Road dimensions
-        public float RoadWidth => numLanesSouthbound * LANE_WIDTH + numLanesNorthBound * LANE_WIDTH;
+        public float RoadWidth => numLanesSouthbound * Lane.LANE_WIDTH + numLanesNorthBound * Lane.LANE_WIDTH;
         public float RoadLength
         {
             get
