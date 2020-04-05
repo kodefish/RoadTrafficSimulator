@@ -4,12 +4,13 @@ using RoadTrafficSimulator.Simulator.Interfaces;
 using RoadTrafficSimulator.Simulator.WorldEntities;
 using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
 using Rectangle = RoadTrafficSimulator.Simulator.DataStructures.Geometry.Rectangle;
+using Vector2 = RoadTrafficSimulator.Simulator.DataStructures.LinAlg.Vector2;
 
 namespace RoadTrafficSimulator.Graphics
 {
     class RTSRenderer
     {
-        private RTSDatastructuresRenderer dRenderer;
+        private RTSGeometryRenderer dRenderer;
 
         // Some color properties for the render
         private Color intersectionColor = Color.DarkGray;
@@ -19,7 +20,7 @@ namespace RoadTrafficSimulator.Graphics
 
         public RTSRenderer()
         {
-            dRenderer = new RTSDatastructuresRenderer();
+            dRenderer = new RTSGeometryRenderer();
             Scale = 1;
         }
 
@@ -55,6 +56,11 @@ namespace RoadTrafficSimulator.Graphics
             DrawRectange(road, road, roadColor);
             foreach (Lane l in road.SouthBoundLanes) DrawSegment(l.Midline, Color.Red);
             foreach (Lane l in road.NorthBoundLanes) DrawSegment(l.Midline, Color.Green);
+            Segment srcSegment = road.RoadStartSegment;
+            Segment dstSegment = road.RoadTargetSegment;
+            Vector2 sepSrc = srcSegment.GetPointOnSegment(road.NumLanesNorthBound * Lane.LANE_WIDTH / srcSegment.Length);
+            Vector2 sepDst = dstSegment.GetPointOnSegment(road.NumLanesSouthBound * Lane.LANE_WIDTH/ dstSegment.Length);
+            DrawSegment(new Segment(sepSrc, sepDst), Color.Yellow);
         }
 
     }

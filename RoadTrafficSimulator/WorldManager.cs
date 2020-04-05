@@ -25,33 +25,35 @@ namespace RoadTrafficSimulator
 
         public void Initialize()
         {
-            // GenerateSquare();
-            GenerateStrip();
+            GenerateSquare();
+            // GenerateStrip();
         }
 
         private void GenerateSquare()
         {
-            // Set scale to 100 so you actually see smth, but don't have to do any hard math yourself
-            // ain't that aboslutely beautiful ?
-            rtsRenderer.Scale = 100;
+            float scale = 10;
+            rtsRenderer.Scale = scale;
+            float displayWidth = game.GraphicsDevice.DisplayMode.Width / scale;
+            float displayHeight = game.GraphicsDevice.DisplayMode.Height / scale;
+
             // Generate the world map here
-            Intersection xnaIntersection1 = new Intersection(new Vector2(1, 1));
+            Intersection xnaIntersection1 = new Intersection(new Vector2(0.25f * displayWidth, 0.25f * displayHeight));
             FourWayIntersection intersection1 = new FourWayIntersection(xnaIntersection1);
 
-            Intersection xnaIntersection2 = new Intersection(new Vector2(1, 6));
+            Intersection xnaIntersection2 = new Intersection(new Vector2(0.25f * displayWidth, 0.75f * displayHeight));
             FourWayIntersection intersection2 = new FourWayIntersection(xnaIntersection2);
 
-            Intersection xnaIntersection3 = new Intersection(new Vector2(6, 1));
+            Intersection xnaIntersection3 = new Intersection(new Vector2(0.75f * displayWidth, 0.25f * displayHeight));
             FourWayIntersection intersection3 = new FourWayIntersection(xnaIntersection3);
 
-            Intersection xnaIntersection4 = new Intersection(new Vector2(6, 6));
+            Intersection xnaIntersection4 = new Intersection(new Vector2(0.75f * displayWidth, 0.75f * displayHeight));
             FourWayIntersection intersection4 = new FourWayIntersection(xnaIntersection4);
 
 
-            Road road12 = new Road(ref intersection1, ref intersection2, 1, 0, RoadOrientation.Vertical);
-            Road road13 = new Road(ref intersection1, ref intersection3, 1, 0, RoadOrientation.Horizontal);
-            Road road24 = new Road(ref intersection2, ref intersection4, 0, 1, RoadOrientation.Horizontal);
-            Road road34 = new Road(ref intersection3, ref intersection4, 0, 1, RoadOrientation.Vertical);
+            Road road12 = new Road(ref intersection1, ref intersection2, 4, 2, RoadOrientation.Vertical);
+            Road road13 = new Road(ref intersection1, ref intersection3, 5, 6, RoadOrientation.Horizontal);
+            Road road24 = new Road(ref intersection2, ref intersection4, 2, 3, RoadOrientation.Horizontal);
+            Road road34 = new Road(ref intersection3, ref intersection4, 5, 2, RoadOrientation.Vertical);
 
             // Add the stuff
             world.AddIntersection(intersection1);

@@ -14,10 +14,11 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
     {
         // Code contract : source.Origin.X < target.Origin.X for horizontal streets
         // Code contract : source.Origin.Y < target.Origin.Y for vertical streets
-        private FourWayIntersection sourceIntersection, targetIntersection;
-        private readonly int numLanesSouthBound;
-        private readonly int numLanesNorthBound;
-        private int NumLanes => numLanesSouthBound + numLanesNorthBound;
+        public FourWayIntersection SourceIntersection { get; private set; }
+        public FourWayIntersection TargetIntersection { get; private set; }
+        public int NumLanesSouthBound { get; }
+        public int NumLanesNorthBound { get; }
+        public int NumLanes => NumLanesSouthBound + NumLanesNorthBound;
 
         public Lane[] SouthBoundLanes { get; private set; }
          public Lane[] NorthBoundLanes { get; private set; }
@@ -36,16 +37,20 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             }
         }
 
-
         // Road position
+        public Segment RoadStartSegment => SourceIntersection.GetRoadSegment(TargetIntersection);
+        public Segment RoadTargetSegment => TargetIntersection.GetRoadSegment(SourceIntersection);
         public Vector2 Position
         {
-            get { return (sourceIntersection.Origin + targetIntersection.Origin) / 2; }
+            get
+            {
+                return (RoadStartSegment.Midpoint + RoadTargetSegment.Midpoint) / 2;
+            }
             set { /* Nothing to do here, you can't set the position of a road, you can try, but it will be pointless. */ }
         }
 
         // Road dimensions
-        public float RoadWidth => numLanesSouthBound * Lane.LANE_WIDTH + numLanesNorthBound * Lane.LANE_WIDTH;
+        public float RoadWidth => NumLanesSouthBound * Lane.LANE_WIDTH + NumLanesNorthBound * Lane.LANE_WIDTH;
         public float RoadLength
         {
             get
@@ -53,20 +58,20 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
                 Vector2 srcIntersectionOffset, targetIntersectionOffset;
                 if (Orientation == RoadOrientation.Vertical)
                 {
-                    srcIntersectionOffset = new Vector2(0, sourceIntersection.Height / 2);
-                    targetIntersectionOffset = new Vector2(0, targetIntersection.Height / 2);
+                    srcIntersectionOffset = new Vector2(0, SourceIntersection.Height / 2);
+                    targetIntersectionOffset = new Vector2(0, TargetIntersection.Height / 2);
                 }
                 else if (Orientation == RoadOrientation.Horizontal)
                 {
-                    srcIntersectionOffset = new Vector2(sourceIntersection.Width / 2, 0);
-                    targetIntersectionOffset = new Vector2(targetIntersection.Width / 2, 0);
+                    srcIntersectionOffset = new Vector2(SourceIntersection.Width / 2, 0);
+                    targetIntersectionOffset = new Vector2(TargetIntersection.Width / 2, 0);
                 } else
                 {
                     throw new InvalidOperationException("No road orientation specified!");
                 }
 
-                Vector2 roadStart = sourceIntersection.Origin + srcIntersectionOffset;
-                Vector2 roadEnd = targetIntersection.Origin- targetIntersectionOffset;
+                Vector2 roadStart = SourceIntersection.Origin + srcIntersectionOffset;
+                Vector2 roadEnd = TargetIntersection.Origin- targetIntersectionOffset;
                 return Vector2.Distance(roadStart, roadEnd);
             }
         }
@@ -91,25 +96,25 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             Vector2 targetOrigin = target.Origin;
             if (orientation == RoadOrientation.Vertical && sourceOrigin.X == targetOrigin.X)
             {
-                sourceIntersection = sourceOrigin.Y < targetOrigin.Y ? source : target;
-                targetIntersection = sourceOrigin.Y < targetOrigin.Y ? target : source;
+                SourceIntersection = sourceOrigin.Y < targetOrigin.Y ? source : target;
+                TargetIntersection = sourceOrigin.Y < targetOrigin.Y ? target : source;
             } else if (orientation == RoadOrientation.Horizontal && sourceOrigin.Y == targetOrigin.Y)
             {
-                sourceIntersection = sourceOrigin.X < targetOrigin.X ? source : target;
-                targetIntersection = sourceOrigin.X < targetOrigin.X ? target : source;
+                SourceIntersection = sourceOrigin.X < targetOrigin.X ? source : target;
+                TargetIntersection = sourceOrigin.X < targetOrigin.X ? target : source;
             }
             else
             {
                 throw new ArgumentException("Alignement of intersections does not correspond to orientation!");
             }
 
-            this.numLanesSouthBound = numLanesSouthBound;
-            this.numLanesNorthBound = numLanesNorthBound;
+            this.NumLanesSouthBound = numLanesSouthBound;
+            this.NumLanesNorthBound = numLanesNorthBound;
             SouthBoundLanes = InitLanes(numLanesSouthBound);
             NorthBoundLanes = InitLanes(numLanesNorthBound);
 
-            sourceIntersection.AddRoad(this);
-            targetIntersection.AddRoad(this);
+            SourceIntersection.AddRoad(this);
+            TargetIntersection.AddRoad(this);
         }
 
         private Lane[] InitLanes(int numLanes)
@@ -124,18 +129,19 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         /// </summary>
         ~Road()
         {
-            sourceIntersection.RemoveRoad(this);
-            targetIntersection.RemoveRoad(this);
+            SourceIntersection.RemoveRoad(this);
+            TargetIntersection.RemoveRoad(this);
         }
 
         public void ComputeLaneGeometry()
         {
-            Segment[] srcSubSegment = sourceIntersection.GetRoadSegment(targetIntersection).SplitSegment(NumLanes, false);
-            Segment[] targetSubSegment = targetIntersection.GetRoadSegment(sourceIntersection).SplitSegment(NumLanes, true);
+            // Reverse the src segments since we start with south bound lanes on the left
+            Segment[] srcSubSegment = RoadStartSegment.SplitSegment(NumLanes, true);
+            Segment[] targetSubSegment = RoadTargetSegment.SplitSegment(NumLanes, false);
 
             // Set the source segments of the sourth bound lanes: targetIntersection -> sourceIntersection (left)
             int i = 0;
-            for (; i < numLanesSouthBound; i++)
+            for (; i < NumLanesSouthBound; i++)
             {
                 SouthBoundLanes[i].SourceSegment = targetSubSegment[i];
                 SouthBoundLanes[i].TargetSegment = srcSubSegment[i];
@@ -144,8 +150,8 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             // Set the source segments of the north bound lanes: sourceIntersection -> targetIntersection (right)
             for (; i < NumLanes; i++)
             {
-                NorthBoundLanes[i- numLanesSouthBound].SourceSegment = srcSubSegment[i];
-                NorthBoundLanes[i- numLanesSouthBound].TargetSegment = targetSubSegment[i];
+                NorthBoundLanes[i- NumLanesSouthBound].SourceSegment = srcSubSegment[i];
+                NorthBoundLanes[i- NumLanesSouthBound].TargetSegment = targetSubSegment[i];
             }
         }
 

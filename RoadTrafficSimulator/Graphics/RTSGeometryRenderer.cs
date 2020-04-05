@@ -7,10 +7,10 @@ using Rectangle = RoadTrafficSimulator.Simulator.DataStructures.Geometry.Rectang
 namespace RoadTrafficSimulator.Graphics
 {
     // Class that draws RTS datastructures using XNA's framework
-    class RTSDatastructuresRenderer
+    class RTSGeometryRenderer
     {
         private readonly Primitives2D primitives2D;
-        public RTSDatastructuresRenderer(){
+        public RTSGeometryRenderer(){
             primitives2D = new Primitives2D();
         }
 

@@ -44,7 +44,7 @@
   <ItemGroup>
     <Compile Include="RoadTrafficSimulator.cs" />
     <Compile Include="Simulator\DataStructures\Geometry\BezierCurve.cs" />
-    <Compile Include="Graphics\RTSDatastructuresRenderer.cs" />
+    <Compile Include="Graphics\RTSGeometryRenderer.cs" />
     <Compile Include="Simulator\DataStructures\LinAlg\Vector2.cs" />
     <Compile Include="Simulator\DataStructures\Geometry\Rectangle.cs" />
     <Compile Include="Simulator\DataStructures\Geometry\Segment.cs" />
