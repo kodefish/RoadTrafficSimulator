@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using RoadTrafficSimulator.DataStructures;
 using RoadTrafficSimulator.Interfaces;
 
-namespace RoadTrafficSimulator.Simulator
+namespace RoadTrafficSimulator.Simulator.WorldEntities
 {
     /// <summary>
     /// Supports up-to four incoming roads 
