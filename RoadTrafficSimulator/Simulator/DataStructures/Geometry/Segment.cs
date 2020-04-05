@@ -24,7 +24,7 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
         {
             if (dist > 1) throw new ArgumentOutOfRangeException(
                 String.Format("{0} is out of range (0-1)!", dist));
-            return Source + Direction * dist;
+            return Source + Vector * dist;
         }
 
         public Segment SubSegment(float a, float b)
@@ -34,18 +34,27 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
             return new Segment(s, t);
         }
 
-        public Segment[] SplitSegment(int numSubSegments)
+        public Segment[] SplitSegment(int numSubSegments, bool reversed)
         {
             Segment[] subSegments = new Segment[numSubSegments];
-            float subSegmentLength = Length / numSubSegments;
 
-            int count = 0;
-            for (float i = 0; i < Length; i += subSegmentLength)
+            for (float i = 0; i < subSegments.Length; i++)
             {
-                subSegments[count++] = SubSegment(i, i + subSegmentLength);
+                subSegments[(int)i] = SubSegment(i / numSubSegments, (i + 1) / numSubSegments);
             }
 
-            return subSegments;
+            // Reverse array if needed
+            if (reversed)
+            {
+                Segment[] reversedSubSegments = new Segment[numSubSegments];
+                for (int i = 0; i < numSubSegments; i++)
+                {
+                    reversedSubSegments[numSubSegments - 1 - i] = subSegments[i];
+                }
+                return reversedSubSegments;
+            }
+            else
+                return subSegments;
         }
 
         public bool PointOnSegment(Vector2 point)
@@ -57,6 +66,11 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
         {
             if (!PointOnSegment(point)) throw new ArgumentException(String.Format("{0} is not on the segment!", point));
             return Vector2.Distance(Source, point) / Vector2.Distance(Source, Target);
+        }
+
+        public override string ToString()
+        {
+            return String.Format("Segment from: {0} to {1}", Source, Target);
         }
     }
 }

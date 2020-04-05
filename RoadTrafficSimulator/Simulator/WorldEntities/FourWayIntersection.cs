@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
 using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
 using RoadTrafficSimulator.Simulator.Interfaces;
 
@@ -57,11 +58,21 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             if (roadCount < MAX_ROADS)
             {
                 roads.Add(road);
+                ComputeRoadGeometry();
             }
             else throw new ArgumentOutOfRangeException(String.Format("Max number ({0}) roads already reached!", roadCount));
         }
 
-        public void RemoveRoad(Road road) => roads.Remove(road);
+        public void RemoveRoad(Road road)
+        {
+            bool ok = roads.Remove(road);
+            if (ok) ComputeRoadGeometry();
+        }
+
+        public void ComputeRoadGeometry()
+        {
+            foreach (Road r in roads) r.ComputeLaneGeometry();
+        }
 
         public Vector2 Dimensions => new Vector2(Width, Height);
 
@@ -69,6 +80,35 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         {
             get { return _origin.Position; }
             set { _origin.Position = value; }
+        }
+
+        public Segment GetRoadSegment(FourWayIntersection other)
+        {
+            Vector2 direction = (other.Position - this.Position).Normalized;
+            Vector2 source = new Vector2(), target = new Vector2();
+            if (direction.Equals(Vector2.Up))
+            {
+                source = new Vector2(Position.X - Width / 2, Position.Y + Height / 2);
+                target = new Vector2(Position.X + Width / 2, Position.Y + Height / 2);
+            }
+            else if (direction.Equals(Vector2.Down))
+            {
+                source = new Vector2(Position.X + Width / 2, Position.Y - Height / 2);
+                target = new Vector2(Position.X - Width / 2, Position.Y - Height / 2);
+            }
+            else if (direction.Equals(Vector2.Right))
+            {
+                source = new Vector2(Position.X - Width / 2, Position.Y - Height / 2);
+                target = new Vector2(Position.X - Width / 2, Position.Y + Height / 2);
+            }
+            else if (direction.Equals(Vector2.Left))
+            {
+                source = new Vector2(Position.X + Width / 2, Position.Y + Height / 2);
+                target = new Vector2(Position.X + Width / 2, Position.Y - Height / 2);
+
+            }
+
+            return new Segment(source, target);
         }
     }
 }

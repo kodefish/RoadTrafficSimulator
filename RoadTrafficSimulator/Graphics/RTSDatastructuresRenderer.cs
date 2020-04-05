@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
 using Vector2 = RoadTrafficSimulator.Simulator.DataStructures.LinAlg.Vector2;
@@ -35,7 +34,6 @@ namespace RoadTrafficSimulator.Graphics
         
         public void DrawRectangle(Rectangle rect, Color c, bool filled = true)
         {
-            Debug.WriteLine("Drawing rectangle: {0}", rect);
             if (filled)
             {
                 float x = rect.TopLeft.X;

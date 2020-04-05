@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using RoadTrafficSimulator.Simulator.Interfaces;
 using RoadTrafficSimulator.Simulator.WorldEntities;
+using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
 using Rectangle = RoadTrafficSimulator.Simulator.DataStructures.Geometry.Rectangle;
 
 namespace RoadTrafficSimulator.Graphics
@@ -38,6 +39,12 @@ namespace RoadTrafficSimulator.Graphics
             dRenderer.DrawRectangle(rect, c);
         }
 
+        private void DrawSegment(Segment s, Color c)
+        {
+            Segment scaledSegment = new Segment(s.Source * Scale, s.Target * Scale);
+            dRenderer.DrawSegment(scaledSegment, c);
+        }
+
         public void DrawIntersection(FourWayIntersection intersection)
         {
             DrawRectange(intersection, intersection, intersectionColor);
@@ -46,6 +53,8 @@ namespace RoadTrafficSimulator.Graphics
         public void DrawRoad(Road road)
         {
             DrawRectange(road, road, roadColor);
+            foreach (Lane l in road.SouthBoundLanes) DrawSegment(l.Midline, Color.Red);
+            foreach (Lane l in road.NorthBoundLanes) DrawSegment(l.Midline, Color.Green);
         }
 
     }

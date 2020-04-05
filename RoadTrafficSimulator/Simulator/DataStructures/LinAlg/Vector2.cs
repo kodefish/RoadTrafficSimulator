@@ -59,9 +59,25 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.LinAlg
             return Math.Abs((b - a).Length);
         }
 
+        public static Vector2 Up => new Vector2(0, 1);
+        public static Vector2 Down => new Vector2(0, -1);
+        public static Vector2 Left => new Vector2(1, 0);
+        public static Vector2 Right => new Vector2(-1, 0);
+
         public override string ToString()
         {
             return String.Format("({0}, {1})", X, Y);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj.GetType() == this.GetType())
+            {
+                Vector2 other = (Vector2)obj;
+                return other.X == X && other.Y == Y;
+            }
+            else
+                return base.Equals(obj);
         }
     }
 

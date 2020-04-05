@@ -9,26 +9,48 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
     {
         public const float LANE_WIDTH = 2;    // Width of a lane, in meters
 
-        private Segment midline;
+        private Segment _sourceSegment;
+        public Segment _targetSegment;
+
+        public Segment SourceSegment {
+            get => _sourceSegment;
+            set {
+                _sourceSegment = value;
+                UpdateMidlineAndTrajectory();
+            }
+        }
+        public Segment TargetSegment {
+            get => _targetSegment;
+            set {
+                _targetSegment = value;
+                UpdateMidlineAndTrajectory();
+            }
+        }
+
         private List<Car> cars;
 
         // Think of it like a rail
+        public Segment Midline { get; private set; }
         public BezierCurve Trajectory { get; private set; }
-        public Vector2 Direction { get; private set; }
+        public Vector2 Direction => Midline.Direction;
 
         /// <summary>
         /// Contruct a lane between two segments
         /// </summary>
-        public Lane(Segment source, Segment target)
+        public Lane()
         {
-            Segment midline = new Segment(source.Midpoint, target.Midpoint);
-
-            // Trajectoy is just a straight line between the source segment middle to the target segment middle
-            Trajectory = new BezierCurve(midline.Source, midline.Source, midline.Target, midline.Target);
-            Direction = (target.Midpoint - source.Midpoint).Normalized;
-
             // Keep track of cars on the lane
             cars = new List<Car>();
+        }
+
+        private void UpdateMidlineAndTrajectory()
+        {
+            // Trajectoy is just a straight line between the source segment middle to the target segment middle
+            if (SourceSegment != null && TargetSegment != null)
+            {
+                Midline = new Segment(SourceSegment.Midpoint, TargetSegment.Midpoint);
+                Trajectory = new BezierCurve(Midline.Source, Midline.Source, Midline.Target, Midline.Target);
+            }
         }
 
         /// <summary>
@@ -39,8 +61,8 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public float GetProgreession(Vector2 positon)
         {
             // check if position is on the line specified by the two points
-            if (!midline.PointOnSegment(positon)) throw new ArgumentException("{0} is not in the lane!");
-            return Vector2.Distance(midline.Source, positon) / midline.Length;
+            if (!Midline.PointOnSegment(positon)) throw new ArgumentException("{0} is not in the lane!");
+            return Vector2.Distance(Midline.Source, positon) / Midline.Length;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
+using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
 using RoadTrafficSimulator.Simulator.Interfaces;
 
 namespace RoadTrafficSimulator.Simulator.WorldEntities
@@ -14,8 +15,12 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         // Code contract : source.Origin.X < target.Origin.X for horizontal streets
         // Code contract : source.Origin.Y < target.Origin.Y for vertical streets
         private FourWayIntersection sourceIntersection, targetIntersection;
-        private readonly int numLanesSouthbound;
+        private readonly int numLanesSouthBound;
         private readonly int numLanesNorthBound;
+        private int NumLanes => numLanesSouthBound + numLanesNorthBound;
+
+        public Lane[] SouthBoundLanes { get; private set; }
+         public Lane[] NorthBoundLanes { get; private set; }
 
         // Road orientation
         public RoadOrientation Orientation { get; }
@@ -40,7 +45,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         }
 
         // Road dimensions
-        public float RoadWidth => numLanesSouthbound * Lane.LANE_WIDTH + numLanesNorthBound * Lane.LANE_WIDTH;
+        public float RoadWidth => numLanesSouthBound * Lane.LANE_WIDTH + numLanesNorthBound * Lane.LANE_WIDTH;
         public float RoadLength
         {
             get
@@ -71,12 +76,12 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         /// </summary>
         /// <param name="source"></param>
         /// <param name="target"></param>
-        /// <param name="numLanesSouthbound">Numlanes along negative orientation</param>
+        /// <param name="numLanesSouthBound">Numlanes along negative orientation</param>
         /// <param name="numLanesNorthBound">Numlanes along positive orientation</param>
         /// <param name="orientation"></param>
         public Road(
-            FourWayIntersection source, FourWayIntersection target, 
-            int numLanesSouthbound, int numLanesNorthBound, 
+            ref FourWayIntersection source, ref FourWayIntersection target, 
+            int numLanesSouthBound, int numLanesNorthBound, 
             RoadOrientation orientation)
         {
             Orientation = orientation;
@@ -98,13 +103,20 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
                 throw new ArgumentException("Alignement of intersections does not correspond to orientation!");
             }
 
-            this.numLanesSouthbound = numLanesSouthbound;
+            this.numLanesSouthBound = numLanesSouthBound;
             this.numLanesNorthBound = numLanesNorthBound;
-            // TODO Add lanes
-        
+            SouthBoundLanes = InitLanes(numLanesSouthBound);
+            NorthBoundLanes = InitLanes(numLanesNorthBound);
 
             sourceIntersection.AddRoad(this);
             targetIntersection.AddRoad(this);
+        }
+
+        private Lane[] InitLanes(int numLanes)
+        {
+            Lane[] lanes = new Lane[numLanes];
+            for (int i = 0; i < numLanes; i++) lanes[i] = new Lane();
+            return lanes;
         }
 
         /// <summary>
@@ -114,6 +126,27 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         {
             sourceIntersection.RemoveRoad(this);
             targetIntersection.RemoveRoad(this);
+        }
+
+        public void ComputeLaneGeometry()
+        {
+            Segment[] srcSubSegment = sourceIntersection.GetRoadSegment(targetIntersection).SplitSegment(NumLanes, false);
+            Segment[] targetSubSegment = targetIntersection.GetRoadSegment(sourceIntersection).SplitSegment(NumLanes, true);
+
+            // Set the source segments of the sourth bound lanes: targetIntersection -> sourceIntersection (left)
+            int i = 0;
+            for (; i < numLanesSouthBound; i++)
+            {
+                SouthBoundLanes[i].SourceSegment = targetSubSegment[i];
+                SouthBoundLanes[i].TargetSegment = srcSubSegment[i];
+            }
+
+            // Set the source segments of the north bound lanes: sourceIntersection -> targetIntersection (right)
+            for (; i < NumLanes; i++)
+            {
+                NorthBoundLanes[i- numLanesSouthBound].SourceSegment = srcSubSegment[i];
+                NorthBoundLanes[i- numLanesSouthBound].TargetSegment = targetSubSegment[i];
+            }
         }
 
     }

@@ -25,8 +25,8 @@ namespace RoadTrafficSimulator
 
         public void Initialize()
         {
-            GenerateSquare();
-            // GenerateStrip();
+            // GenerateSquare();
+            GenerateStrip();
         }
 
         private void GenerateSquare()
@@ -48,10 +48,10 @@ namespace RoadTrafficSimulator
             FourWayIntersection intersection4 = new FourWayIntersection(xnaIntersection4);
 
 
-            Road road12 = new Road(intersection1, intersection2, 0, 1, RoadOrientation.Vertical);
-            Road road13 = new Road(intersection1, intersection3, 0, 1, RoadOrientation.Horizontal);
-            Road road24 = new Road(intersection2, intersection4, 0, 1, RoadOrientation.Horizontal);
-            Road road34 = new Road(intersection3, intersection4, 0, 1, RoadOrientation.Vertical);
+            Road road12 = new Road(ref intersection1, ref intersection2, 1, 0, RoadOrientation.Vertical);
+            Road road13 = new Road(ref intersection1, ref intersection3, 1, 0, RoadOrientation.Horizontal);
+            Road road24 = new Road(ref intersection2, ref intersection4, 0, 1, RoadOrientation.Horizontal);
+            Road road34 = new Road(ref intersection3, ref intersection4, 0, 1, RoadOrientation.Vertical);
 
             // Add the stuff
             world.AddIntersection(intersection1);
@@ -67,7 +67,7 @@ namespace RoadTrafficSimulator
 
         private void GenerateStrip()
         {
-            float scale = 5;
+            float scale = 10;
             rtsRenderer.Scale = scale;
             float displayWidth = game.GraphicsDevice.DisplayMode.Width / scale;
             float displayHeight = game.GraphicsDevice.DisplayMode.Height / scale;
@@ -80,7 +80,7 @@ namespace RoadTrafficSimulator
             Intersection xnaIntersection2 = new Intersection(new Vector2(displayWidth - padding, displayHeight / 2));
             FourWayIntersection intersection2 = new FourWayIntersection(xnaIntersection2);
 
-            Road road = new Road(intersection1, intersection2, 5, 6, RoadOrientation.Horizontal);
+            Road road = new Road(ref intersection1, ref intersection2, 5, 6, RoadOrientation.Horizontal);
 
             world.AddIntersection(intersection1);
             world.AddIntersection(intersection2);
@@ -96,12 +96,8 @@ namespace RoadTrafficSimulator
         public void Draw()
         {
             // Draw the stuff
-            Debug.WriteLine("Drawing world!");
-            Debug.WriteLine("Intersections:");
             foreach (FourWayIntersection intersection in world.Intersections) rtsRenderer.DrawIntersection(intersection);
-            Debug.WriteLine("Roads:");
             foreach (Road road in world.Roads) rtsRenderer.DrawRoad(road);
-            Debug.WriteLine("\n");
         }
 
         public void Update(GameTime gameTime)
