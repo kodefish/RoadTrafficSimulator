@@ -18,7 +18,7 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
         public Vector2 Vector { get { return target - source; } }
         public float Length { get { return Vector.Length; } }
         public Vector2 Direction { get { return Vector.Normalized; } }
-        public Vector2 Midpont => (target + source) / 2;
+        public Vector2 Midpoint => (target + source) / 2;
         
         // Returns a point on the segment, dist is how far along the segment in percenteage
         public Vector2 GetPointOnSegment(float dist)
@@ -47,6 +47,17 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
             }
 
             return subSegments;
+        }
+
+        public bool PointOnSegment(Vector2 point)
+        {
+            return Vector2.Distance(source, point) + Vector2.Distance(point, target) == Vector2.Distance(source, target);
+        }
+
+        public float ProgressAlongSegment(Vector2 point)
+        {
+            if (!PointOnSegment(point)) throw new ArgumentException(String.Format("{0} is not on the segment!", point));
+            return Vector2.Distance(source, point) / Vector2.Distance(source, target);
         }
     }
 }

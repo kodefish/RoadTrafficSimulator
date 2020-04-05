@@ -56,10 +56,11 @@
     <Compile Include="Simulator\Interfaces\IRTSPosition.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Simulator\DrivingLogic\DrivingState.cs" />
+    <Compile Include="Simulator\DrivingLogic\DrivingStates.cs" />
     <Compile Include="Simulator\WorldEntities\Car.cs" />
     <Compile Include="Simulator\WorldEntities\FourWayIntersection.cs" />
     <Compile Include="Simulator\Physics\RigidBody.cs" />
+    <Compile Include="Simulator\WorldEntities\Lane.cs" />
     <Compile Include="Simulator\WorldEntities\Road.cs" />
     <Compile Include="Simulator\SimulatorWorld.cs" />
     <Compile Include="WorldManager.cs" />

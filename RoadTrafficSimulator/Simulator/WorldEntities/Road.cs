@@ -103,6 +103,8 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 
             this.numLanesSouthbound = numLanesSouthbound;
             this.numLanesNorthBound = numLanesNorthBound;
+            // TODO Add lanes
+        
 
             sourceIntersection.AddRoad(this);
             targetIntersection.AddRoad(this);
