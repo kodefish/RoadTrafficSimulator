@@ -32,7 +32,7 @@ namespace RoadTrafficSimulator.Graphics
         }
 
         // Draw line from (x1, y1) to (x2, y2)
-        public void DrawLine(float x1, float y1, float x2, float y2, Color color, int thickness = 1)
+        public void DrawLine(float x1, float y1, float x2, float y2, Color color, float thickness = 1)
         {
             // Get actualy points
             Vector2 p1 = new Vector2(x1, y1);
@@ -43,7 +43,7 @@ namespace RoadTrafficSimulator.Graphics
             float angle = (float) Math.Atan2(p2.Y - p1.Y, p2.X - p1.X);
 
             // Construct and draw corresponding line
-            Rectangle rectangle = new Rectangle((int) x1, (int) y1, (int) length, thickness);
+            Rectangle rectangle = new Rectangle((int) x1, (int) y1, (int) length, (int) thickness);
             spriteBatch.Draw(pixelTexture, rectangle, null, color, angle, Vector2.Zero, SpriteEffects.None, 0.0f);
         }
 

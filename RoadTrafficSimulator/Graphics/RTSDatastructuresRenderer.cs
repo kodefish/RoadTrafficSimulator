@@ -25,12 +25,12 @@ namespace RoadTrafficSimulator.Graphics
             primitives2D.DrawPixel(point.X, point.Y, c, thickness);
         }
 
-        public void DrawSegment(Segment segment, Color c)
+        public void DrawSegment(Segment segment, Color c, float thickness = 1)
         {
             primitives2D.DrawLine(
                 segment.Source.X, segment.Source.Y,
                 segment.Target.X, segment.Target.Y,
-                c);
+                c, thickness);
         }
         
         public void DrawRectangle(Rectangle rect, Color c, bool filled = true)
@@ -48,11 +48,19 @@ namespace RoadTrafficSimulator.Graphics
             }
         }
 
-        public void DrawBezierCurve(BezierCurve bCurve, Color c, float thickness, float step = 0.01f)
+        public void DrawBezierCurve(BezierCurve bCurve, Color c, float thickness, float step = 0.01f, bool drawTangent = false)
         {
             for (float t = 0; t <= 1; t += step)
             {
-                DrawPoint(bCurve.GetPosition(t), c, thickness);
+                Vector2 point = bCurve.GetPosition(t);
+                DrawPoint(point, c, thickness);
+
+                if (drawTangent)
+                {
+                    Vector2 tangent = bCurve.GetTangent(t);
+                    Segment tangentSegment = new Segment(point, point + tangent.Normalized * 500);
+                    DrawSegment(tangentSegment, Color.Red, thickness * 0.5f);
+                }
             }
         }
 

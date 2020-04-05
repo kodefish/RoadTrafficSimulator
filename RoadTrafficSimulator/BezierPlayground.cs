@@ -166,17 +166,17 @@ namespace RoadTrafficSimulator
 
         private void DrawRTSDatastructures()
         {
-            Vector2 p1 = new Vector2(centerHorL, centerVertL + spacingVertL);
-            Vector2 p2 = new Vector2(centerHorL, centerVertL - spacingVertL);
-            Vector2 p3 = new Vector2(centerHorR, centerVertR + spacingVertR);
-            Vector2 p4 = new Vector2(centerHorR, centerVertR - spacingVertR);
-            BezierCurve bCurve = new BezierCurve(p1, p2, p3, p4);
+            Vector2 a1 = new Vector2(centerHorL, centerVertL + spacingVertL);
+            Vector2 c1 = new Vector2(centerHorL, centerVertL - spacingVertL);
+            Vector2 a2 = new Vector2(centerHorR, centerVertR - spacingVertR);
+            Vector2 c2 = new Vector2(centerHorR, centerVertR + spacingVertR);
+            BezierCurve bCurve = new BezierCurve(a1, c1, a2, c2);
 
-            rtsRendrer.DrawPoint(p1, Color.Red, 10);
-            rtsRendrer.DrawPoint(p2, Color.Green, 10);
-            rtsRendrer.DrawPoint(p3, Color.Blue, 10);
-            rtsRendrer.DrawPoint(p4, Color.Purple, 10);
-            rtsRendrer.DrawBezierCurve(bCurve, Color.White, 2, 1 / 1000f);
+            rtsRendrer.DrawPoint(a1, Color.Red, 10);
+            rtsRendrer.DrawPoint(c1, Color.Green, 10);
+            rtsRendrer.DrawPoint(a2, Color.Red, 10);
+            rtsRendrer.DrawPoint(c2, Color.Green, 10);
+            rtsRendrer.DrawBezierCurve(bCurve, Color.White, 2, 1 / 1000f, true);
         }
     }
 }

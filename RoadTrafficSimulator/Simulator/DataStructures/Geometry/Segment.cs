@@ -18,6 +18,7 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
         public Vector2 Vector { get { return target - source; } }
         public float Length { get { return Vector.Length; } }
         public Vector2 Direction { get { return Vector.Normalized; } }
+        public Vector2 Midpont => (target + source) / 2;
         
         // Returns a point on the segment, dist is how far along the segment in percenteage
         public Vector2 GetPointOnSegment(float dist)
