@@ -57,7 +57,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             if (SourceSegment != null && TargetSegment != null)
             {
                 Midline = new Segment(SourceSegment.Midpoint, TargetSegment.Midpoint);
-                Trajectory = new BezierCurve(Midline.Source, Midline.Source, Midline.Target, Midline.Target);
+                Trajectory = new BezierCurve(Midline.Source, Midline.Source + Midline.Direction / 100, Midline.Target, Midline.Target + Midline.Direction / 100);
             }
         }
 

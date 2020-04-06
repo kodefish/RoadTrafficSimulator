@@ -15,9 +15,9 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
     {
         // TODO: move this to driver state
         // Determines how far along a car is on it's current lane
-        public float TrajectoryStep { get; private set; } 
-        public Vector2 TrajectoryDirection { get; private set; }
-        private Lane lane;
+        public float TrajectoryStep => Lane.GetProgression(Position);
+        public Vector2 TrajectoryDirection => Lane.Trajectory.GetTangent(TrajectoryStep).Normalized;
+        public Lane Lane { get; private set; }
 
         // Gets updated in the lane update
         public LeaderCarInfo LeaderCarInfo { get; private set; }
@@ -34,7 +34,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         // Car params
         private readonly CarParams carParams;
 
-        public float MaxSpeed => Math.Min(carParams.MaxSpeed, lane.MaxSpeed);
+        public float MaxSpeed => Math.Min(carParams.MaxSpeed, Lane.MaxSpeed);
 
         // Acceleration constant params
         public float MaxAcceleration => carParams.MaxAccleration;
@@ -50,14 +50,9 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public Car(CarParams carParams, Lane initialLane, float timeOffset = 0) 
             : base(carParams.Mass, initialLane.Trajectory.GetPosition(timeOffset))
         {
-            lane = initialLane;
-            lane.AddCar(this);
+            Lane = initialLane;
+            Lane.AddCar(this);
             this.carParams = carParams;
-
-            // TODO set this to end of lane
-            // SetLeaderCarInfo()
-
-            UpdateTrajectoryInformation();
         }
 
         /// <summary>
@@ -66,34 +61,16 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         /// <param name="deltaTime">Time since last update</param>
         public void Update(float deltaTime)
         {
-            // Reset car to start of lane
-            if (lane.ReachedEndOfLane(Position))
-            {
-                Position = lane.Trajectory.GetPosition(1);
-            }
-            else
-            {
-                UpdateTrajectoryInformation();
+            // Get car directly in front of this one in the lane
+            float idmAccIntensity = IntelligentDriverModel.ComputeAccelerationIntensity(this, Lane.Direction);
 
-                // Get car directly in front of this one in the lane
-                // Debug.WriteLine("Car pos: {0}, dist to next car: {1}", Position, LeaderCarInfo.distToNextCar);
-                float idmAccIntensity = IntelligentDriverModel.ComputeAccelerationIntensity(this);
+            // Update forces acting on the car
+            Vector2 targetAcceleration = Lane.Direction * idmAccIntensity;
 
-                // Update forces acting on the car
-                float step = TrajectoryStep;
-                Vector2 targetAcceleration = TrajectoryDirection * idmAccIntensity;
-                // Debug.WriteLine("Target acc: {0}", targetAcceleration);
-                Vector2 deltaAcceleration = targetAcceleration - Acceleration;
-                Vector2 deltaForce = deltaAcceleration * Mass;
-                ApplyForce(deltaForce);
-            }
-        }
-
-        private void UpdateTrajectoryInformation()
-        {
-            // Update trajectory information
-            TrajectoryStep = lane.GetProgression(Position);
-            TrajectoryDirection = lane.Trajectory.GetTangent(TrajectoryStep).Normalized;
+            // Figure out the force we have to apply on the car to reach target acceleration
+            Vector2 deltaAcceleration = targetAcceleration - Acceleration;
+            Vector2 deltaForce = deltaAcceleration * Mass;
+            ApplyForce(deltaForce);
         }
     }
 }
