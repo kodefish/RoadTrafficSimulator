@@ -8,7 +8,7 @@ namespace RoadTrafficSimulator.Simulator.Physics
     abstract class RigidBody
     {
         public float Mass { get; private set; }                         // In [kg]
-        public Vector2 Positon { get; set; }                    // In [meters]
+        public Vector2 Position { get; set; }                    // In [meters]
         public Vector2 Velocity { get; private set; }                   // In [meters/second]
         public Vector2 Force { get; private set; }                      // In [Newtons]
         public Vector2 Acceleration { get { return Force / Mass; } }    // In [meters/second^2]
@@ -23,7 +23,7 @@ namespace RoadTrafficSimulator.Simulator.Physics
         public RigidBody(float mass, Vector2 position, Vector2 velocity, Vector2 force)
         {
             Mass = mass;
-            Positon = position;
+            Position = position;
             Velocity = velocity;
             Force = force;
         }
@@ -58,7 +58,7 @@ namespace RoadTrafficSimulator.Simulator.Physics
             float deltaTime2 = deltaTime * deltaTime;
 
             // p = p + v*t + 0.5 * a * t^2 (basic physics)
-            Positon = Positon + Velocity * deltaTime + Acceleration * 0.5f * deltaTime2;
+            Position = Position + Velocity * deltaTime + Acceleration * 0.5f * deltaTime2;
 
             // v = v + a * t
             Velocity = Velocity + Acceleration * deltaTime;

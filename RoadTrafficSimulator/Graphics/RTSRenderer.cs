@@ -65,7 +65,7 @@ namespace RoadTrafficSimulator.Graphics
 
         public void DrawCar(Car c)
         {
-            Rectangle r = new Rectangle(c.Positon * Scale, Scale, Scale);
+            Rectangle r = new Rectangle(c.Position * Scale, Scale, Scale);
             dRenderer.DrawRectangle(r, Color.Blue);
         }
     }

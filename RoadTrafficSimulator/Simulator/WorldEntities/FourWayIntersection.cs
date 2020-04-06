@@ -9,7 +9,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
     /// <summary>
     /// Supports up-to four incoming roads 
     /// </summary>
-    class FourWayIntersection : IRTSDimension, IRTSPosition
+    class FourWayIntersection : IRTSDimension, IRTSPosition, IRTSUpdateable
     {
         // Intersection information
         private readonly IRTSPosition _origin;  // Center of the intersection
@@ -109,6 +109,12 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             }
 
             return new Segment(source, target);
+        }
+
+        public void Update(float deltaTime)
+        {
+            // TODO update light controllers
+            throw new NotImplementedException();
         }
     }
 }

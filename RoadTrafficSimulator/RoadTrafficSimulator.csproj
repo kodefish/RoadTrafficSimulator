@@ -52,11 +52,13 @@
     <Compile Include="Game1.cs" />
     <Compile Include="Graphics\Primitives2D.cs" />
     <Compile Include="Graphics\RTSRenderer.cs" />
+    <Compile Include="Simulator\DrivingLogic\IntelligentDriverModel.cs" />
     <Compile Include="Simulator\Interfaces\IRTSDimension.cs" />
     <Compile Include="Simulator\Interfaces\IRTSPosition.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Simulator\DrivingLogic\DrivingStates.cs" />
+    <Compile Include="Simulator\Interfaces\IRTSUpdateable.cs" />
     <Compile Include="Simulator\WorldEntities\Car.cs" />
     <Compile Include="Simulator\WorldEntities\FourWayIntersection.cs" />
     <Compile Include="Simulator\Physics\RigidBody.cs" />

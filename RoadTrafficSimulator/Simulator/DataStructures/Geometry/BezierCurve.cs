@@ -36,18 +36,24 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
                 // only compute length once, as integrating along the curve can get expensive
                 if (length < 0)
                 {
-                    length = 0;
-                    float step = 0.1f;
-                    Vector2 prevPos = GetPosition(0);
-                    for (float t = step; t <= 1; t += step)
-                    {
-                        Vector2 newPos = GetPosition(t);
-                        length += Vector2.Distance(prevPos, newPos);
-                    }
-
+                    length = DistanceAlongCurve(0, 1);
                 }
                 return length;
             }
+        }
+
+        public float DistanceAlongCurve(float a, float b)
+        {
+            if (!(0 < a && a < b && b < 1)) throw new ArgumentOutOfRangeException(String.Format("{0} and {1} must by between 0 and 1, {0} < {1}!", a, b));
+            float length = 0;
+            float step = (b - a) / 100;
+            Vector2 prevPos = GetPosition(a);
+            for (float t = a + step; t <= b; t += step)
+            {
+                Vector2 newPos = GetPosition(t);
+                length += Vector2.Distance(prevPos, newPos);
+            }
+            return length;
         }
 
         /// <summary>
@@ -56,7 +62,6 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
         /// it's a nice and smooth curve, the smoothness of which is controlled by the control points.
         /// </summary>
         /// <param name="t">step, between 0 and 1</param>
-        /// <returns></returns>
         public Vector2 GetPosition(float t)
         {
             if (t > 1) throw new ArgumentOutOfRangeException(String.Format("{0} is out of range (0-1).", t));
@@ -71,6 +76,9 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
             return interpolatedPosition;
         }
 
+        /// <summary>
+        /// Returns tangent of Bezier curve, f'(t)
+        /// </summary>
         public Vector2 GetTangent(float t)
         {
             if (t > 1) throw new ArgumentOutOfRangeException(String.Format("{0} is out of range (0-1).", t));
@@ -83,6 +91,5 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
                 (c1 - a1) * 3;
             return interpolatedPosition;
         }
-
     }
 }

@@ -25,14 +25,14 @@ namespace RoadTrafficSimulator
 
         public void Initialize()
         {
-            // GenerateSquare();
-            GenerateStrip();
-            GenerateCars();
+            GenerateSquare();
+            // GenerateStrip();
+            GenerateCars(50);
         }
 
         private void GenerateSquare()
         {
-            float scale = 10;
+            float scale = 20;
             rtsRenderer.Scale = scale;
             float displayWidth = game.GraphicsDevice.DisplayMode.Width / scale;
             float displayHeight = game.GraphicsDevice.DisplayMode.Height / scale;
@@ -51,10 +51,10 @@ namespace RoadTrafficSimulator
             FourWayIntersection intersection4 = new FourWayIntersection(xnaIntersection4);
 
 
-            Road road12 = new Road(ref intersection1, ref intersection2, 4, 2, RoadOrientation.Vertical);
-            Road road13 = new Road(ref intersection1, ref intersection3, 5, 6, RoadOrientation.Horizontal);
-            Road road24 = new Road(ref intersection2, ref intersection4, 2, 3, RoadOrientation.Horizontal);
-            Road road34 = new Road(ref intersection3, ref intersection4, 5, 2, RoadOrientation.Vertical);
+            Road road12 = new Road(ref intersection1, ref intersection2, 4, 2, RoadOrientation.Vertical, 120);
+            Road road13 = new Road(ref intersection1, ref intersection3, 5, 6, RoadOrientation.Horizontal, 120);
+            Road road24 = new Road(ref intersection2, ref intersection4, 2, 3, RoadOrientation.Horizontal, 120);
+            Road road34 = new Road(ref intersection3, ref intersection4, 5, 2, RoadOrientation.Vertical, 120);
 
             // Add the stuff
             world.AddIntersection(intersection1);
@@ -75,7 +75,7 @@ namespace RoadTrafficSimulator
             float displayWidth = game.GraphicsDevice.DisplayMode.Width / scale;
             float displayHeight = game.GraphicsDevice.DisplayMode.Height / scale;
 
-            float padding = 42;
+            float padding = displayWidth / 4;
 
             Intersection xnaIntersection1 = new Intersection(new Vector2(padding, displayHeight / 2));
             FourWayIntersection intersection1 = new FourWayIntersection(xnaIntersection1);
@@ -83,18 +83,17 @@ namespace RoadTrafficSimulator
             Intersection xnaIntersection2 = new Intersection(new Vector2(displayWidth - padding, displayHeight / 2));
             FourWayIntersection intersection2 = new FourWayIntersection(xnaIntersection2);
 
-            Road road = new Road(ref intersection1, ref intersection2, 0, 1, RoadOrientation.Horizontal);
+            Road road = new Road(ref intersection1, ref intersection2, 1, 1, RoadOrientation.Horizontal, 30);
 
             world.AddIntersection(intersection1);
             world.AddIntersection(intersection2);
             world.AddRoad(road);
         }
         
-        private void GenerateCars()
+        private void GenerateCars(int numCars)
         {
             // Spawn some cars
-            Random rng = new Random();
-            int numCars = 2;
+            Random rng = new Random(42);
             while (world.Cars.Count < numCars)
             {
                 Road randomRoad = world.Roads[rng.Next(0, world.Roads.Count)];
@@ -102,7 +101,15 @@ namespace RoadTrafficSimulator
                 if (lanes.Length > 0)
                 {
                     Lane randomLane = lanes[rng.Next(0, lanes.Length)];
-                    Car car = new Car(1000, randomLane, (float)rng.NextDouble());
+                    CarParams carParams;
+                    carParams.Mass = 1000;
+                    carParams.MaxSpeed = rng.Next(80, 150);
+                    carParams.MaxAccleration = 0.73f;
+                    // carParams.BrakingDeceleration = 1.67f;
+                    carParams.BrakingDeceleration = 3.67f;
+                    carParams.CarLength = 2;
+
+                    Car car = new Car(carParams, randomLane, (float)rng.NextDouble());
                     world.AddCar(car);
                 }
             }

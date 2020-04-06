@@ -10,18 +10,23 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         Vertical, Horizontal
     }
 
-    class Road : IRTSDimension, IRTSPosition
+    class Road : IRTSDimension, IRTSPosition, IRTSUpdateable
     {
+        private readonly float speedLimit;
+
+        // Road Geometry
         // Code contract : source.Origin.X < target.Origin.X for horizontal streets
         // Code contract : source.Origin.Y < target.Origin.Y for vertical streets
         public FourWayIntersection SourceIntersection { get; private set; }
         public FourWayIntersection TargetIntersection { get; private set; }
+
+        // Lane information
         public int NumLanesSouthBound { get; }
         public int NumLanesNorthBound { get; }
         public int NumLanes => NumLanesSouthBound + NumLanesNorthBound;
 
         public Lane[] SouthBoundLanes { get; private set; }
-         public Lane[] NorthBoundLanes { get; private set; }
+        public Lane[] NorthBoundLanes { get; private set; }
 
         // Road orientation
         public RoadOrientation Orientation { get; }
@@ -87,9 +92,10 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public Road(
             ref FourWayIntersection source, ref FourWayIntersection target, 
             int numLanesSouthBound, int numLanesNorthBound, 
-            RoadOrientation orientation)
+            RoadOrientation orientation, float speedLimit)
         {
             Orientation = orientation;
+            this.speedLimit = speedLimit;
 
             // Make sure road points along positive X or Y axis, and are aligned along the orientation
             Vector2 sourceOrigin = source.Origin;
@@ -120,7 +126,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         private Lane[] InitLanes(int numLanes)
         {
             Lane[] lanes = new Lane[numLanes];
-            for (int i = 0; i < numLanes; i++) lanes[i] = new Lane();
+            for (int i = 0; i < numLanes; i++) lanes[i] = new Lane(speedLimit);
             return lanes;
         }
 
@@ -155,5 +161,11 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             }
         }
 
+        public void Update(float deltaTime)
+        {
+            // Update all the lanes with new car information
+            foreach (Lane l in SouthBoundLanes) l.Update(deltaTime);
+            foreach (Lane l in NorthBoundLanes) l.Update(deltaTime);
+        }
     }
 }
