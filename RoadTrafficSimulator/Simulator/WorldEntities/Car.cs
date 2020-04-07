@@ -8,7 +8,12 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 {
     struct CarParams
     {
-        public float Mass, MaxSpeed, MaxAccleration, BrakingDeceleration, CarLength;
+        public float Mass,
+            CarWidth,
+            CarLength,
+            MaxSpeed,
+            MaxAccleration,
+            BrakingDeceleration;
     }
 
     class Car : RigidBody
@@ -48,11 +53,16 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         /// <param name="initialLane">Starting lane</param>
         /// <param name="timeOffset">Offset along the lane trajectory</param>
         public Car(CarParams carParams, Lane initialLane, float timeOffset = 0) 
-            : base(carParams.Mass, initialLane.Trajectory.GetPosition(timeOffset))
+            : base(carParams.Mass, ComputeCarMomentOfInertia(carParams), initialLane.Trajectory.GetPosition(timeOffset))
         {
             Lane = initialLane;
             Lane.AddCar(this);
             this.carParams = carParams;
+        }
+
+        private static float ComputeCarMomentOfInertia(CarParams carParams)
+        {
+            return carParams.Mass * (carParams.CarWidth * carParams.CarWidth + carParams.CarLength * carParams.CarLength);
         }
 
         /// <summary>

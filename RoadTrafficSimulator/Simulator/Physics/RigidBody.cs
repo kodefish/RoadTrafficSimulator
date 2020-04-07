@@ -1,4 +1,5 @@
-﻿using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
+﻿using System;
+using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
 
 namespace RoadTrafficSimulator.Simulator.Physics
 {
@@ -8,9 +9,17 @@ namespace RoadTrafficSimulator.Simulator.Physics
     abstract class RigidBody
     {
         public float Mass { get; private set; }                         // In [kg]
-        public Vector2 Position { get; set; }                    // In [meters]
-        public Vector2 Velocity { get; private set; }                   // In [meters/second]
+        public float MoI { get; private set; }                          // In [kg * m2]
+
+        public Vector2 Position { get; set; }                           // In [meters]
+        public float Angle { get; private set; }                        // Angle w.r.t X axis, in [radians]
+
+        public Vector2 LinearVelocity { get; private set; }             // In [meters/second]
+        public float AngularVelocity { get; private set; }              // In [radians / second]
+
         public Vector2 Force { get; private set; }                      // In [Newtons]
+        public float Torque { get; private set; }                       // In [radians / second2]
+
         public Vector2 Acceleration { get { return Force / Mass; } }    // In [meters/second^2]
 
         /// <summary>
@@ -18,14 +27,26 @@ namespace RoadTrafficSimulator.Simulator.Physics
         /// </summary>
         /// <param name="mass">Mass of the rigid body</param>
         /// <param name="position">Initial position of the rigid body</param>
-        /// <param name="velocity">Initial velocity of the rigid body</param>
+        /// <param name="linearVelocity">Initial velocity of the rigid body</param>
         /// <param name="force">Inital force applied to the rigid body</param>
-        public RigidBody(float mass, Vector2 position, Vector2 velocity, Vector2 force)
+        public RigidBody(
+            float mass, float momentOfInertia,
+            Vector2 position, Vector2 linearVelocity, Vector2 force,
+            float angle = 0, float angularVelocity = 0, float torque = 0)
         {
+            if (mass <= 0 || momentOfInertia <= 0) throw new ArgumentException(
+                String.Format("Mass: {0} and Moment of Inertia: {1} must be greater than 0!", mass, momentOfInertia));
+
             Mass = mass;
+            MoI = momentOfInertia;
+
             Position = position;
-            Velocity = velocity;
+            LinearVelocity = linearVelocity;
             Force = force;
+
+            Angle = angle;
+            AngularVelocity = angularVelocity;
+            Torque = torque;
         }
 
         /// <summary>
@@ -34,20 +55,28 @@ namespace RoadTrafficSimulator.Simulator.Physics
         /// <param name="mass">Mass of the rigid body</param>
         /// <param name="position">Initial position of the rigid body</param>
         /// <param name="velocity">Initial velocity of the rigid body</param>
-        public RigidBody(float mass, Vector2 position, Vector2 velocity) : this(mass, position, velocity, new Vector2()) { }
+        public RigidBody(float mass, float momentOfInertia, Vector2 position, Vector2 velocity, float angle = 0) 
+            : this(mass, momentOfInertia, position, velocity, new Vector2(), angle) { }
 
         /// <summary>
         /// Create a rigid body with mass and initial position
         /// </summary>
         /// <param name="mass">Mass of the rigid body</param>
         /// <param name="position">Initial position of the rigid body</param>
-        public RigidBody(float mass, Vector2 position) : this(mass, position, new Vector2(), new Vector2()) { }
+        public RigidBody(float mass, float momentOfInertia, Vector2 position, float angle = 0) 
+            : this(mass, momentOfInertia, position, new Vector2(), new Vector2(), angle) { }
 
         /// <summary>
         /// Apply an additional force to the rigid body
         /// </summary>
-        /// <param name="force">Force to apply, in Newtons</param>
+        /// <param name="force">delta force</param>
         public void ApplyForce(Vector2 force) => Force += force;
+
+        /// <summary>
+        /// Apply an additional torque to the rigid body
+        /// </summary>
+        /// <param name="torque">delta torque</param>
+        public void ApplyTorque(float torque) => Torque += torque;
 
         /// <summary>
         /// Apply the forces to the rigid body, update position and velocity given current force
@@ -57,11 +86,12 @@ namespace RoadTrafficSimulator.Simulator.Physics
         {
             float deltaTime2 = deltaTime * deltaTime;
 
-            // p = p + v*t + 0.5 * a * t^2 (basic physics)
-            Position = Position + Velocity * deltaTime + Acceleration * 0.5f * deltaTime2;
-
-            // v = v + a * t
-            Velocity = Velocity + Acceleration * deltaTime;
+            // Update acceleration
+            LinearVelocity += Acceleration * deltaTime;
+            Position += LinearVelocity * deltaTime;
+            float angularAcceleration = Torque / MoI;
+            AngularVelocity += angularAcceleration * deltaTime;
+            Angle += AngularVelocity * deltaTime;
         }
 
     }

@@ -25,7 +25,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
         public static Vector2 ComputeAccelerationIntensity(Car curr, Vector2 laneDirection)
         {
             // Car info
-            float currSpeed = Vector2.Dot(curr.Velocity, laneDirection); // Car speed along direction of traffic
+            float currSpeed = Vector2.Dot(curr.LinearVelocity, laneDirection); // Car speed along direction of traffic
             float bumperToBumperDist = curr.LeaderCarInfo.distToNextCar;
             float approachingRate = curr.LeaderCarInfo.approachingRate;
 

@@ -100,7 +100,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
                 distToNextCar = Vector2.Distance(
                     cars[i].Position,
                     cars[i + 1].Position - cars[i + 1].TrajectoryDirection * cars[i + 1].CarLength);
-                approachingRate = Vector2.Distance(cars[i + 1].Velocity, cars[i].Velocity);
+                approachingRate = Vector2.Distance(cars[i + 1].LinearVelocity, cars[i].LinearVelocity);
                 cars[i].SetLeaderCarInfo(distToNextCar, approachingRate);
             }
 
@@ -112,7 +112,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             distToNextCar = Vector2.Distance(
                 leader.Position,
                 Midline.Target + Midline.Direction * IntelligentDriverModel.MIN_BUMPER_TO_BUMPER_DISTANCE); 
-            approachingRate = leader.Velocity.Length;
+            approachingRate = leader.LinearVelocity.Length;
             leader.SetLeaderCarInfo(distToNextCar, approachingRate);
         }
 

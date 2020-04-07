@@ -103,10 +103,11 @@ namespace RoadTrafficSimulator
                     Lane randomLane = lanes[rng.Next(0, lanes.Length)];
                     CarParams carParams;
                     carParams.Mass = 500;
+                    carParams.CarWidth = 2;
+                    carParams.CarLength = 4;
                     carParams.MaxSpeed = 92;
                     carParams.MaxAccleration = 1.97f;
                     carParams.BrakingDeceleration = 4.20f;
-                    carParams.CarLength = 2;
 
                     Car car = new Car(carParams, randomLane, (float)rng.NextDouble());
                     world.AddCar(car);
