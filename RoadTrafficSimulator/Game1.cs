@@ -113,7 +113,7 @@ namespace RoadTrafficSimulator
                 displayWidth / 2, displayHeight / 2
             );
 
-            rtsRendrer.DrawRectangle(rectangle, Color.Red, false);
+            rtsRendrer.Draw(rectangle, Color.Red, false);
 
             Vector2 p1 = new Vector2(displayWidth * .25f, displayHeight * 0.75f);
             Vector2 p2 = new Vector2(displayWidth * .25f, displayHeight * 0.25f);
@@ -121,11 +121,11 @@ namespace RoadTrafficSimulator
             Vector2 p4 = new Vector2(displayWidth * .75f, displayHeight * 0.25f);
             BezierCurve bCurve = new BezierCurve(p1, p2, p3, p4);
 
-            rtsRendrer.DrawPoint(p1, Color.Red, 10);
-            rtsRendrer.DrawPoint(p2, Color.Green, 10);
-            rtsRendrer.DrawPoint(p3, Color.Blue, 10);
-            rtsRendrer.DrawPoint(p4, Color.Purple, 10);
-            rtsRendrer.DrawBezierCurve(bCurve, Color.White, 2, 1/1000f);
+            rtsRendrer.Draw(p1, Color.Red, 10);
+            rtsRendrer.Draw(p2, Color.Green, 10);
+            rtsRendrer.Draw(p3, Color.Blue, 10);
+            rtsRendrer.Draw(p4, Color.Purple, 10);
+            rtsRendrer.Draw(bCurve, Color.White, 2, 1/1000f);
         }
 
         private void Draw2dPrimitives()

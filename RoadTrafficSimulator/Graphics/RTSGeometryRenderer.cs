@@ -19,12 +19,12 @@ namespace RoadTrafficSimulator.Graphics
             primitives2D.LoadContent(graphicsDevice, spriteBatch);
         }
 
-        public void DrawPoint(Vector2 point, Color c, float thickness = 1)
+        public void Draw(Vector2 point, Color c, float thickness = 1)
         {
             primitives2D.DrawPixel(point.X, point.Y, c, thickness);
         }
 
-        public void DrawSegment(Segment segment, Color c, float thickness = 1)
+        public void Draw(Segment segment, Color c, float thickness = 1)
         {
             primitives2D.DrawLine(
                 segment.Source.X, segment.Source.Y,
@@ -32,7 +32,7 @@ namespace RoadTrafficSimulator.Graphics
                 c, thickness);
         }
         
-        public void DrawRectangle(Rectangle rect, Color c, bool filled = true)
+        public void Draw(Rectangle rect, Color c, bool filled = true)
         {
             if (filled)
             {
@@ -42,22 +42,22 @@ namespace RoadTrafficSimulator.Graphics
             }
             foreach (Segment side in rect.Sides)
             {
-                DrawSegment(side, c);
+                Draw(side, c);
             }
         }
 
-        public void DrawBezierCurve(BezierCurve bCurve, Color c, float thickness, float step = 0.01f, bool drawTangent = false)
+        public void Draw(BezierCurve bCurve, Color c, float thickness, float step = 0.01f, bool drawTangent = false)
         {
             for (float t = 0; t <= 1; t += step)
             {
                 Vector2 point = bCurve.GetPosition(t);
-                DrawPoint(point, c, thickness);
+                Draw(point, c, thickness);
 
                 if (drawTangent)
                 {
                     Vector2 tangent = bCurve.GetTangent(t);
                     Segment tangentSegment = new Segment(point, point + tangent.Normalized * 500);
-                    DrawSegment(tangentSegment, Color.Red, thickness * 0.5f);
+                    Draw(tangentSegment, Color.Red, thickness * 0.5f);
                 }
             }
         }

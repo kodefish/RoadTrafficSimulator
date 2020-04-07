@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using RoadTrafficSimulator.Simulator;
 using RoadTrafficSimulator.Simulator.WorldEntities;
 using RoadTrafficSimulator.Graphics;
-using RoadTrafficSimulator.XNAHelpers;
 using Vector2 = RoadTrafficSimulator.Simulator.DataStructures.LinAlg.Vector2;
 
 namespace RoadTrafficSimulator
@@ -38,17 +37,17 @@ namespace RoadTrafficSimulator
             float displayHeight = game.GraphicsDevice.DisplayMode.Height / scale;
 
             // Generate the world map here
-            Intersection xnaIntersection1 = new Intersection(new Vector2(0.25f * displayWidth, 0.25f * displayHeight));
-            FourWayIntersection intersection1 = new FourWayIntersection(xnaIntersection1);
+            Vector2 posIntersection1 = new Vector2(0.25f * displayWidth, 0.25f * displayHeight);
+            FourWayIntersection intersection1 = new FourWayIntersection(posIntersection1);
 
-            Intersection xnaIntersection2 = new Intersection(new Vector2(0.25f * displayWidth, 0.75f * displayHeight));
-            FourWayIntersection intersection2 = new FourWayIntersection(xnaIntersection2);
+            Vector2 posIntersection2 = new Vector2(0.25f * displayWidth, 0.75f * displayHeight);
+            FourWayIntersection intersection2 = new FourWayIntersection(posIntersection2);
 
-            Intersection xnaIntersection3 = new Intersection(new Vector2(0.75f * displayWidth, 0.25f * displayHeight));
-            FourWayIntersection intersection3 = new FourWayIntersection(xnaIntersection3);
+            Vector2 posIntersection3 = new Vector2(0.75f * displayWidth, 0.25f * displayHeight);
+            FourWayIntersection intersection3 = new FourWayIntersection(posIntersection3);
 
-            Intersection xnaIntersection4 = new Intersection(new Vector2(0.75f * displayWidth, 0.75f * displayHeight));
-            FourWayIntersection intersection4 = new FourWayIntersection(xnaIntersection4);
+            Vector2 posIntersection4 = new Vector2(0.75f * displayWidth, 0.75f * displayHeight);
+            FourWayIntersection intersection4 = new FourWayIntersection(posIntersection4);
 
 
             Road road12 = new Road(ref intersection1, ref intersection2, 1, 1, RoadOrientation.Vertical, 120);
@@ -77,11 +76,11 @@ namespace RoadTrafficSimulator
 
             float padding = displayWidth / 4;
 
-            Intersection xnaIntersection1 = new Intersection(new Vector2(padding, displayHeight / 2));
-            FourWayIntersection intersection1 = new FourWayIntersection(xnaIntersection1);
+            Vector2 posIntersection1 = new Vector2(padding, displayHeight / 2);
+            FourWayIntersection intersection1 = new FourWayIntersection(posIntersection1);
 
-            Intersection xnaIntersection2 = new Intersection(new Vector2(displayWidth - padding, displayHeight / 2));
-            FourWayIntersection intersection2 = new FourWayIntersection(xnaIntersection2);
+            Vector2 posIntersection2 = new Vector2(displayWidth - padding, displayHeight / 2);
+            FourWayIntersection intersection2 = new FourWayIntersection(posIntersection2);
 
             Road road = new Road(ref intersection1, ref intersection2, 0, 1, RoadOrientation.Horizontal, 30);
 

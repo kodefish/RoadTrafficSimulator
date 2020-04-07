@@ -1,7 +1,7 @@
 ﻿using System;
 namespace RoadTrafficSimulator.Simulator.DataStructures.LinAlg
 {
-    class Vector2
+    class Vector2 
     {
         // Vector constants
         public static Vector2 Up => new Vector2(0, 1);

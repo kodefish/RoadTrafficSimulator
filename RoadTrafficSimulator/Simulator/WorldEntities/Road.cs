@@ -10,7 +10,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         Vertical, Horizontal
     }
 
-    class Road : IRTSDimension, IRTSPosition, IRTSUpdateable
+    class Road : IRTSUpdateable, IRTSGeometry<Rectangle>
     {
         private readonly float speedLimit;
 
@@ -166,6 +166,11 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             // Update all the lanes with new car information
             foreach (Lane l in SouthBoundLanes) l.Update(deltaTime);
             foreach (Lane l in NorthBoundLanes) l.Update(deltaTime);
+        }
+
+        public Rectangle GetGeometricalFigure()
+        {
+            return new Rectangle(Position, Dimensions.X, Dimensions.Y);
         }
     }
 }

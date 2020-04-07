@@ -9,11 +9,10 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
     /// <summary>
     /// Supports up-to four incoming roads 
     /// </summary>
-    class FourWayIntersection : IRTSDimension, IRTSPosition, IRTSUpdateable
+    class FourWayIntersection : IRTSUpdateable, IRTSGeometry<Rectangle>
     {
         // Intersection information
-        private readonly IRTSPosition _origin;  // Center of the intersection
-        public Vector2 Origin => _origin.Position;
+        public Vector2 Origin { get; private set; }
 
         // Road information
         private static int MAX_ROADS = 4;
@@ -32,7 +31,6 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
                 return maxHorizontalRoadWidth;
             }
         }
-
         public float Height
         {
             get
@@ -46,9 +44,9 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             }
         }
 
-        public FourWayIntersection(IRTSPosition origin)
+        public FourWayIntersection(Vector2 origin)
         {
-            _origin = origin;
+            Origin = origin;
             roads = new List<Road>();
         }
 
@@ -76,35 +74,29 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 
         public Vector2 Dimensions => new Vector2(Width, Height);
 
-        public Vector2 Position
-        {
-            get { return _origin.Position; }
-            set { _origin.Position = value; }
-        }
-
         public Segment GetRoadSegment(FourWayIntersection other)
         {
-            Vector2 direction = (other.Position - this.Position).Normalized;
+            Vector2 direction = (other.Origin - this.Origin).Normalized;
             Vector2 source = new Vector2(), target = new Vector2();
             if (direction.Equals(Vector2.Up))
             {
-                source = new Vector2(Position.X - Width / 2, Position.Y + Height / 2);
-                target = new Vector2(Position.X + Width / 2, Position.Y + Height / 2);
+                source = new Vector2(Origin.X - Width / 2, Origin.Y + Height / 2);
+                target = new Vector2(Origin.X + Width / 2, Origin.Y + Height / 2);
             }
             else if (direction.Equals(Vector2.Down))
             {
-                source = new Vector2(Position.X + Width / 2, Position.Y - Height / 2);
-                target = new Vector2(Position.X - Width / 2, Position.Y - Height / 2);
+                source = new Vector2(Origin.X + Width / 2, Origin.Y - Height / 2);
+                target = new Vector2(Origin.X - Width / 2, Origin.Y - Height / 2);
             }
             else if (direction.Equals(Vector2.Right))
             {
-                source = new Vector2(Position.X - Width / 2, Position.Y - Height / 2);
-                target = new Vector2(Position.X - Width / 2, Position.Y + Height / 2);
+                source = new Vector2(Origin.X - Width / 2, Origin.Y - Height / 2);
+                target = new Vector2(Origin.X - Width / 2, Origin.Y + Height / 2);
             }
             else if (direction.Equals(Vector2.Left))
             {
-                source = new Vector2(Position.X + Width / 2, Position.Y + Height / 2);
-                target = new Vector2(Position.X + Width / 2, Position.Y - Height / 2);
+                source = new Vector2(Origin.X + Width / 2, Origin.Y + Height / 2);
+                target = new Vector2(Origin.X + Width / 2, Origin.Y - Height / 2);
 
             }
 
@@ -115,6 +107,11 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         {
             // TODO update light controllers
             throw new NotImplementedException();
+        }
+
+        public Rectangle GetGeometricalFigure()
+        {
+            return new Rectangle(Origin, Width, Height);
         }
     }
 }

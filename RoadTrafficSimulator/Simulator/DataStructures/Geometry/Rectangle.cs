@@ -6,25 +6,23 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
     /// <summary>
     /// Rectangle centered about the origin 
     /// </summary>
-    class Rectangle
+    class Rectangle : GeometricalFigure
     {
-        private readonly Vector2 origin;
-        private readonly float width, length;
+        public Vector2 Origin { get; }
+        public float Width { get; }
+        public float Length { get; }
 
         public Rectangle(Vector2 origin, float width, float length)
         {
-            this.origin = origin;
-            this.width = width;
-            this.length = length;
+            Origin = origin;
+            Width = width;
+            Length = length;
         }
 
-        public Vector2 TopLeft { get => origin      + new Vector2(-width / 2, -length / 2); }
-        public Vector2 TopRight { get => origin     + new Vector2( width / 2, -length / 2); }
-        public Vector2 BottomRight { get => origin  + new Vector2( width / 2,  length / 2); }
-        public Vector2 BottomLeft { get => origin   + new Vector2(-width / 2,  length / 2); }
-
-        public float Width { get => width; }
-        public float Length { get => length; }
+        public Vector2 TopLeft { get => Origin      + new Vector2(-Width / 2, -Length / 2); }
+        public Vector2 TopRight { get => Origin     + new Vector2( Width / 2, -Length / 2); }
+        public Vector2 BottomRight { get => Origin  + new Vector2( Width / 2,  Length / 2); }
+        public Vector2 BottomLeft { get => Origin   + new Vector2(-Width / 2,  Length / 2); }
 
         public Vector2[] Vertices
         {
@@ -70,7 +68,7 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
 
         public override string ToString()
         {
-            return String.Format("Rectangle: origin {0}, width {1}, length {2}", origin, width, length);
+            return String.Format("Rectangle: origin {0}, width {1}, length {2}", Origin, Width, Length);
         }
 
     }

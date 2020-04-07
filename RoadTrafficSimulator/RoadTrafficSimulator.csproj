@@ -45,6 +45,7 @@
     <Compile Include="RoadTrafficSimulator.cs" />
     <Compile Include="Simulator\DataStructures\Geometry\BezierCurve.cs" />
     <Compile Include="Graphics\RTSGeometryRenderer.cs" />
+    <Compile Include="Simulator\DataStructures\Geometry\GeometricalFigure.cs" />
     <Compile Include="Simulator\DataStructures\LinAlg\Vector2.cs" />
     <Compile Include="Simulator\DataStructures\Geometry\Rectangle.cs" />
     <Compile Include="Simulator\DataStructures\Geometry\Segment.cs" />
@@ -53,8 +54,7 @@
     <Compile Include="Graphics\Primitives2D.cs" />
     <Compile Include="Graphics\RTSRenderer.cs" />
     <Compile Include="Simulator\DrivingLogic\IntelligentDriverModel.cs" />
-    <Compile Include="Simulator\Interfaces\IRTSDimension.cs" />
-    <Compile Include="Simulator\Interfaces\IRTSPosition.cs" />
+    <Compile Include="Simulator\Interfaces\IRTSGeometry.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Simulator\DrivingLogic\DrivingStates.cs" />
@@ -66,7 +66,6 @@
     <Compile Include="Simulator\WorldEntities\Road.cs" />
     <Compile Include="Simulator\SimulatorWorld.cs" />
     <Compile Include="WorldManager.cs" />
-    <Compile Include="XNAHelpers\Intersection.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

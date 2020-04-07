@@ -3,7 +3,7 @@ using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
 
 namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
 {
-    class Segment
+    class Segment : GeometricalFigure
     {
         public Vector2 Source { get; }
         public Vector2 Target { get; }

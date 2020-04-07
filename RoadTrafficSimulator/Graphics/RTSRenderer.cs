@@ -29,31 +29,31 @@ namespace RoadTrafficSimulator.Graphics
             dRenderer.LoadContent(graphicsDevice, spriteBatch);
         }
 
-        private void DrawRectange(IRTSPosition origin, IRTSDimension dimension, Color c)
+        private void DrawRectange(Rectangle rectangle, Color c)
         {
             // Translate into a rectangle 
             Rectangle rect = new Rectangle(
-                origin.Position * Scale,
-                dimension.Dimensions.X * Scale, dimension.Dimensions.Y * Scale);
+                rectangle.Origin * Scale,
+                rectangle.Width * Scale, rectangle.Length * Scale);
 
             // Draw the rectangle
-            dRenderer.DrawRectangle(rect, c);
+            dRenderer.Draw(rect, c);
         }
 
         private void DrawSegment(Segment s, Color c)
         {
             Segment scaledSegment = new Segment(s.Source * Scale, s.Target * Scale);
-            dRenderer.DrawSegment(scaledSegment, c);
+            dRenderer.Draw(scaledSegment, c);
         }
 
         public void DrawIntersection(FourWayIntersection intersection)
         {
-            DrawRectange(intersection, intersection, intersectionColor);
+            DrawRectange(intersection.GetGeometricalFigure(), intersectionColor);
         }
 
         public void DrawRoad(Road road)
         {
-            DrawRectange(road, road, roadColor);
+            DrawRectange(road.GetGeometricalFigure(), roadColor);
             foreach (Lane l in road.SouthBoundLanes) DrawSegment(l.Midline, Color.Red);
             foreach (Lane l in road.NorthBoundLanes) DrawSegment(l.Midline, Color.Green);
             Segment srcSegment = road.RoadStartSegment;
@@ -66,7 +66,7 @@ namespace RoadTrafficSimulator.Graphics
         public void DrawCar(Car c)
         {
             Rectangle r = new Rectangle(c.Position * Scale, Scale, Scale);
-            dRenderer.DrawRectangle(r, Color.Blue);
+            dRenderer.Draw(r, Color.Blue);
         }
     }
 }

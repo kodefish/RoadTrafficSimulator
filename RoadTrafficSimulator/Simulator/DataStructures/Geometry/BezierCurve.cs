@@ -8,7 +8,7 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
     /// the control points are used to specify the tangent at each corresponding
     /// anchor point. This is also know as a cubic interpolation
     /// </summary>
-    class BezierCurve
+    class BezierCurve : GeometricalFigure
     {
         // Anchor and control points.
         private readonly Vector2 a1, c1, a2, c2;
