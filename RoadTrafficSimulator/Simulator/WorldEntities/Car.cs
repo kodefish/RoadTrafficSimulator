@@ -61,14 +61,10 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         /// <param name="deltaTime">Time since last update</param>
         public void Update(float deltaTime)
         {
-            // Get car directly in front of this one in the lane
-            float idmAccIntensity = IntelligentDriverModel.ComputeAccelerationIntensity(this, Lane.Direction);
-
-            // Update forces acting on the car
-            Vector2 targetAcceleration = Lane.Direction * idmAccIntensity;
+            Vector2 idmAcceleration = IntelligentDriverModel.ComputeAccelerationIntensity(this, Lane.Direction);
 
             // Figure out the force we have to apply on the car to reach target acceleration
-            Vector2 deltaAcceleration = targetAcceleration - Acceleration;
+            Vector2 deltaAcceleration = idmAcceleration - Acceleration;
             Vector2 deltaForce = deltaAcceleration * Mass;
             ApplyForce(deltaForce);
         }

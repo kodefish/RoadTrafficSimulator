@@ -22,7 +22,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
         /// <param name="curr">Car for which we want to compute the acceleration</param>
         /// <param name="next">Car in the lane in front of current car</param>
         /// <returns></returns>
-        public static float ComputeAccelerationIntensity(Car curr, Vector2 laneDirection)
+        public static Vector2 ComputeAccelerationIntensity(Car curr, Vector2 laneDirection)
         {
             // Car info
             float currSpeed = Vector2.Dot(curr.Velocity, laneDirection); // Car speed along direction of traffic
@@ -44,7 +44,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
             float gapTerm = desiredGap / bumperToBumperDist;
 
             float accelerationIntensity = a * (1 - vTerm - gapTerm);
-            return accelerationIntensity;
+            return laneDirection * accelerationIntensity;
         }
 
     }
