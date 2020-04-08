@@ -46,6 +46,7 @@
     <Compile Include="Simulator\DataStructures\Geometry\BezierCurve.cs" />
     <Compile Include="Graphics\RTSGeometryRenderer.cs" />
     <Compile Include="Simulator\DataStructures\Geometry\GeometricalFigure.cs" />
+    <Compile Include="Simulator\DataStructures\Geometry\Path.cs" />
     <Compile Include="Simulator\DataStructures\LinAlg\Vector2.cs" />
     <Compile Include="Simulator\DataStructures\Geometry\Rectangle.cs" />
     <Compile Include="Simulator\DataStructures\Geometry\Segment.cs" />

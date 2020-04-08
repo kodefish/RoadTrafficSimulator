@@ -62,6 +62,13 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
             return Vector2.Distance(Source, point) + Vector2.Distance(point, Target) == Vector2.Distance(Source, Target);
         }
 
+        public Vector2 NormalPoint(Vector2 p)
+        {
+            Vector2 aP = p - Source;
+            Vector2 normalPt = Source + Direction * Vector2.Dot(aP, Direction);
+            return normalPt;
+        }
+
         public float ProgressAlongSegment(Vector2 point)
         {
             if (!PointOnSegment(point)) throw new ArgumentException(String.Format("{0} is not on the segment!", point));
