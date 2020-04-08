@@ -46,6 +46,12 @@ namespace RoadTrafficSimulator.Graphics
             dRenderer.Draw(scaledSegment, c);
         }
 
+        public void DrawPath(Path p, Color c)
+        {
+            foreach (Segment s in p.Segments) DrawSegment(s, c);
+        }
+
+
         public void DrawIntersection(FourWayIntersection intersection)
         {
             DrawRectange(intersection.GetGeometricalFigure(), intersectionColor);
@@ -54,8 +60,8 @@ namespace RoadTrafficSimulator.Graphics
         public void DrawRoad(Road road)
         {
             DrawRectange(road.GetGeometricalFigure(), roadColor);
-            foreach (Lane l in road.SouthBoundLanes) DrawSegment(l.Midline, Color.Red);
-            foreach (Lane l in road.NorthBoundLanes) DrawSegment(l.Midline, Color.Green);
+            foreach (Lane l in road.SouthBoundLanes) DrawPath(l.Path, Color.Red);
+            foreach (Lane l in road.NorthBoundLanes) DrawPath(l.Path, Color.Green);
             Segment srcSegment = road.RoadStartSegment;
             Segment dstSegment = road.RoadTargetSegment;
             Vector2 sepSrc = srcSegment.GetPointOnSegment(road.NumLanesNorthBound * Lane.LANE_WIDTH / srcSegment.Length);

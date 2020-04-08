@@ -15,18 +15,27 @@ namespace RoadTrafficSimulator
         private SimulatorWorld world;
         private RTSRenderer rtsRenderer;
 
+        // Car adder
+        private readonly int NUM_CARS;
+        private Random rng;
+        private readonly double CAR_ADDITION_WAIT_TIME = 5;
+        private double lastCarAddedTime;
+
         public WorldManager(Game game)
         {
             this.game = game;
             world = new SimulatorWorld();
             rtsRenderer = new RTSRenderer();
+
+            NUM_CARS = 50;
+            rng = new Random(NUM_CARS);
+            lastCarAddedTime = 0;
         }
 
         public void Initialize()
         {
             GenerateSquare();
             // GenerateStrip();
-            GenerateCars(10);
         }
 
         private void GenerateSquare()
@@ -89,31 +98,25 @@ namespace RoadTrafficSimulator
             world.AddRoad(road);
         }
         
-        private void GenerateCars(int numCars)
+        private void AddRandomCar(Random rng)
         {
-            // Spawn some cars
-            Random rng = new Random(numCars);
-            while (world.Cars.Count < numCars)
+            Road randomRoad = world.Roads[rng.Next(0, world.Roads.Count)];
+            Lane[] lanes = rng.Next() % 2 == 0 ? randomRoad.NorthBoundLanes : randomRoad.SouthBoundLanes;
+            if (lanes.Length > 0)
             {
-                Road randomRoad = world.Roads[rng.Next(0, world.Roads.Count)];
-                Lane[] lanes = rng.Next() % 2 == 0 ? randomRoad.NorthBoundLanes : randomRoad.SouthBoundLanes;
-                if (lanes.Length > 0)
-                {
-                    Lane randomLane = lanes[rng.Next(0, lanes.Length)];
-                    CarParams carParams;
-                    carParams.Mass = 500;
-                    carParams.CarWidth = 2;
-                    carParams.CarLength = 4;
-                    carParams.MaxSpeed = 92;
-                    carParams.MaxAccleration = 1.97f;
-                    carParams.BrakingDeceleration = 4.20f;
+                Lane randomLane = lanes[rng.Next(0, lanes.Length)];
+                CarParams carParams;
+                carParams.Mass = 500;
+                carParams.CarWidth = 2;
+                carParams.CarLength = 4;
+                carParams.MaxSpeed = 92;
+                carParams.MaxAccleration = 1.97f;
+                carParams.BrakingDeceleration = 4.20f;
 
-                    Car car = new Car(carParams, randomLane, (float)rng.NextDouble());
-                    world.AddCar(car);
-                }
+                Car car = new Car(carParams, randomLane, (float)rng.NextDouble());
+                world.AddCar(car);
             }
         }
-
 
         public void LoadContent(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
         {
@@ -131,6 +134,12 @@ namespace RoadTrafficSimulator
 
         public void Update(GameTime gameTime)
         {
+            // Add a car every 3 seconds
+            if (world.Cars.Count < NUM_CARS && gameTime.TotalGameTime.TotalSeconds - lastCarAddedTime > CAR_ADDITION_WAIT_TIME)
+            {
+                AddRandomCar(rng);
+                lastCarAddedTime = gameTime.TotalGameTime.TotalSeconds;
+            }
             //  Update the stuff
             world.Update((float) gameTime.ElapsedGameTime.TotalSeconds);
         }

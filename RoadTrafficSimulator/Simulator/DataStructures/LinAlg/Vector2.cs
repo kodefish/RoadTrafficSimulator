@@ -4,10 +4,12 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.LinAlg
     class Vector2 
     {
         // Vector constants
-        public static Vector2 Up => new Vector2(0, 1);
-        public static Vector2 Down => new Vector2(0, -1);
-        public static Vector2 Left => new Vector2(1, 0);
-        public static Vector2 Right => new Vector2(-1, 0);
+        public static Vector2 UnitX => new Vector2(1, 0);
+        public static Vector2 UnitY => new Vector2(0, 1);
+        public static Vector2 Up => UnitY;
+        public static Vector2 Down => -UnitY;
+        public static Vector2 Right => UnitX;
+        public static Vector2 Left => -UnitX;
 
         public float X { get; }
         public float Y { get; }
@@ -24,6 +26,7 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.LinAlg
         public float Length => (float)Math.Sqrt(X * X + Y * Y);
         public Vector2 Normalized => new Vector2(X / Length, Y / Length);
         public Vector2 Normal => new Vector2(-Y, X);
+        public float Angle => Vector2.Dot(this, Vector2.UnitX) / this.Length;
 
         // Operator on single vector
         public static Vector2 operator +(Vector2 a) => a;

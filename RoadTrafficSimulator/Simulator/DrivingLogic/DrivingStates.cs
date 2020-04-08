@@ -1,4 +1,5 @@
-﻿using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
+﻿using System;
+using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
 using RoadTrafficSimulator.Simulator.WorldEntities;
 
 namespace RoadTrafficSimulator.Simulator.DrivingLogic
@@ -21,9 +22,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
 
         public override Vector2 GetTargetAccleration()
         {
-            float idmAcc = 5; // Add IDM static class with actual calculations based on vehicle positon + lane state, etc
-            float step = lane.GetProgression(car.Position);
-            return lane.Trajectory.GetTangent(step).Normalized * idmAcc;
+            throw new NotImplementedException();
         }
     }
 

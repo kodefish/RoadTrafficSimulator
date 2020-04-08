@@ -88,12 +88,12 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
                 source = new Vector2(Origin.X + Width / 2, Origin.Y - Height / 2);
                 target = new Vector2(Origin.X - Width / 2, Origin.Y - Height / 2);
             }
-            else if (direction.Equals(Vector2.Right))
+            else if (direction.Equals(Vector2.Left))
             {
                 source = new Vector2(Origin.X - Width / 2, Origin.Y - Height / 2);
                 target = new Vector2(Origin.X - Width / 2, Origin.Y + Height / 2);
             }
-            else if (direction.Equals(Vector2.Left))
+            else if (direction.Equals(Vector2.Right))
             {
                 source = new Vector2(Origin.X + Width / 2, Origin.Y + Height / 2);
                 target = new Vector2(Origin.X + Width / 2, Origin.Y - Height / 2);

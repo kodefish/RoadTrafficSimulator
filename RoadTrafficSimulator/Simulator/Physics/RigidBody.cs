@@ -20,6 +20,7 @@ namespace RoadTrafficSimulator.Simulator.Physics
         public Vector2 Force { get; private set; }                      // In [Newtons]
         public float Torque { get; private set; }                       // In [radians / second2]
 
+        public Vector2 Direction { get { return new Vector2((float)Math.Cos(Angle), (float)Math.Sin(Angle)); } }
         public Vector2 Acceleration { get { return Force / Mass; } }    // In [meters/second^2]
 
         /// <summary>
@@ -89,6 +90,7 @@ namespace RoadTrafficSimulator.Simulator.Physics
             // Update acceleration
             LinearVelocity += Acceleration * deltaTime;
             Position += LinearVelocity * deltaTime;
+
             float angularAcceleration = Torque / MoI;
             AngularVelocity += angularAcceleration * deltaTime;
             Angle += AngularVelocity * deltaTime;
