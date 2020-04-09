@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using RoadTrafficSimulator.Simulator;
 using RoadTrafficSimulator.Simulator.WorldEntities;
+using RoadTrafficSimulator.Simulator.DrivingLogic;
 using RoadTrafficSimulator.Graphics;
 using Vector2 = RoadTrafficSimulator.Simulator.DataStructures.LinAlg.Vector2;
 
@@ -39,9 +40,9 @@ namespace RoadTrafficSimulator
 
         public void Initialize()
         {
-            // GenerateSquare();
+            GenerateSquare();
             // GenerateHorizontalStrip();
-            GenerateVerticalStrip();
+            // GenerateVerticalStrip();
         }
 
         private void GenerateSquare()
@@ -132,17 +133,17 @@ namespace RoadTrafficSimulator
             Lane[] lanes = rng.Next() % 2 == 0 ? randomRoad.NorthBoundLanes : randomRoad.SouthBoundLanes;
             if (lanes.Length > 0)
             {
-                Lane randomLane = lanes[rng.Next(0, lanes.Length)];
-                if (randomLane.DistanceToFirstCar() > 15)
-                {
-                    CarParams carParams;
-                    carParams.Mass = 500;
-                    carParams.CarWidth = 2;
-                    carParams.CarLength = rng.Next(3, 7);
-                    carParams.MaxSpeed = 92;
-                    carParams.MaxAccleration = 1.97f;
-                    carParams.BrakingDeceleration = 4.20f;
+                CarParams carParams;
+                carParams.Mass = 500;
+                carParams.CarWidth = 2;
+                carParams.CarLength = rng.Next(3, 7);
+                carParams.MaxSpeed = 92;
+                carParams.MaxAccleration = 1.97f;
+                carParams.BrakingDeceleration = 4.20f;
 
+                Lane randomLane = lanes[rng.Next(0, lanes.Length)];
+                if (randomLane.DistanceToFirstCar() > carParams.CarLength + IntelligentDriverModel.MIN_BUMPER_TO_BUMPER_DISTANCE)
+                {
 
                     Car car = new Car(carParams, randomLane, (float)rng.NextDouble());
                     world.AddCar(car);

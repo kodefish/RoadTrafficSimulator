@@ -60,14 +60,27 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             }
         }
 
-        public void AddCar(Car c) => Cars.Add(c);
-        public void RemoveCar(Car c) => Cars.Remove(c);
+        public void AddCar(Car c)
+        {
+            Cars.Add(c);
+            SortCars();
+        }
+
+        public void RemoveCar(Car c)
+        {
+            Cars.Remove(c);
+            SortCars();
+        }
+
+        private void SortCars()
+        {
+            // Sort cars by distance from path start
+            Cars.Sort((a, b) => Path.DistanceOfProjectionAlongPath(a.Position).CompareTo(Path.DistanceOfProjectionAlongPath(b.Position)));
+        }
 
         public void Update(float deltaTime)
         {
             if (Cars.Count == 0) return;
-            // 1. Sort cars by timestep
-            Cars.Sort((a, b) => Path.DistanceOfProjectionAlongPath(a.Position).CompareTo(Path.DistanceOfProjectionAlongPath(b.Position)));
 
             // For all the cars that have a car in front of them
             float distToNextCar, approachingRate;
@@ -93,7 +106,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public float DistanceToFirstCar()
         {
             if (Cars.Count > 0) return Path.DistanceOfProjectionAlongPath(Cars[0].Position);
-            else return float.PositiveInfinity;
+            else return Path.Length;
         }
     }
 }

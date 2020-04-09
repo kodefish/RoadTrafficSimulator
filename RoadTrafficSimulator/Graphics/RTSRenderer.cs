@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Diagnostics;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
@@ -18,6 +19,7 @@ namespace RoadTrafficSimulator.Graphics
         private Color intersectionColor = Color.DarkGray;
         private Color roadColor = Color.Gray;
         private Texture2D carTexture;
+        private Color[] colors = { Color.Red, Color.Green, Color.Blue };
 
         public float Scale { get; set; }
 
@@ -76,7 +78,14 @@ namespace RoadTrafficSimulator.Graphics
         public void DrawLane(Lane l, Color c)
         {
             // Draw the midline
-            // DrawPath(l.Path, Color.Red);
+            dRenderer.DrawPoint(l.Path.PathStart * Scale, Color.Green, 5);
+            dRenderer.DrawPoint(l.Path.PathEnd * Scale, Color.Red, 5);
+
+            // Draw free space
+            Segment freeLaneSpace = new Segment(
+                l.Path.PathStart * Scale, 
+                (l.Path.PathStart + l.Path.TangentOfProjectedPosition(l.Path.PathStart) * l.DistanceToFirstCar()) * Scale);
+            dRenderer.Draw(freeLaneSpace, Color.Pink);
 
             // Draw the vector to the closest corner of car in front
             List<Car> cars = l.Cars;

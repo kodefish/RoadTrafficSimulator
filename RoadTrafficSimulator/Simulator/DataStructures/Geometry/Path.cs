@@ -13,6 +13,7 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
     {
         public float Radius { get; private set; }
         public Segment[] Segments { get; private set; }
+        public float Length { get; }
 
         /// <summary>
         /// Constructs path from segments
@@ -22,13 +23,13 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
         private Path(List<Segment> segments, float radius = 0.1f)
         {
             if (radius < 0) throw new ArgumentException("Radius must be positive");
-            else Radius = radius;
-
             if (segments == null) throw new ArgumentException("Segments must be non-null");
-            else {
-                if (segments.Count == 0) throw new ArgumentException("Segments must be non-empty");
-                else Segments = segments.ToArray();
-            }
+            if (segments.Count == 0) throw new ArgumentException("Segments must be non-empty");
+
+            Radius = radius;
+            Segments = segments.ToArray();
+            Length = 0;
+            foreach (Segment s in segments) Length += s.Length;
         }
         /// <summary>
         /// Samples a bezier curve to for subsegments and creates a path
