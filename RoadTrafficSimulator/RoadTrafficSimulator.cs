@@ -66,7 +66,7 @@ namespace RoadTrafficSimulator
 
             spriteBatch.Begin();
 
-            wManager.Draw();
+            wManager.Draw(gameTime);
 
             spriteBatch.End();
         }
