@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
@@ -21,6 +22,8 @@ namespace RoadTrafficSimulator
         private Random rng;
         private readonly double CAR_ADDITION_WAIT_TIME = 3;
         private double lastCarAddedTime;
+        private Color[] colors = { Color.Red, Color.Green, Color.Beige, Color.Blue, Color.Yellow, Color.Purple, Color.White, Color.Black };
+        private Dictionary<Car, Color> carColor;
 
         public WorldManager(Game game)
         {
@@ -31,6 +34,7 @@ namespace RoadTrafficSimulator
             NUM_CARS = 50;
             rng = new Random(NUM_CARS);
             lastCarAddedTime = 0;
+            carColor = new Dictionary<Car, Color>();
         }
 
         public void Initialize()
@@ -41,7 +45,7 @@ namespace RoadTrafficSimulator
 
         private void GenerateSquare()
         {
-            float scale = 20;
+            float scale = 10;
             rtsRenderer.Scale = scale;
             float displayWidth = game.GraphicsDevice.DisplayMode.Width / scale;
             float displayHeight = game.GraphicsDevice.DisplayMode.Height / scale;
@@ -79,7 +83,7 @@ namespace RoadTrafficSimulator
 
         private void GenerateStrip()
         {
-            float scale = 40;
+            float scale = 10;
             rtsRenderer.Scale = scale;
             float displayWidth = game.GraphicsDevice.DisplayMode.Width / scale;
             float displayHeight = game.GraphicsDevice.DisplayMode.Height / scale;
@@ -106,16 +110,23 @@ namespace RoadTrafficSimulator
             if (lanes.Length > 0)
             {
                 Lane randomLane = lanes[rng.Next(0, lanes.Length)];
-                CarParams carParams;
-                carParams.Mass = 500;
-                carParams.CarWidth = 2;
-                carParams.CarLength = 3;
-                carParams.MaxSpeed = 92;
-                carParams.MaxAccleration = 1.97f;
-                carParams.BrakingDeceleration = 4.20f;
+                if (randomLane.DistanceToFirstCar() > 5)
+                {
+                    CarParams carParams;
+                    carParams.Mass = 500;
+                    carParams.CarWidth = 0.8f * Lane.LANE_WIDTH;
+                    carParams.CarLength = 1.618f * carParams.CarWidth;
+                    carParams.MaxSpeed = 92;
+                    carParams.MaxAccleration = 1.97f;
+                    carParams.BrakingDeceleration = 4.20f;
 
-                Car car = new Car(carParams, randomLane, (float)rng.NextDouble());
-                world.AddCar(car);
+
+                    Car car = new Car(carParams, randomLane, (float)rng.NextDouble());
+                    world.AddCar(car);
+
+                    // Give the car a random color
+                    carColor.Add(car, colors[rng.Next(colors.Length)]);
+                }
             }
         }
 
@@ -130,7 +141,7 @@ namespace RoadTrafficSimulator
             // Draw the stuff
             foreach (FourWayIntersection intersection in world.Intersections) rtsRenderer.DrawIntersection(intersection);
             foreach (Road road in world.Roads) rtsRenderer.DrawRoad(road);
-            foreach (Car car in world.Cars) rtsRenderer.DrawCar(car);
+            foreach (Car car in world.Cars) rtsRenderer.DrawCar(car, carColor[car]);
         }
 
         public void Update(GameTime gameTime)

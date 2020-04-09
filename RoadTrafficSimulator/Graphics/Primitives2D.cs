@@ -62,5 +62,19 @@ namespace RoadTrafficSimulator.Graphics
                 DrawLine(x, y + height, x, y, color);           // Left
             }
         }
+
+        public void DrawRectangle (Vector2 location, Rectangle sourceRectangle, float angle, Vector2 origin, Vector2 scale, Color color)
+        {
+            spriteBatch.Draw(
+                pixelTexture, 
+                location,
+                sourceRectangle, 
+                color, 
+                angle, 
+                origin, 
+                scale, 
+                SpriteEffects.None, 
+                1);
+        }
     }
 }

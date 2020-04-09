@@ -4,6 +4,7 @@ using RoadTrafficSimulator.Simulator.Interfaces;
 using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
 using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
 using RoadTrafficSimulator.Simulator.DrivingLogic;
+using System;
 
 namespace RoadTrafficSimulator.Simulator.WorldEntities
 {
@@ -89,5 +90,10 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             leader.SetLeaderCarInfo(distToNextCar, approachingRate);
         }
 
+        public float DistanceToFirstCar()
+        {
+            if (cars.Count > 0) return Path.DistanceOfProjectionAlongPath(cars[0].Position);
+            else return float.PositiveInfinity;
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
@@ -74,22 +74,14 @@ namespace RoadTrafficSimulator.Graphics
             DrawSegment(new Segment(sepSrc, sepDst), Color.Yellow);
         }
 
-        public void DrawCar(Car c)
+        public void DrawCar(Car c, Color color)
         {
             Vector2 location = (c.Position - c.Direction * c.CarLength / 2) * Scale;
-            Microsoft.Xna.Framework.Rectangle sourceRectangle = new Microsoft.Xna.Framework.Rectangle(0, 0, carTexture.Width, carTexture.Height);
-            Vector2 origin = new Vector2(carTexture.Width / 2, carTexture.Height / 2);
-            Vector2 scale = new Vector2(c.CarWidth / carTexture.Width * Scale, c.CarLength / carTexture.Height * Scale);
-            spriteBatch.Draw(
-                carTexture, 
-                LinAlgConversion.XNAVector(location),
-                sourceRectangle, 
-                Color.White, 
-                c.Direction.Angle + MathHelper.PiOver2, 
-                LinAlgConversion.XNAVector(origin), 
-                LinAlgConversion.XNAVector(scale), 
-                SpriteEffects.None, 
-                1);
+            Rectangle sourceRectangle = new Rectangle(new Vector2(0, 0), c.CarWidth, c.CarLength);
+            Vector2 origin = new Vector2(c.CarWidth / 2, c.CarLength / 2);
+            Vector2 scale = new Vector2(Scale, Scale);
+
+            dRenderer.Draw(sourceRectangle, color, location, origin, scale, c.Angle);
         }
     }
 }

@@ -46,6 +46,23 @@ namespace RoadTrafficSimulator.Graphics
             }
         }
 
+        public void Draw(Rectangle rect, Color c, Vector2 location, Vector2 origin, Vector2 scale, float angle)
+        {
+            Microsoft.Xna.Framework.Rectangle sourceRectangle = new Microsoft.Xna.Framework.Rectangle(
+                (int)rect.Origin.X,
+                (int)rect.Origin.Y,
+                (int)rect.Width,
+                (int)rect.Length);
+
+            primitives2D.DrawRectangle(
+                LinAlgConversion.XNAVector(location), 
+                sourceRectangle, 
+                angle, 
+                LinAlgConversion.XNAVector(origin), 
+                LinAlgConversion.XNAVector(scale), 
+                c);
+        }
+
         public void Draw(BezierCurve bCurve, Color c, float thickness, float step = 0.01f, bool drawTangent = false)
         {
             for (float t = 0; t <= 1; t += step)
