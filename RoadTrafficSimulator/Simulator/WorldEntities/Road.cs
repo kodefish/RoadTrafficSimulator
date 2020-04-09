@@ -32,16 +32,6 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public RoadOrientation Orientation { get; }
         public bool IsHorizontal => Orientation == RoadOrientation.Horizontal;
 
-        // Road dimensions
-        public Vector2 Dimensions 
-        {
-            get
-            {
-                if (Orientation == RoadOrientation.Vertical) return new Vector2(RoadWidth, RoadLength);
-                else  return new Vector2(RoadLength, RoadWidth);
-            }
-        }
-
         // Road position
         public Segment RoadStartSegment => SourceIntersection.GetRoadSegment(TargetIntersection);
         public Segment RoadTargetSegment => TargetIntersection.GetRoadSegment(SourceIntersection);
@@ -98,6 +88,8 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             this.speedLimit = speedLimit;
 
             // Make sure road points along positive X or Y axis, and are aligned along the orientation
+            // Not sure we still really need this bit ahahahahaha
+            /*
             Vector2 sourceOrigin = source.Origin;
             Vector2 targetOrigin = target.Origin;
             if (orientation == RoadOrientation.Vertical && sourceOrigin.X == targetOrigin.X)
@@ -113,6 +105,9 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             {
                 throw new ArgumentException("Alignement of intersections does not correspond to orientation!");
             }
+            */
+            SourceIntersection = source;
+            TargetIntersection = target;
 
             this.NumLanesSouthBound = numLanesSouthBound;
             this.NumLanesNorthBound = numLanesNorthBound;
@@ -170,7 +165,10 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 
         public Rectangle GetGeometricalFigure()
         {
-            return new Rectangle(Position, Dimensions.X, Dimensions.Y);
+            if (IsHorizontal)
+                return new Rectangle(Position, RoadWidth, RoadLength, (float)Math.PI / 2);
+            else 
+                return new Rectangle(Position, RoadWidth, RoadLength, 0);
         }
     }
 }

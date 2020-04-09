@@ -36,13 +36,12 @@ namespace RoadTrafficSimulator.Graphics
 
         private void DrawRectange(Rectangle rectangle, Color c)
         {
-            // Translate into a rectangle 
-            Rectangle rect = new Rectangle(
-                rectangle.Origin * Scale,
-                rectangle.Width * Scale, rectangle.Length * Scale);
+            Vector2 location = rectangle.Origin * Scale;
+            Rectangle sourceRectangle = new Rectangle(new Vector2(0, 0), rectangle.Width, rectangle.Length);
+            Vector2 origin = new Vector2(rectangle.Width / 2, rectangle.Length / 2);
+            Vector2 scale = new Vector2(Scale, Scale);
 
-            // Draw the rectangle
-            dRenderer.Draw(rect, c);
+            dRenderer.Draw(sourceRectangle, c, location, origin, scale, rectangle.Angle);
         }
 
         private void DrawSegment(Segment s, Color c)
@@ -92,12 +91,7 @@ namespace RoadTrafficSimulator.Graphics
 
         public void DrawCar(Car c, Color color)
         {
-            Vector2 location = c.Position * Scale;
-            Rectangle sourceRectangle = new Rectangle(new Vector2(0, 0), c.CarWidth, c.CarLength);
-            Vector2 origin = new Vector2(c.CarWidth / 2, c.CarLength / 2);
-            Vector2 scale = new Vector2(Scale, Scale);
-
-            dRenderer.Draw(sourceRectangle, color, location, origin, scale, c.Angle);
+            DrawRectange(c.GetGeometricalFigure(), color);
         }
     }
 }

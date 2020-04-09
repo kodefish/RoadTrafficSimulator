@@ -96,7 +96,7 @@ namespace RoadTrafficSimulator
             Vector2 posIntersection2 = new Vector2(displayWidth - padding, displayHeight / 2);
             FourWayIntersection intersection2 = new FourWayIntersection(posIntersection2);
 
-            Road road = new Road(ref intersection1, ref intersection2, 1, 1, RoadOrientation.Horizontal, 30);
+            Road road = new Road(ref intersection2, ref intersection1, 1, 1, RoadOrientation.Horizontal, 30);
 
             world.AddIntersection(intersection1);
             world.AddIntersection(intersection2);
