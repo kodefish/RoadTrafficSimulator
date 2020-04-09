@@ -78,9 +78,8 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             ApplyForce(deltaForce);
         }
 
-        internal float ComputeDistanceToLeaderCar(Car other)
+        public Vector2 ClosestCorner(Car other)
         {
-            return Vector2.Distance(other.Position, Position);
             // Check that other car is in front
             Vector2 v = other.Position - Position;
             // if (Vector2.Dot(v, Direction) <= 0) throw new ArgumentException("Other car must be in front of current car!");
@@ -93,8 +92,13 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             // Check which is closer to current car
             Vector2 closestCorner = Vector2.Distance(Position, rearLeftCorner) < Vector2.Distance(Position, rearRightCorner) ? rearLeftCorner : rearRightCorner;
 
+            return closestCorner;
+        }
+
+        public float ComputeDistanceToLeaderCar(Car other)
+        {
             // Take vector position -> closest corner and project it onto the direction of the car
-            return Vector2.Dot(closestCorner - Position, Direction);
+            return Vector2.Dot(ClosestCorner(other) - Position, Direction);
         }
     }
 }

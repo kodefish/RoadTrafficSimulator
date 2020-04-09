@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
@@ -65,13 +65,27 @@ namespace RoadTrafficSimulator.Graphics
         public void DrawRoad(Road road)
         {
             DrawRectange(road.GetGeometricalFigure(), roadColor);
-            foreach (Lane l in road.SouthBoundLanes) DrawPath(l.Path, Color.Red);
-            foreach (Lane l in road.NorthBoundLanes) DrawPath(l.Path, Color.Green);
+            foreach (Lane l in road.SouthBoundLanes) DrawLane(l, Color.Pink);
+            foreach (Lane l in road.NorthBoundLanes) DrawLane(l, Color.LimeGreen);
             Segment srcSegment = road.RoadStartSegment;
             Segment dstSegment = road.RoadTargetSegment;
             Vector2 sepSrc = srcSegment.GetPointOnSegment(road.NumLanesNorthBound * Lane.LANE_WIDTH / srcSegment.Length);
             Vector2 sepDst = dstSegment.GetPointOnSegment(road.NumLanesSouthBound * Lane.LANE_WIDTH/ dstSegment.Length);
             DrawSegment(new Segment(sepSrc, sepDst), Color.Yellow);
+        }
+
+        public void DrawLane(Lane l, Color c)
+        {
+            // Draw the midline
+            // DrawPath(l.Path, Color.Red);
+
+            // Draw the vector to the closest corner of car in front
+            List<Car> cars = l.Cars;
+            for (int i = 0; i < l.Cars.Count - 1; i++)
+            {
+                Vector2 closestCorner = cars[i].ClosestCorner(cars[i + 1]);
+                dRenderer.Draw(new Segment(cars[i].Position * Scale, closestCorner * Scale), Color.Cyan);
+            }
         }
 
         public void DrawCar(Car c, Color color)

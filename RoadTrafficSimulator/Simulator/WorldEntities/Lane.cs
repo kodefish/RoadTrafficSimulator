@@ -33,7 +33,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         }
 
         // Lane logic
-        private List<Car> cars;
+        public List<Car> Cars { get; private set; }
         public Path Path { get; private set; }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             MaxSpeed = speedLimit;
 
             // Keep track of cars on the lane
-            cars = new List<Car>();
+            Cars = new List<Car>();
         }
 
         private void UpdateMidlineAndTrajectory()
@@ -60,27 +60,27 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             }
         }
 
-        public void AddCar(Car c) => cars.Add(c);
-        public void RemoveCar(Car c) => cars.Remove(c);
+        public void AddCar(Car c) => Cars.Add(c);
+        public void RemoveCar(Car c) => Cars.Remove(c);
 
         public void Update(float deltaTime)
         {
-            if (cars.Count == 0) return;
+            if (Cars.Count == 0) return;
             // 1. Sort cars by timestep
-            cars.Sort((a, b) => Path.DistanceOfProjectionAlongPath(a.Position).CompareTo(Path.DistanceOfProjectionAlongPath(b.Position)));
+            Cars.Sort((a, b) => Path.DistanceOfProjectionAlongPath(a.Position).CompareTo(Path.DistanceOfProjectionAlongPath(b.Position)));
 
             // For all the cars that have a car in front of them
             float distToNextCar, approachingRate;
-            for (int i = 0; i < cars.Count - 1; i++)
+            for (int i = 0; i < Cars.Count - 1; i++)
             {
-                distToNextCar = cars[i].ComputeDistanceToLeaderCar(cars[i + 1]);
-                approachingRate = Vector2.Distance(cars[i + 1].LinearVelocity, cars[i].LinearVelocity);
-                cars[i].SetLeaderCarInfo(distToNextCar, approachingRate);
+                distToNextCar = Cars[i].ComputeDistanceToLeaderCar(Cars[i + 1]);
+                approachingRate = Vector2.Distance(Cars[i + 1].LinearVelocity, Cars[i].LinearVelocity);
+                Cars[i].SetLeaderCarInfo(distToNextCar, approachingRate);
             }
 
             // Car that is at the head of the lane
             // TODO do some fancy shit with the next lane based on intersection lights
-            Car leader = cars[cars.Count - 1];
+            Car leader = Cars[Cars.Count - 1];
 
             // Just set the end of the lane
             distToNextCar = Vector2.Distance(
@@ -92,7 +92,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 
         public float DistanceToFirstCar()
         {
-            if (cars.Count > 0) return Path.DistanceOfProjectionAlongPath(cars[0].Position);
+            if (Cars.Count > 0) return Path.DistanceOfProjectionAlongPath(Cars[0].Position);
             else return float.PositiveInfinity;
         }
     }
