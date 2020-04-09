@@ -57,8 +57,6 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             Lane = initialLane;
             Lane.AddCar(this);
             this.carParams = carParams;
-            Vector2 laneDirection = initialLane.Path.TangentOfProjectedPosition(initialLane.Path.PathStart);
-            Debug.WriteLine("Lane info - direction: {0}, normal: {1}, angle: {2}", laneDirection, -(laneDirection.Normal), (-(laneDirection.Normal)).Angle);
         }
 
         private static float ComputeCarMomentOfInertia(CarParams carParams)
