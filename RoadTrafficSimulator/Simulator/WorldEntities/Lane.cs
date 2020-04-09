@@ -84,7 +84,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 
             // Just set the end of the lane
             distToNextCar = Vector2.Distance(
-                leader.Position,
+                leader.Position + leader.Direction * leader.CarLength / 2,
                 Path.PathEnd + Path.TangentOfProjectedPosition(Path.PathEnd) * IntelligentDriverModel.MIN_BUMPER_TO_BUMPER_DISTANCE); 
             approachingRate = leader.LinearVelocity.Length;
             leader.SetLeaderCarInfo(distToNextCar, approachingRate);

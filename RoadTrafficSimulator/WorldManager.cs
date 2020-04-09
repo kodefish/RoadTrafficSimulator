@@ -39,8 +39,8 @@ namespace RoadTrafficSimulator
 
         public void Initialize()
         {
-            // GenerateSquare();
-            GenerateStrip();
+            GenerateSquare();
+            // GenerateStrip();
         }
 
         private void GenerateSquare()
