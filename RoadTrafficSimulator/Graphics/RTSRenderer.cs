@@ -85,7 +85,7 @@ namespace RoadTrafficSimulator.Graphics
             {
                 Car c1 = cars[i]; Car c2 = cars[i + 1];
                 Vector2 p1 = c2.GetGeometricalFigure().ClosestVertex(c1.Position);
-                Vector2 p2 = c1.GetGeometricalFigure().ClosestVertex(c2.Position);
+                Vector2 p2 = c1.GetGeometricalFigure().ClosestVertex(p1);
                 dRenderer.Draw(new Segment(p1 * Scale, p2 * Scale), Color.Cyan);
             }
         }

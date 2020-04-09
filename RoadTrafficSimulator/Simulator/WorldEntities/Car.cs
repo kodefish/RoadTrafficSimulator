@@ -82,7 +82,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 
         public Rectangle GetGeometricalFigure()
         {
-            return new Rectangle(Position, CarWidth, CarLength);
+            return new Rectangle(Position, CarWidth, CarLength, Angle);
         }
 
         public static Vector2 ComputeBumperToBumperVector(Car c1, Car c2)
@@ -90,7 +90,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             // Get closest corner of c2
             Vector2 p1 = c2.GetGeometricalFigure().ClosestVertex(c1.Position);
             // Get closest corner of c1
-            Vector2 p2 = c1.GetGeometricalFigure().ClosestVertex(c2.Position);
+            Vector2 p2 = c1.GetGeometricalFigure().ClosestVertex(p1);
 
             // Closest corner c1 <-> closest corner c2
             Vector2 bumperToBumper = p2 - p1;

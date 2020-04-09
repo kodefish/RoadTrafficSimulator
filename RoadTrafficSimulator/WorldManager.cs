@@ -115,7 +115,7 @@ namespace RoadTrafficSimulator
                     CarParams carParams;
                     carParams.Mass = 500;
                     carParams.CarWidth = 2;
-                    carParams.CarLength = 3;
+                    carParams.CarLength = rng.Next(3, 7);
                     carParams.MaxSpeed = 92;
                     carParams.MaxAccleration = 1.97f;
                     carParams.BrakingDeceleration = 4.20f;

@@ -31,7 +31,7 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.LinAlg
             get {
                 float cosAngle = Vector2.Dot(this, Vector2.UnitX) / this.Length;
                 float angle = (float)Math.Acos(cosAngle);
-                return Y < 0 ? -angle : angle; // Check the orientation of Y to determine if the angle is positive or not, needed because cos(x) = cos(-x)
+                return Y < 0 ? (float)(2 * Math.PI - angle) : angle; // Check the orientation of Y to determine if the angle is positive or not, needed because cos(x) = cos(-x)
             }
         }
 
@@ -51,6 +51,9 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.LinAlg
         public static float SignedDistance(Vector2 a, Vector2 b) => (b - a).Length;
         public static float Distance(Vector2 a, Vector2 b) => Math.Abs((b - a).Length);
         public static float Dot(Vector2 a, Vector2 b) => a.X * b.X + a.Y * b.Y;
+        public static Vector2 Rotate(Vector2 a, float angle)
+            => new Vector2((float) (a.X * Math.Cos(angle) - a.Y * Math.Sin(angle)),
+                (float) (a.X * Math.Sin(angle) + a.Y * Math.Cos(angle)));
 
         public override string ToString()
         {

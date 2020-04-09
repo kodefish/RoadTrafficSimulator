@@ -11,18 +11,20 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
         public Vector2 Origin { get; }
         public float Width { get; }
         public float Length { get; }
+        public float Angle { get; private set; }
 
-        public Rectangle(Vector2 origin, float width, float length)
+        public Rectangle(Vector2 origin, float width, float length, float angle = 0)
         {
             Origin = origin;
             Width = width;
             Length = length;
+            Angle = angle;
         }
 
-        public Vector2 TopLeft { get => Origin      + new Vector2(-Width / 2, -Length / 2); }
-        public Vector2 TopRight { get => Origin     + new Vector2( Width / 2, -Length / 2); }
-        public Vector2 BottomRight { get => Origin  + new Vector2( Width / 2,  Length / 2); }
-        public Vector2 BottomLeft { get => Origin   + new Vector2(-Width / 2,  Length / 2); }
+        public Vector2 TopLeft { get => Origin      + Vector2.Rotate(new Vector2(-Width / 2, -Length / 2), Angle); }
+        public Vector2 TopRight { get => Origin     + Vector2.Rotate(new Vector2( Width / 2, -Length / 2), Angle); }
+        public Vector2 BottomRight { get => Origin  + Vector2.Rotate(new Vector2( Width / 2,  Length / 2), Angle); }
+        public Vector2 BottomLeft { get => Origin   + Vector2.Rotate(new Vector2(-Width / 2,  Length / 2), Angle); }
 
         public Vector2[] Vertices
         {
@@ -85,7 +87,7 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
 
         public override string ToString()
         {
-            return String.Format("Rectangle: origin {0}, width {1}, length {2}", Origin, Width, Length);
+            return String.Format("Rectangle: origin {0}, width {1}, length {2}, angle {3}", Origin, Width, Length, Angle);
         }
 
     }
