@@ -20,32 +20,19 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 
     class Car : RigidBody, IRTSGeometry<Rectangle>
     {
-        // TODO: move this to driver state
-        // Determines how far along a car is on it's current lane
-        public Lane Lane { get; private set; }
-
-        // Gets updated in the lane update
-        public LeaderCarInfo LeaderCarInfo { get; private set; }
-
-        public void SetLeaderCarInfo(float distToNextCar, float approachingRate)
-        {
-            LeaderCarInfo leaderCarInfo;
-            leaderCarInfo.distToNextCar = distToNextCar;
-            leaderCarInfo.approachingRate = approachingRate;
-
-            LeaderCarInfo = leaderCarInfo;
-        }
-
         // Car params
         private readonly CarParams carParams;
 
-        public float MaxSpeed => Math.Min(carParams.MaxSpeed, Lane.MaxSpeed);
-
         // Acceleration constant params
+        public float MaxCarSpeed => carParams.MaxSpeed;
         public float MaxAcceleration => carParams.MaxAccleration;
         public float BrakingDeceleration => carParams.BrakingDeceleration;
         public float CarWidth => carParams.CarWidth;
         public float CarLength => carParams.CarLength;
+
+        // AI Finite state machine
+        public DrivingState DrivingState { get; private set; }
+        public float MaxOverrallSpeed => DrivingState.MaxSpeed();
 
         /// <summary>
         /// Creates a car with a mass and an initial position
@@ -56,8 +43,8 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public Car(CarParams carParams, Lane initialLane, float timeOffset = 0)
             : base(carParams.Mass, ComputeCarMomentOfInertia(carParams), initialLane.Path.PathStart, (-(initialLane.Path.TangentOfProjectedPosition(initialLane.Path.PathStart).Normal)).Angle)
         {
-            Lane = initialLane;
-            Lane.AddCar(this);
+            DrivingState = new KeepLaneState(this, initialLane);
+            DrivingState.OnEnter();
             this.carParams = carParams;
         }
 
@@ -72,12 +59,14 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         /// <param name="deltaTime">Time since last update</param>
         public void Update(float deltaTime)
         {
-            Vector2 idmAcceleration = IntelligentDriverModel.ComputeAccelerationIntensity(this, Lane.Path.TangentOfProjectedPosition(Position));
-
-            // Figure out the force we have to apply on the car to reach target acceleration
-            Vector2 deltaAcceleration = idmAcceleration - Acceleration;
-            Vector2 deltaForce = deltaAcceleration * Mass;
-            ApplyForce(deltaForce);
+            // Update using FSM and adjust the state accordingly for next update
+            DrivingState drivingState = DrivingState.Update(deltaTime);
+            if (drivingState != null)
+            {
+                DrivingState.OnExit();
+                DrivingState = drivingState;
+                DrivingState.OnEnter();
+            }
         }
 
         public Rectangle GetGeometricalFigure()

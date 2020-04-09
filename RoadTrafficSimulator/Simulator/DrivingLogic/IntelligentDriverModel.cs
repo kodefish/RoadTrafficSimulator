@@ -5,12 +5,6 @@ using RoadTrafficSimulator.Simulator.WorldEntities;
 
 namespace RoadTrafficSimulator.Simulator.DrivingLogic
 {
-
-    struct LeaderCarInfo
-    {
-        public float distToNextCar, approachingRate;
-    }
-
     class IntelligentDriverModel
     {
         public static float SAFE_TIME_HEADWAY = 4f;    // Minimum possible time to car in front (in seconds)
@@ -22,26 +16,24 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
         /// <param name="curr">Car for which we want to compute the acceleration</param>
         /// <param name="next">Car in the lane in front of current car</param>
         /// <returns></returns>
-        public static Vector2 ComputeAccelerationIntensity(Car curr, Vector2 laneDirection)
+        public static Vector2 ComputeAccelerationIntensity(Car curr, Vector2 laneDirection, float distanceToNextCar, float approachingRate)
         {
             // Car info
             float currSpeed = Vector2.Dot(curr.LinearVelocity, laneDirection); // Car speed along direction of traffic
-            float bumperToBumperDist = curr.LeaderCarInfo.distToNextCar;
-            float approachingRate = curr.LeaderCarInfo.approachingRate;
 
             float a = curr.MaxAcceleration;
             float b = curr.BrakingDeceleration;
 
             // Speed adjustement
             float accelerationExponent = 4;
-            float vTerm = (float) Math.Pow(currSpeed / curr.MaxSpeed, accelerationExponent);
+            float vTerm = (float) Math.Pow(currSpeed / curr.MaxOverrallSpeed, accelerationExponent);
 
             // Gap adjustement
             float desiredGap =
                 MIN_BUMPER_TO_BUMPER_DISTANCE +
                 currSpeed * SAFE_TIME_HEADWAY +
                 currSpeed * approachingRate / (2 * (float) Math.Sqrt(a * b));
-            float gapTerm = desiredGap / bumperToBumperDist;
+            float gapTerm = desiredGap / distanceToNextCar;
 
             float accelerationIntensity = a * (1 - vTerm - gapTerm);
             return laneDirection * accelerationIntensity;

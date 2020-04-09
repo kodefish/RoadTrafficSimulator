@@ -75,7 +75,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             {
                 distToNextCar = Car.ComputeBumperToBumperVector(Cars[i], Cars[i + 1]).Length;
                 approachingRate = Vector2.Distance(Cars[i + 1].LinearVelocity, Cars[i].LinearVelocity);
-                Cars[i].SetLeaderCarInfo(distToNextCar, approachingRate);
+                Cars[i].DrivingState.LeaderCarInfo = new LeaderCarInfo(distToNextCar, approachingRate);
             }
 
             // Car that is at the head of the lane
@@ -87,7 +87,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
                 leader.Position + leader.Direction * leader.CarLength / 2,
                 Path.PathEnd + Path.TangentOfProjectedPosition(Path.PathEnd) * IntelligentDriverModel.MIN_BUMPER_TO_BUMPER_DISTANCE); 
             approachingRate = leader.LinearVelocity.Length;
-            leader.SetLeaderCarInfo(distToNextCar, approachingRate);
+            leader.DrivingState.LeaderCarInfo = new LeaderCarInfo(distToNextCar, approachingRate);
         }
 
         public float DistanceToFirstCar()
