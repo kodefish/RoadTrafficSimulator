@@ -52,11 +52,13 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         /// <param name="initialLane">Starting lane</param>
         /// <param name="timeOffset">Offset along the lane trajectory</param>
         public Car(CarParams carParams, Lane initialLane, float timeOffset = 0)
-            : base(carParams.Mass, ComputeCarMomentOfInertia(carParams), initialLane.Path.PathStart, initialLane.Path.PathStart.Angle)
+            : base(carParams.Mass, ComputeCarMomentOfInertia(carParams), initialLane.Path.PathStart, (-(initialLane.Path.TangentOfProjectedPosition(initialLane.Path.PathStart).Normal)).Angle)
         {
             Lane = initialLane;
             Lane.AddCar(this);
             this.carParams = carParams;
+            Vector2 laneDirection = initialLane.Path.TangentOfProjectedPosition(initialLane.Path.PathStart);
+            Debug.WriteLine("Lane info - direction: {0}, normal: {1}, angle: {2}", laneDirection, -(laneDirection.Normal), (-(laneDirection.Normal)).Angle);
         }
 
         private static float ComputeCarMomentOfInertia(CarParams carParams)
@@ -80,6 +82,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 
         internal float ComputeDistanceToLeaderCar(Car other)
         {
+            return Vector2.Distance(other.Position, Position);
             // Check that other car is in front
             Vector2 v = other.Position - Position;
             // if (Vector2.Dot(v, Direction) <= 0) throw new ArgumentException("Other car must be in front of current car!");

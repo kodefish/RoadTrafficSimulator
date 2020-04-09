@@ -39,7 +39,7 @@ namespace RoadTrafficSimulator
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Load content for primitive drawer
-            wManager.LoadContent(GraphicsDevice, spriteBatch);
+            wManager.LoadContent(GraphicsDevice, spriteBatch, Content);
         }
 
         protected override void UnloadContent()

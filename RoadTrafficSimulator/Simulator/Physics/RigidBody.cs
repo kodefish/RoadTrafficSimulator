@@ -20,8 +20,14 @@ namespace RoadTrafficSimulator.Simulator.Physics
         public Vector2 Force { get; private set; }                      // In [Newtons]
         public float Torque { get; private set; }                       // In [radians / second2]
 
-        public Vector2 Direction { get { return new Vector2((float)Math.Cos(Angle), (float)Math.Sin(Angle)); } }
         public Vector2 Acceleration { get { return Force / Mass; } }    // In [meters/second^2]
+
+        // Direction faces along the y-axis of the rigid body
+        public Vector2 Direction {
+            get {
+                return new Vector2((float)Math.Cos(Angle), (float)Math.Sin(Angle)).Normal;
+            }
+        }
 
         /// <summary>
         /// Create a rigid body with mass, initial position, initial velocity, and initial force
@@ -33,7 +39,7 @@ namespace RoadTrafficSimulator.Simulator.Physics
         public RigidBody(
             float mass, float momentOfInertia,
             Vector2 position, Vector2 linearVelocity, Vector2 force,
-            float angle = 0, float angularVelocity = 0, float torque = 0)
+            float angle, float angularVelocity, float torque)
         {
             if (mass <= 0 || momentOfInertia <= 0) throw new ArgumentException(
                 String.Format("Mass: {0} and Moment of Inertia: {1} must be greater than 0!", mass, momentOfInertia));
@@ -56,16 +62,16 @@ namespace RoadTrafficSimulator.Simulator.Physics
         /// <param name="mass">Mass of the rigid body</param>
         /// <param name="position">Initial position of the rigid body</param>
         /// <param name="velocity">Initial velocity of the rigid body</param>
-        public RigidBody(float mass, float momentOfInertia, Vector2 position, Vector2 velocity, float angle = 0) 
-            : this(mass, momentOfInertia, position, velocity, new Vector2(), angle) { }
+        public RigidBody(float mass, float momentOfInertia, Vector2 position, float angle, Vector2 velocity) 
+            : this(mass, momentOfInertia, position, velocity, new Vector2(), angle, 0, 0) { }
 
         /// <summary>
         /// Create a rigid body with mass and initial position
         /// </summary>
         /// <param name="mass">Mass of the rigid body</param>
         /// <param name="position">Initial position of the rigid body</param>
-        public RigidBody(float mass, float momentOfInertia, Vector2 position, float angle = 0) 
-            : this(mass, momentOfInertia, position, new Vector2(), new Vector2(), angle) { }
+        public RigidBody(float mass, float momentOfInertia, Vector2 position, float angle) 
+            : this(mass, momentOfInertia, position, new Vector2(), new Vector2(), angle, 0, 0) { }
 
         /// <summary>
         /// Apply an additional force to the rigid body

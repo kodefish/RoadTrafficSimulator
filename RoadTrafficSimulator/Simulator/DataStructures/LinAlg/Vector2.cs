@@ -1,7 +1,7 @@
 ﻿using System;
 namespace RoadTrafficSimulator.Simulator.DataStructures.LinAlg
 {
-    class Vector2 
+    class Vector2
     {
         // Vector constants
         public static Vector2 UnitX => new Vector2(1, 0);
@@ -26,7 +26,14 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.LinAlg
         public float Length => (float)Math.Sqrt(X * X + Y * Y);
         public Vector2 Normalized => new Vector2(X / Length, Y / Length);
         public Vector2 Normal => new Vector2(-Y, X);
-        public float Angle => Vector2.Dot(this, Vector2.UnitX) / this.Length;
+        public float Angle
+        {
+            get {
+                float cosAngle = Vector2.Dot(this, Vector2.UnitX) / this.Length;
+                float angle = (float)Math.Acos(cosAngle);
+                return Y < 0 ? -angle : angle; // Check the orientation of Y to determine if the angle is positive or not, needed because cos(x) = cos(-x)
+            }
+        }
 
         // Operator on single vector
         public static Vector2 operator +(Vector2 a) => a;

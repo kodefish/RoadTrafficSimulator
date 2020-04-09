@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 using RoadTrafficSimulator.Simulator;
 using RoadTrafficSimulator.Simulator.WorldEntities;
 using RoadTrafficSimulator.Graphics;
@@ -18,7 +19,7 @@ namespace RoadTrafficSimulator
         // Car adder
         private readonly int NUM_CARS;
         private Random rng;
-        private readonly double CAR_ADDITION_WAIT_TIME = 5;
+        private readonly double CAR_ADDITION_WAIT_TIME = 3;
         private double lastCarAddedTime;
 
         public WorldManager(Game game)
@@ -78,7 +79,7 @@ namespace RoadTrafficSimulator
 
         private void GenerateStrip()
         {
-            float scale = 10;
+            float scale = 40;
             rtsRenderer.Scale = scale;
             float displayWidth = game.GraphicsDevice.DisplayMode.Width / scale;
             float displayHeight = game.GraphicsDevice.DisplayMode.Height / scale;
@@ -91,7 +92,7 @@ namespace RoadTrafficSimulator
             Vector2 posIntersection2 = new Vector2(displayWidth - padding, displayHeight / 2);
             FourWayIntersection intersection2 = new FourWayIntersection(posIntersection2);
 
-            Road road = new Road(ref intersection1, ref intersection2, 0, 1, RoadOrientation.Horizontal, 30);
+            Road road = new Road(ref intersection1, ref intersection2, 1, 1, RoadOrientation.Horizontal, 30);
 
             world.AddIntersection(intersection1);
             world.AddIntersection(intersection2);
@@ -108,7 +109,7 @@ namespace RoadTrafficSimulator
                 CarParams carParams;
                 carParams.Mass = 500;
                 carParams.CarWidth = 2;
-                carParams.CarLength = 4;
+                carParams.CarLength = 3;
                 carParams.MaxSpeed = 92;
                 carParams.MaxAccleration = 1.97f;
                 carParams.BrakingDeceleration = 4.20f;
@@ -118,10 +119,10 @@ namespace RoadTrafficSimulator
             }
         }
 
-        public void LoadContent(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
+        public void LoadContent(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, ContentManager content)
         {
             // Load content for renderer stuff
-            rtsRenderer.LoadContent(graphicsDevice, spriteBatch);
+            rtsRenderer.LoadContent(graphicsDevice, spriteBatch, content);
         }
 
         public void Draw()

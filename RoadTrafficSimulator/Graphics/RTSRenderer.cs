@@ -1,6 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Diagnostics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using RoadTrafficSimulator.Simulator.Interfaces;
+using Microsoft.Xna.Framework.Content;
 using RoadTrafficSimulator.Simulator.WorldEntities;
 using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
 using Rectangle = RoadTrafficSimulator.Simulator.DataStructures.Geometry.Rectangle;
@@ -11,10 +12,12 @@ namespace RoadTrafficSimulator.Graphics
     class RTSRenderer
     {
         private RTSGeometryRenderer dRenderer;
+        private SpriteBatch spriteBatch;
 
         // Some color properties for the render
         private Color intersectionColor = Color.DarkGray;
         private Color roadColor = Color.Gray;
+        private Texture2D carTexture;
 
         public float Scale { get; set; }
 
@@ -24,9 +27,11 @@ namespace RoadTrafficSimulator.Graphics
             Scale = 1;
         }
 
-        public void LoadContent(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
+        public void LoadContent(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, ContentManager content)
         {
+            this.spriteBatch = spriteBatch;
             dRenderer.LoadContent(graphicsDevice, spriteBatch);
+            carTexture = content.Load<Texture2D>("Vehicles/Car");
         }
 
         private void DrawRectange(Rectangle rectangle, Color c)
@@ -71,8 +76,23 @@ namespace RoadTrafficSimulator.Graphics
 
         public void DrawCar(Car c)
         {
-            Rectangle r = new Rectangle(c.Position * Scale, Scale, Scale);
-            dRenderer.Draw(r, Color.Blue);
+            Vector2 location = (c.Position - c.Direction * c.CarLength / 2) * Scale;
+            Microsoft.Xna.Framework.Rectangle sourceRectangle = new Microsoft.Xna.Framework.Rectangle(0, 0, carTexture.Width, carTexture.Height);
+            Vector2 origin = new Vector2(carTexture.Width / 2, carTexture.Height / 2);
+            Vector2 scale = new Vector2(c.CarWidth / carTexture.Width * Scale, c.CarLength / carTexture.Height * Scale);
+            spriteBatch.Draw(
+                carTexture, 
+                LinAlgConversion.XNAVector(location),
+                sourceRectangle, 
+                Color.White, 
+                c.Direction.Angle + MathHelper.PiOver2, 
+                LinAlgConversion.XNAVector(origin), 
+                LinAlgConversion.XNAVector(scale), 
+                SpriteEffects.None, 
+                1);
+
+            Segment carDirection = new Segment(c.Position, c.Position + c.Direction);
+            DrawSegment(carDirection, Color.Purple);
         }
     }
 }
