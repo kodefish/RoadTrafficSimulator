@@ -103,9 +103,9 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             leader.DrivingState.LeaderCarInfo = new LeaderCarInfo(distToNextCar, approachingRate);
         }
 
-        public float DistanceToFirstCar()
+        public float FreeLaneSpace()
         {
-            if (Cars.Count > 0) return Path.DistanceOfProjectionAlongPath(Cars[0].Position);
+            if (Cars.Count > 0) return Path.DistanceOfProjectionAlongPath(Cars[0].Position) - Cars[0].CarLength / 2;
             else return Path.Length;
         }
     }

@@ -21,7 +21,7 @@ namespace RoadTrafficSimulator
         // Car adder
         private readonly int NUM_CARS;
         private Random rng;
-        private readonly double CAR_ADDITION_WAIT_TIME = 3;
+        private readonly double CAR_ADDITION_WAIT_TIME = 1;
         private double lastCarAddedTime;
         private Color[] colors = { Color.Red, Color.Green, Color.Beige, Color.Blue, Color.Yellow, Color.Purple, Color.White, Color.Black };
         private Dictionary<Car, Color> carColor;
@@ -126,30 +126,36 @@ namespace RoadTrafficSimulator
             world.AddIntersection(intersection2);
             world.AddRoad(road);
         }
-        
+
         private void AddRandomCar(Random rng)
         {
-            Road randomRoad = world.Roads[rng.Next(0, world.Roads.Count)];
-            Lane[] lanes = rng.Next() % 2 == 0 ? randomRoad.NorthBoundLanes : randomRoad.SouthBoundLanes;
-            if (lanes.Length > 0)
+            bool added = false;
+
+            while (!added)
             {
-                CarParams carParams;
-                carParams.Mass = 500;
-                carParams.CarWidth = 2;
-                carParams.CarLength = rng.Next(3, 7);
-                carParams.MaxSpeed = 92;
-                carParams.MaxAccleration = 1.97f;
-                carParams.BrakingDeceleration = 4.20f;
-
-                Lane randomLane = lanes[rng.Next(0, lanes.Length)];
-                if (randomLane.DistanceToFirstCar() > carParams.CarLength + IntelligentDriverModel.MIN_BUMPER_TO_BUMPER_DISTANCE)
+                Road randomRoad = world.Roads[rng.Next(0, world.Roads.Count)];
+                Lane[] lanes = rng.Next() % 2 == 0 ? randomRoad.NorthBoundLanes : randomRoad.SouthBoundLanes;
+                if (lanes.Length > 0)
                 {
+                    CarParams carParams;
+                    carParams.Mass = 500;
+                    carParams.CarWidth = 2;
+                    carParams.CarLength = rng.Next(3, 7);
+                    carParams.MaxSpeed = 92;
+                    carParams.MaxAccleration = 1.97f;
+                    carParams.BrakingDeceleration = 4.20f;
 
-                    Car car = new Car(carParams, randomLane, (float)rng.NextDouble());
-                    world.AddCar(car);
+                    Lane randomLane = lanes[rng.Next(0, lanes.Length)];
+                    if (randomLane.FreeLaneSpace() > carParams.CarLength + IntelligentDriverModel.MIN_BUMPER_TO_BUMPER_DISTANCE)
+                    {
+                        Car car = new Car(carParams, randomLane, (float)rng.NextDouble());
+                        world.AddCar(car);
 
-                    // Give the car a random color
-                    carColor.Add(car, colors[rng.Next(colors.Length)]);
+                        // Give the car a random color
+                        carColor.Add(car, colors[rng.Next(colors.Length)]);
+
+                        added = true;
+                    }
                 }
             }
         }
@@ -177,7 +183,7 @@ namespace RoadTrafficSimulator
                 lastCarAddedTime = gameTime.TotalGameTime.TotalSeconds;
             }
             //  Update the stuff
-            world.Update((float) gameTime.ElapsedGameTime.TotalSeconds);
+            world.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
         }
     }
 }

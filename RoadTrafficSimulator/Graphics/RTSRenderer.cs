@@ -84,7 +84,7 @@ namespace RoadTrafficSimulator.Graphics
             // Draw free space
             Segment freeLaneSpace = new Segment(
                 l.Path.PathStart * Scale, 
-                (l.Path.PathStart + l.Path.TangentOfProjectedPosition(l.Path.PathStart) * l.DistanceToFirstCar()) * Scale);
+                (l.Path.PathStart + l.Path.TangentOfProjectedPosition(l.Path.PathStart) * l.FreeLaneSpace()) * Scale);
             dRenderer.Draw(freeLaneSpace, Color.Pink);
 
             // Draw the vector to the closest corner of car in front
