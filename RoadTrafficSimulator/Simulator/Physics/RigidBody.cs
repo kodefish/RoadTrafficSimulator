@@ -100,6 +100,10 @@ namespace RoadTrafficSimulator.Simulator.Physics
             float angularAcceleration = Torque / MoI;
             AngularVelocity += angularAcceleration * deltaTime;
             Angle += AngularVelocity * deltaTime;
+
+            // Reset forces to 0
+            Force = new Vector2(0, 0);
+            Torque = 0;
         }
 
     }
