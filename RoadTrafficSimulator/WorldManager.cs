@@ -33,7 +33,7 @@ namespace RoadTrafficSimulator
             world = new SimulatorWorld();
             rtsRenderer = new RTSRenderer();
 
-            NUM_CARS = 100;
+            NUM_CARS = 10;
             rng = new Random(NUM_CARS);
             lastCarAddedTime = 0;
             carColor = new Dictionary<Car, Color>();
@@ -41,8 +41,8 @@ namespace RoadTrafficSimulator
 
         public void Initialize()
         {
-            GenerateGrid();
-            // GenerateHorizontalStrip();
+            // GenerateGrid();
+            GenerateHorizontalStrip();
             // GenerateVerticalStrip();
         }
 

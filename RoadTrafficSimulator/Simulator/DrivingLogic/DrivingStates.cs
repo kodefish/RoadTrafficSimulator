@@ -20,7 +20,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
     abstract class DrivingState
     {
         protected Car car;
-        protected Path path;
+        public Path Path { get; private set; }
 
         // Gets updated in the lane update
         public LeaderCarInfo LeaderCarInfo { get; set; }
@@ -28,7 +28,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
         public DrivingState(Car car, Path path)
         {
             this.car = car;
-            this.path = path;
+            this.Path = path;
         }
 
         public virtual void OnEnter() { }
@@ -39,7 +39,14 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
         public virtual DrivingState Update(float deltaTime)
         {
             // Control speed -> gas pedal goes vroomvroom
-            car.ApplyForce(GetForce());
+            Vector2 gasPedalForce = GetForce();
+            car.ApplyForce(gasPedalForce);
+
+            // TODO: Apply some other "fake" force to mimick friction, such that the resulting velocity
+            // after the next update will be aligned with the direction (no normal component)
+            // Fake friction is just the negation of the gaspedal force's normal component to the direction
+            Vector2 fakeFriction = car.Direction * Vector2.Dot(gasPedalForce, car.Direction) - gasPedalForce;
+            car.ApplyForce(fakeFriction);
 
             // Control steering -> steering wheel goes whoosh
             car.ApplyTorque(GetTorque(deltaTime));
@@ -56,11 +63,11 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
             Vector2 futurePos = car.Position + car.LinearVelocity * deltaTime;
 
             // 2. Project future position onto the path
-            Vector2 projectedFuturePosition = path.NormalPoint(futurePos);
+            Vector2 projectedFuturePosition = Path.NormalPoint(futurePos);
 
             // 3. Go along the path from the projected position by a wee bit to get target
-            float epsilon = 0.1f;
-            Vector2 target = projectedFuturePosition + path.TangentOfProjectedPosition(projectedFuturePosition) * epsilon;
+            float epsilon = car.CarLength;
+            Vector2 target = projectedFuturePosition + Path.TangentOfProjectedPosition(projectedFuturePosition) * epsilon;
 
             // 4. Compute desired angle from current position and target
             float desiredAngle = (target - car.Position).Angle + (float) Math.PI / 2;
@@ -106,7 +113,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
         {
             Vector2 idmAcceleration = IntelligentDriverModel.ComputeAccelerationIntensity(
                 car, 
-                path.TangentOfProjectedPosition(car.Position),
+                Path.TangentOfProjectedPosition(car.Position),
                 LeaderCarInfo.DistToNextCar,
                 LeaderCarInfo.ApproachingRate
                 );
