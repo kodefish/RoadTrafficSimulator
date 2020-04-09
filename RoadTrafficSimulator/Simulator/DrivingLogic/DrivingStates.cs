@@ -42,15 +42,35 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
             car.ApplyForce(GetForce());
 
             // Control steering -> steering wheel goes whoosh
-            car.ApplyTorque(GetTorque());
+            car.ApplyTorque(GetTorque(deltaTime));
 
             return this;
         }
 
         protected abstract Vector2 GetForce();
-        protected virtual float GetTorque()
+
+        // TODO: Craig Renolds based path following behavior
+        protected virtual float GetTorque(float deltaTime)
         {
-            return 0;
+            // 1. Compute future position
+            Vector2 futurePos = car.Position + car.LinearVelocity * deltaTime;
+
+            // 2. Project future position onto the path
+            Vector2 projectedFuturePosition = path.NormalPoint(futurePos);
+
+            // 3. Go along the path from the projected position by a wee bit to get target
+            float epsilon = 0.1f;
+            Vector2 target = projectedFuturePosition + path.TangentOfProjectedPosition(projectedFuturePosition) * epsilon;
+
+            // 4. Compute desired angle from current position and target
+            float desiredAngle = (target - car.Position).Angle + (float) Math.PI / 2;
+
+            // 5. Compute desired angular velocity (dAngle / dt)
+            // 6. Compute desired angular acceleration (dAngularVelocity / dt)
+            // 7. Compute and apply torque
+            // 5-7 give the following expression
+            float angularAcceleration = ((desiredAngle - car.Angle) / deltaTime - car.AngularVelocity) / deltaTime;
+            return angularAcceleration * car.MoI;
         }
     }
 
@@ -78,9 +98,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
         public override DrivingState Update(float deltaTime)
         {
             DrivingState state = base.Update(deltaTime);
-
             // TODO Determine if I need to change lanes or if I'm at the end of a lane, and trigger a state change
-
             return state;
         }
 
