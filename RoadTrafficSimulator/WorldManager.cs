@@ -39,8 +39,9 @@ namespace RoadTrafficSimulator
 
         public void Initialize()
         {
-            GenerateSquare();
-            // GenerateStrip();
+            // GenerateSquare();
+            // GenerateHorizontalStrip();
+            GenerateVerticalStrip();
         }
 
         private void GenerateSquare()
@@ -81,7 +82,7 @@ namespace RoadTrafficSimulator
             world.AddRoad(road34);
         }
 
-        private void GenerateStrip()
+        private void GenerateHorizontalStrip()
         {
             float scale = 10;
             rtsRenderer.Scale = scale;
@@ -102,6 +103,28 @@ namespace RoadTrafficSimulator
             world.AddIntersection(intersection2);
             world.AddRoad(road);
         }
+
+        private void GenerateVerticalStrip()
+        {
+            float scale = 10;
+            rtsRenderer.Scale = scale;
+            float displayWidth = game.GraphicsDevice.DisplayMode.Width / scale;
+            float displayHeight = game.GraphicsDevice.DisplayMode.Height / scale;
+
+            float padding = displayWidth / 4;
+
+            Vector2 posIntersection1 = new Vector2(displayWidth / 2, 10);
+            FourWayIntersection intersection1 = new FourWayIntersection(posIntersection1);
+
+            Vector2 posIntersection2 = new Vector2(displayWidth / 2, displayHeight - 10);
+            FourWayIntersection intersection2 = new FourWayIntersection(posIntersection2);
+
+            Road road = new Road(ref intersection2, ref intersection1, 0, 1, RoadOrientation.Vertical, 30);
+
+            world.AddIntersection(intersection1);
+            world.AddIntersection(intersection2);
+            world.AddRoad(road);
+        }
         
         private void AddRandomCar(Random rng)
         {
@@ -110,7 +133,7 @@ namespace RoadTrafficSimulator
             if (lanes.Length > 0)
             {
                 Lane randomLane = lanes[rng.Next(0, lanes.Length)];
-                if (randomLane.DistanceToFirstCar() > 5)
+                if (randomLane.DistanceToFirstCar() > 15)
                 {
                     CarParams carParams;
                     carParams.Mass = 500;
