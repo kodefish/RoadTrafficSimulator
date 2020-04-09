@@ -83,14 +83,16 @@ namespace RoadTrafficSimulator.Graphics
             List<Car> cars = l.Cars;
             for (int i = 0; i < l.Cars.Count - 1; i++)
             {
-                Vector2 closestCorner = cars[i].ClosestCorner(cars[i + 1]);
-                dRenderer.Draw(new Segment(cars[i].Position * Scale, closestCorner * Scale), Color.Cyan);
+                Car c1 = cars[i]; Car c2 = cars[i + 1];
+                Vector2 p1 = c2.GetGeometricalFigure().ClosestVertex(c1.Position);
+                Vector2 p2 = c1.GetGeometricalFigure().ClosestVertex(c2.Position);
+                dRenderer.Draw(new Segment(p1 * Scale, p2 * Scale), Color.Cyan);
             }
         }
 
         public void DrawCar(Car c, Color color)
         {
-            Vector2 location = (c.Position - c.Direction * c.CarLength / 2) * Scale;
+            Vector2 location = c.Position * Scale;
             Rectangle sourceRectangle = new Rectangle(new Vector2(0, 0), c.CarWidth, c.CarLength);
             Vector2 origin = new Vector2(c.CarWidth / 2, c.CarLength / 2);
             Vector2 scale = new Vector2(Scale, Scale);

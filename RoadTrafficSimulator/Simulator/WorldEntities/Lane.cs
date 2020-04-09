@@ -73,7 +73,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             float distToNextCar, approachingRate;
             for (int i = 0; i < Cars.Count - 1; i++)
             {
-                distToNextCar = Cars[i].ComputeDistanceToLeaderCar(Cars[i + 1]);
+                distToNextCar = Car.ComputeBumperToBumperVector(Cars[i], Cars[i + 1]).Length;
                 approachingRate = Vector2.Distance(Cars[i + 1].LinearVelocity, Cars[i].LinearVelocity);
                 Cars[i].SetLeaderCarInfo(distToNextCar, approachingRate);
             }

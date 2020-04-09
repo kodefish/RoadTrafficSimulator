@@ -19,9 +19,14 @@ namespace RoadTrafficSimulator.Graphics
             primitives2D.LoadContent(graphicsDevice, spriteBatch);
         }
 
-        public void Draw(Vector2 point, Color c, float thickness = 1)
+        public void DrawPoint(Vector2 point, Color c, float thickness = 1)
         {
             primitives2D.DrawPixel(point.X, point.Y, c, thickness);
+        }
+
+        public void Draw(Vector2 point, Color c, float thickness = 1)
+        {
+            Draw(new Segment(point, point + point.Normalized), c, thickness);
         }
 
         public void Draw(Segment segment, Color c, float thickness = 1)
@@ -68,7 +73,7 @@ namespace RoadTrafficSimulator.Graphics
             for (float t = 0; t <= 1; t += step)
             {
                 Vector2 point = bCurve.GetPosition(t);
-                Draw(point, c, thickness);
+                DrawPoint(point, c, thickness);
 
                 if (drawTangent)
                 {

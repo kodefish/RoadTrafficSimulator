@@ -66,6 +66,23 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
             return Sides[i];
         }
 
+        public Vector2 ClosestVertex(Vector2 position)
+        {
+            // Check which vertex is closer to position
+            float minDist = float.PositiveInfinity;  Vector2 closestVertex = null;
+            foreach(Vector2 vertex in Vertices)
+            {
+                float dist = Vector2.Distance(position, vertex);
+                if (dist < minDist)
+                {
+                    minDist = dist;
+                    closestVertex = vertex;
+                }
+            }
+
+            return closestVertex;
+        }
+
         public override string ToString()
         {
             return String.Format("Rectangle: origin {0}, width {1}, length {2}", Origin, Width, Length);

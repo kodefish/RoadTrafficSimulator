@@ -121,10 +121,10 @@ namespace RoadTrafficSimulator
             Vector2 p4 = new Vector2(displayWidth * .75f, displayHeight * 0.25f);
             BezierCurve bCurve = new BezierCurve(p1, p2, p3, p4);
 
-            rtsRendrer.Draw(p1, Color.Red, 10);
-            rtsRendrer.Draw(p2, Color.Green, 10);
-            rtsRendrer.Draw(p3, Color.Blue, 10);
-            rtsRendrer.Draw(p4, Color.Purple, 10);
+            rtsRendrer.DrawPoint(p1, Color.Red, 10);
+            rtsRendrer.DrawPoint(p2, Color.Green, 10);
+            rtsRendrer.DrawPoint(p3, Color.Blue, 10);
+            rtsRendrer.DrawPoint(p4, Color.Purple, 10);
             rtsRendrer.Draw(bCurve, Color.White, 2, 1/1000f);
         }
 

@@ -3,6 +3,8 @@ using System.Diagnostics;
 using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
 using RoadTrafficSimulator.Simulator.Physics;
 using RoadTrafficSimulator.Simulator.DrivingLogic;
+using RoadTrafficSimulator.Simulator.Interfaces;
+using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
 
 namespace RoadTrafficSimulator.Simulator.WorldEntities
 {
@@ -16,7 +18,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             BrakingDeceleration;
     }
 
-    class Car : RigidBody
+    class Car : RigidBody, IRTSGeometry<Rectangle>
     {
         // TODO: move this to driver state
         // Determines how far along a car is on it's current lane
@@ -78,27 +80,21 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             ApplyForce(deltaForce);
         }
 
-        public Vector2 ClosestCorner(Car other)
+        public Rectangle GetGeometricalFigure()
         {
-            // Check that other car is in front
-            Vector2 v = other.Position - Position;
-            // if (Vector2.Dot(v, Direction) <= 0) throw new ArgumentException("Other car must be in front of current car!");
-
-            // Compute rear corners of the other car
-            Vector2 rearBumper = other.Position - other.Direction * other.CarLength;
-            Vector2 rearLeftCorner = rearBumper + other.Direction.Normal * other.CarWidth / 2;
-            Vector2 rearRightCorner = rearBumper - other.Direction.Normal * other.CarWidth / 2;
-
-            // Check which is closer to current car
-            Vector2 closestCorner = Vector2.Distance(Position, rearLeftCorner) < Vector2.Distance(Position, rearRightCorner) ? rearLeftCorner : rearRightCorner;
-
-            return closestCorner;
+            return new Rectangle(Position, CarWidth, CarLength);
         }
 
-        public float ComputeDistanceToLeaderCar(Car other)
+        public static Vector2 ComputeBumperToBumperVector(Car c1, Car c2)
         {
-            // Take vector position -> closest corner and project it onto the direction of the car
-            return Vector2.Dot(ClosestCorner(other) - Position, Direction);
+            // Get closest corner of c2
+            Vector2 p1 = c2.GetGeometricalFigure().ClosestVertex(c1.Position);
+            // Get closest corner of c1
+            Vector2 p2 = c1.GetGeometricalFigure().ClosestVertex(c2.Position);
+
+            // Closest corner c1 <-> closest corner c2
+            Vector2 bumperToBumper = p2 - p1;
+            return bumperToBumper;
         }
     }
 }
