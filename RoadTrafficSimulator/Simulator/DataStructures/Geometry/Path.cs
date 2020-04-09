@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
 
@@ -78,7 +79,7 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
             for (int i = 0; i < segIdx; i++) distance += Segments[i].Length;
 
             // Add scalar projection of point onto
-            distance += Segments[segIdx].NormalPoint(position).Length / Segments[segIdx].Length;
+            distance += Vector2.Distance(Segments[segIdx].Source, Segments[segIdx].NormalPoint(position));
             return distance;
         }
     }

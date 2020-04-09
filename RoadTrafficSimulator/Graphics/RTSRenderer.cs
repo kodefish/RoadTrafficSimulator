@@ -90,9 +90,6 @@ namespace RoadTrafficSimulator.Graphics
                 LinAlgConversion.XNAVector(scale), 
                 SpriteEffects.None, 
                 1);
-
-            Segment carDirection = new Segment(c.Position, c.Position + c.Direction);
-            DrawSegment(carDirection, Color.Purple);
         }
     }
 }

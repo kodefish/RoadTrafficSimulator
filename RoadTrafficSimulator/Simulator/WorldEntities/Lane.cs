@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Diagnostics;
 using System.Collections.Generic;
 using RoadTrafficSimulator.Simulator.Interfaces;
 using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
@@ -65,9 +65,8 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public void Update(float deltaTime)
         {
             if (cars.Count == 0) return;
-            // TODO create lookup table to get leader car
             // 1. Sort cars by timestep
-            cars.Sort((a, b) => Path.DistanceOfProjectionAlongPath(b.Position).CompareTo(Path.DistanceOfProjectionAlongPath(a.Position)));
+            cars.Sort((a, b) => Path.DistanceOfProjectionAlongPath(a.Position).CompareTo(Path.DistanceOfProjectionAlongPath(b.Position)));
 
             // For all the cars that have a car in front of them
             float distToNextCar, approachingRate;
