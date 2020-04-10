@@ -41,8 +41,8 @@ namespace RoadTrafficSimulator
 
         public void Initialize()
         {
-            // GenerateGrid();
-            GenerateHorizontalStrip();
+            GenerateGrid();
+            // GenerateHorizontalStrip();
             // GenerateVerticalStrip();
         }
 

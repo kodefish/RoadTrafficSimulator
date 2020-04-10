@@ -39,14 +39,8 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
         public virtual DrivingState Update(float deltaTime)
         {
             // Control speed -> gas pedal goes vroomvroom
-            Vector2 gasPedalForce = GetForce();
+            Vector2 gasPedalForce = car.Direction * Vector2.Dot(GetForce(), car.Direction);
             car.ApplyForce(gasPedalForce);
-
-            // TODO: Apply some other "fake" force to mimick friction, such that the resulting velocity
-            // after the next update will be aligned with the direction (no normal component)
-            // Fake friction is just the negation of the gaspedal force's normal component to the direction
-            Vector2 fakeFriction = car.Direction * Vector2.Dot(gasPedalForce, car.Direction) - gasPedalForce;
-            car.ApplyForce(fakeFriction);
 
             // Control steering -> steering wheel goes whoosh
             car.ApplyTorque(GetTorque(deltaTime));
