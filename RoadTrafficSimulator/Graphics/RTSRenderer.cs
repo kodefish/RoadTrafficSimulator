@@ -46,10 +46,10 @@ namespace RoadTrafficSimulator.Graphics
             dRenderer.Draw(sourceRectangle, c, location, origin, scale, rectangle.Angle);
         }
 
-        private void DrawSegment(Segment s, Color c)
+        private void DrawSegment(Segment s, Color c, float thickness = 1)
         {
             Segment scaledSegment = new Segment(s.Source * Scale, s.Target * Scale);
-            dRenderer.Draw(scaledSegment, c);
+            dRenderer.Draw(scaledSegment, c, thickness);
         }
 
         public void DrawPath(Path p, Color c)
@@ -63,12 +63,25 @@ namespace RoadTrafficSimulator.Graphics
             DrawRectange(intersection.GetGeometricalFigure(), intersectionColor);
         }
 
+        public void DrawNormal(Segment s, Color c, float thickness = 1)
+        {
+            Segment normalVec = new Segment(
+                s.Midpoint, 
+                s.Midpoint + s.Vector.Normal);
+
+            DrawSegment(normalVec, c, thickness);
+        }
+
         public void DrawRoad(Road road)
         {
             DrawRectange(road.GetGeometricalFigure(), roadColor);
             foreach (Lane l in road.InLanes) DrawLane(l, Color.Pink);
             foreach (Lane l in road.OutLanes) DrawLane(l, Color.LimeGreen);
             DrawSegment(road.RoadMidline, Color.Yellow);
+
+            // Draw the source and target segment normals
+            DrawNormal(road.RoadStartSegment, Color.Purple, 2);
+            DrawNormal(road.RoadTargetSegment, Color.Purple, 2);
         }
 
         public void DrawLane(Lane l, Color c)
@@ -78,6 +91,8 @@ namespace RoadTrafficSimulator.Graphics
             dRenderer.DrawPoint(l.Path.PathEnd * Scale, Color.Red, 5);
             foreach (Segment s in l.Path.Segments) dRenderer.Draw(new Segment(s.Source * Scale, s.Target * Scale), Color.LightGray);
 
+            DrawNormal(l.SourceSegment, Color.MonoGameOrange, 3);
+            DrawNormal(l.TargetSegment, Color.MonoGameOrange, 3);
             /*
             // Draw free space
             Segment freeLaneSpace = new Segment(

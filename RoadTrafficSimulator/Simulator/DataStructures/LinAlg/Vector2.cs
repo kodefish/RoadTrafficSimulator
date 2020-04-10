@@ -25,7 +25,7 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.LinAlg
         // Vector properties
         public float Length => (float)Math.Sqrt(X * X + Y * Y);
         public Vector2 Normalized => new Vector2(X / Length, Y / Length);
-        public Vector2 Normal => new Vector2(-Y, X);
+        public Vector2 Normal => new Vector2(-Y, X).Normalized;
         public float Angle
         {
             get {

@@ -86,7 +86,7 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
             {
                 Segment reversedSegment = new Segment(Target, Source);
                 Segment[] reversedSegments = reversedSegment.SplitSegment(numSubSegments, !reversed);
-                // Array.Reverse(reversedSegments);
+                Array.Reverse(reversedSegments);
                 return reversedSegments;
             }
             else
