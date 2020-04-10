@@ -34,7 +34,7 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
         /// <summary>
         /// Euclidian norm of the segment
         /// </summary>
-        public float Length { get { return Vector.Length; } }
+        public float Length { get { return Vector.Norm; } }
 
         /// <summary>
         /// Direction, from source to target. Normalized

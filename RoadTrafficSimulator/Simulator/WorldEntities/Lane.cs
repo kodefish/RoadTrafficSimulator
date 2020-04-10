@@ -86,7 +86,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             float distToNextCar, approachingRate;
             for (int i = 0; i < Cars.Count - 1; i++)
             {
-                distToNextCar = Car.ComputeBumperToBumperVector(Cars[i], Cars[i + 1]).Length;
+                distToNextCar = Car.ComputeBumperToBumperVector(Cars[i], Cars[i + 1]).Norm;
                 approachingRate = Vector2.Distance(Cars[i + 1].LinearVelocity, Cars[i].LinearVelocity);
                 Cars[i].DrivingState.LeaderCarInfo = new LeaderCarInfo(distToNextCar, approachingRate);
             }
@@ -99,7 +99,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             distToNextCar = Vector2.Distance(
                 leader.Position + leader.Direction * leader.CarLength / 2,
                 Path.PathEnd - Path.TangentOfProjectedPosition(Path.PathEnd) * leader.CarLength / 2); 
-            approachingRate = leader.LinearVelocity.Length;
+            approachingRate = leader.LinearVelocity.Norm;
             leader.DrivingState.LeaderCarInfo = new LeaderCarInfo(distToNextCar, approachingRate);
         }
 

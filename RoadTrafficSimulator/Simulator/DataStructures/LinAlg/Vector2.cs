@@ -16,20 +16,39 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.LinAlg
 
         public Vector2() => new Vector2(0, 0);
 
+        /// <summary>
+        /// Creates a 2-D vector
+        /// </summary>
+        /// <param name="x">X component</param>
+        /// <param name="y">Y component</param>
         public Vector2(float x, float y)
         {
             X = x;
             Y = y;
         }
 
-        // Vector properties
-        public float Length => (float)Math.Sqrt(X * X + Y * Y);
-        public Vector2 Normalized => new Vector2(X / Length, Y / Length);
+        /// <summary>
+        /// Euclidian norm of the vector
+        /// </summary>
+        public float Norm => (float)Math.Sqrt(X * X + Y * Y);
+
+        /// <summary>
+        /// Normalized version of the vector
+        /// </summary>
+        public Vector2 Normalized => this / Norm;
+
+        /// <summary>
+        /// Normal as defined by (-b, a)
+        /// </summary>
         public Vector2 Normal => new Vector2(-Y, X).Normalized;
+
+        /// <summary>
+        /// Angle w.r.t the horizontal axis, mapped from -Pi to Pi.
+        /// </summary>
         public float Angle
         {
             get {
-                float cosAngle = Vector2.Dot(this, Vector2.UnitX) / this.Length;
+                float cosAngle = Vector2.Dot(this, Vector2.UnitX) / this.Norm;
                 float angle = (float)Math.Acos(cosAngle);
                 return Y < 0 ? (float)(2 * Math.PI - angle) : angle; // Check the orientation of Y to determine if the angle is positive or not, needed because cos(x) = cos(-x)
             }
@@ -45,15 +64,31 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.LinAlg
         public static Vector2 operator *(Vector2 a, float c) => new Vector2(a.X * c, a.Y * c);
         public static Vector2 operator *(float c, Vector2 a) => new Vector2(a.X * c, a.Y * c);
         public static Vector2 operator /(Vector2 a, float c) => new Vector2(a.X / c, a.Y / c);
-        public static Vector2 operator /(float c, Vector2 a) => new Vector2(a.X / c, a.Y / c);
 
-        // Vector functions
-        public static float SignedDistance(Vector2 a, Vector2 b) => (b - a).Length;
-        public static float Distance(Vector2 a, Vector2 b) => Math.Abs((b - a).Length);
+        /// <summary>
+        /// Signed distance between two vectors
+        /// </summary>
+        public static float SignedDistance(Vector2 a, Vector2 b) => (b - a).Norm;
+
+        /// <summary>
+        /// Absolute distance between two vectors
+        /// </summary>
+        public static float Distance(Vector2 a, Vector2 b) => Math.Abs((b - a).Norm);
+
+        /// <summary>
+        /// Dot product of two vectors (a . b)
+        /// </summary>
         public static float Dot(Vector2 a, Vector2 b) => a.X * b.X + a.Y * b.Y;
-        public static Vector2 Rotate(Vector2 a, float angle)
-            => new Vector2((float) (a.X * Math.Cos(angle) - a.Y * Math.Sin(angle)),
-                (float) (a.X * Math.Sin(angle) + a.Y * Math.Cos(angle)));
+
+        /// <summary>
+        /// Apply rotation alpha to some vector
+        /// </summary>
+        /// <param name="a">Vector to rotate</param>
+        /// <param name="alpha">Angle to rotate by</param>
+        /// <returns></returns>
+        public static Vector2 Rotate(Vector2 a, float alpha)
+            => new Vector2((float) (a.X * Math.Cos(alpha) - a.Y * Math.Sin(alpha)),
+                (float) (a.X * Math.Sin(alpha) + a.Y * Math.Cos(alpha)));
 
         public override string ToString()
         {

@@ -84,7 +84,7 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
             float minDist = float.PositiveInfinity, maxDist = float.NegativeInfinity;
             foreach(Vector2 corner in Vertices)
             {
-                float distToOrigin = corner.Length;
+                float distToOrigin = corner.Norm;
                 if (distToOrigin < minDist)
                 {
                     minDist = distToOrigin;
