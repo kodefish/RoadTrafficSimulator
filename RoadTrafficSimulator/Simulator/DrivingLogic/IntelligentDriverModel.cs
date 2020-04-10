@@ -5,6 +5,12 @@ using RoadTrafficSimulator.Simulator.WorldEntities;
 
 namespace RoadTrafficSimulator.Simulator.DrivingLogic
 {
+    /// <summary>
+    /// Helper class to compute acceleration based on Intelligent Driver Model
+    /// Based on the following paper: Treiber, Martin; Hennecke, Ansgar; Helbing, 
+    /// Dirk (2000), "Congested traffic states in empirical observations and microscopic simulations", 
+    /// Physical Review E, 62 (2): 1805–1824
+    /// </summary>
     class IntelligentDriverModel
     {
         public static float SAFE_TIME_HEADWAY = 4f;    // Minimum possible time to car in front (in seconds)
