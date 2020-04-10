@@ -47,16 +47,28 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
             return new Path(segments, radius);
         }
 
+        /// <summary>
+        /// Start of the path, source point in the first segment
+        /// </summary>
         public Vector2 PathStart => Segments[0].Source;
+
+        /// <summary>
+        /// End of the path, target point in last segment
+        /// </summary>
         public Vector2 PathEnd => Segments[Segments.Length - 1].Target;
 
+        /// <summary>
+        /// Computes the closest segment to a position. Distance is measured along perpendicular line from the point to the segment
+        /// </summary>
+        /// <param name="position">Position in the world</param>
+        /// <returns>Closest segment to the position along the path</returns>
         private int ClosestSegment(Vector2 position)
         {
             float minDist = float.PositiveInfinity;
             int idx = -1;
             for (int i = 0; i < Segments.Length; i++)
             {
-                Vector2 normalPt = Segments[i].NormalPoint(position);
+                Vector2 normalPt = Segments[i].ProjectOntoSupportingLine(position);
                 float distToNormalPt = Vector2.Distance(normalPt, position);
                 if (distToNormalPt < minDist)
                 {
@@ -67,9 +79,27 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
             return idx;
         }
 
-        public Vector2 NormalPoint(Vector2 p) => Segments[ClosestSegment(p)].NormalPoint(p);
+        /// <summary>
+        /// Projects a position onto the closest segment along the path
+        /// </summary>
+        /// <param name="p">Point to project</param>
+        /// <returns>Projected point</returns>
+        public Vector2 NormalPoint(Vector2 p) => Segments[ClosestSegment(p)].ProjectOntoSupportingLine(p);
+
+        /// <summary>
+        /// Computes the tangent vector of a projected point along the path. Since the path 
+        /// is a series of segments, the tangent is the direction of the closest segment.
+        /// This is an approximation, but should be accurate enough if the sampling rate is high enough
+        /// </summary>
+        /// <param name="p">Point to project</param>
+        /// <returns>Tangent along the path</returns>
         public Vector2 TangentOfProjectedPosition(Vector2 p) => Segments[ClosestSegment(p)].Direction;
 
+        /// <summary>
+        /// Distance of a projected point from the start of the path.
+        /// </summary>
+        /// <param name="position">Point to project</param>
+        /// <returns>Distance of projection along the path</returns>
         public float DistanceOfProjectionAlongPath(Vector2 position)
         {
             // Get segment closest to position
@@ -80,7 +110,7 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
             for (int i = 0; i < segIdx; i++) distance += Segments[i].Length;
 
             // Add scalar projection of point onto
-            distance += Vector2.Distance(Segments[segIdx].Source, Segments[segIdx].NormalPoint(position));
+            distance += Vector2.Distance(Segments[segIdx].Source, Segments[segIdx].ProjectOntoSupportingLine(position));
             return distance;
         }
     }

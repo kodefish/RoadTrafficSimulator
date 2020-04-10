@@ -42,6 +42,12 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
             }
         }
 
+        /// <summary>
+        /// Computes length of a portion of the curve.
+        /// </summary>
+        /// <param name="a">Start of the portion</param>
+        /// <param name="b">End of the portion</param>
+        /// <returns></returns>
         public float DistanceAlongCurve(float a, float b)
         {
             if (!(0 < a && a < b && b < 1)) throw new ArgumentOutOfRangeException(String.Format("{0} and {1} must by between 0 and 1, {0} < {1}!", a, b));
@@ -79,6 +85,7 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
         /// <summary>
         /// Returns tangent of Bezier curve, f'(t)
         /// </summary>
+        /// <param name="t">point of the derivative</param>
         public Vector2 GetTangent(float t)
         {
             if (t > 1) throw new ArgumentOutOfRangeException(String.Format("{0} is out of range (0-1).", t));

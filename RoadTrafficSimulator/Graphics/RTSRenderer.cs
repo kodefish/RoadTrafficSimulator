@@ -70,8 +70,8 @@ namespace RoadTrafficSimulator.Graphics
             foreach (Lane l in road.NorthBoundLanes) DrawLane(l, Color.LimeGreen);
             Segment srcSegment = road.RoadStartSegment;
             Segment dstSegment = road.RoadTargetSegment;
-            Vector2 sepSrc = srcSegment.GetPointOnSegment(road.NumLanesNorthBound * Lane.LANE_WIDTH / srcSegment.Length);
-            Vector2 sepDst = dstSegment.GetPointOnSegment(road.NumLanesSouthBound * Lane.LANE_WIDTH/ dstSegment.Length);
+            Vector2 sepSrc = srcSegment.Lerp(road.NumLanesNorthBound * Lane.LANE_WIDTH / srcSegment.Length);
+            Vector2 sepDst = dstSegment.Lerp(road.NumLanesSouthBound * Lane.LANE_WIDTH/ dstSegment.Length);
             DrawSegment(new Segment(sepSrc, sepDst), Color.Yellow);
         }
 
