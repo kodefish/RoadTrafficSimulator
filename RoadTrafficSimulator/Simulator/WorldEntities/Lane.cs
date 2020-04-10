@@ -11,7 +11,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
     class Lane : IRTSUpdateable
     {
         // Lane params
-        public const float LANE_WIDTH = 2;          // Width of a lane, in meters
+        public const float LANE_WIDTH = 3;          // Width of a lane, in meters
         public float MaxSpeed { get; private set; } // Speedlimit
 
         // Lane geometry

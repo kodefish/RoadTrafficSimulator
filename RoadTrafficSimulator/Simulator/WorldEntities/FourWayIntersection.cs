@@ -74,29 +74,29 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 
         public Vector2 Dimensions => new Vector2(Width, Height);
 
-        public Segment GetRoadSegment(FourWayIntersection other)
+        public Segment GetRoadSegment(FourWayIntersection other, float roadWidth)
         {
             Vector2 direction = (other.Origin - this.Origin).Normalized;
             Vector2 source = new Vector2(), target = new Vector2();
             if (direction.Equals(Vector2.Up))
             {
-                source = new Vector2(Origin.X - Width / 2, Origin.Y + Height / 2);
-                target = new Vector2(Origin.X + Width / 2, Origin.Y + Height / 2);
+                source = new Vector2(Origin.X - roadWidth / 2, Origin.Y + Height / 2);
+                target = new Vector2(Origin.X + roadWidth / 2, Origin.Y + Height / 2);
             }
             else if (direction.Equals(Vector2.Down))
             {
-                source = new Vector2(Origin.X + Width / 2, Origin.Y - Height / 2);
-                target = new Vector2(Origin.X - Width / 2, Origin.Y - Height / 2);
+                source = new Vector2(Origin.X + roadWidth / 2, Origin.Y - Height / 2);
+                target = new Vector2(Origin.X - roadWidth / 2, Origin.Y - Height / 2);
             }
             else if (direction.Equals(Vector2.Left))
             {
-                source = new Vector2(Origin.X - Width / 2, Origin.Y - Height / 2);
-                target = new Vector2(Origin.X - Width / 2, Origin.Y + Height / 2);
+                source = new Vector2(Origin.X - Width / 2, Origin.Y - roadWidth / 2);
+                target = new Vector2(Origin.X - Width / 2, Origin.Y + roadWidth / 2);
             }
             else if (direction.Equals(Vector2.Right))
             {
-                source = new Vector2(Origin.X + Width / 2, Origin.Y + Height / 2);
-                target = new Vector2(Origin.X + Width / 2, Origin.Y - Height / 2);
+                source = new Vector2(Origin.X + Width / 2, Origin.Y + roadWidth / 2);
+                target = new Vector2(Origin.X + Width / 2, Origin.Y - roadWidth / 2);
 
             }
 

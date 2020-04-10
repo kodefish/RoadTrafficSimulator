@@ -33,8 +33,8 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public bool IsHorizontal => Orientation == RoadOrientation.Horizontal;
 
         // Road position
-        public Segment RoadStartSegment => SourceIntersection.GetRoadSegment(TargetIntersection);
-        public Segment RoadTargetSegment => TargetIntersection.GetRoadSegment(SourceIntersection);
+        public Segment RoadStartSegment => SourceIntersection.GetRoadSegment(TargetIntersection, RoadWidth);
+        public Segment RoadTargetSegment => TargetIntersection.GetRoadSegment(SourceIntersection, RoadWidth);
         public Vector2 Position
         {
             get

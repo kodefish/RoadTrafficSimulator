@@ -74,7 +74,7 @@ namespace RoadTrafficSimulator
 
 
             Road road12 = new Road(ref intersection1, ref intersection2, 1, 1, RoadOrientation.Vertical, 120);
-            Road road13 = new Road(ref intersection1, ref intersection3, 1, 1, RoadOrientation.Horizontal, 120);
+            Road road13 = new Road(ref intersection1, ref intersection3, 2, 2, RoadOrientation.Horizontal, 120);
             Road road24 = new Road(ref intersection2, ref intersection4, 1, 1, RoadOrientation.Horizontal, 120);
             Road road34 = new Road(ref intersection3, ref intersection4, 1, 1, RoadOrientation.Vertical, 120);
             Road road35 = new Road(ref intersection3, ref intersection5, 1, 1, RoadOrientation.Horizontal, 120);
