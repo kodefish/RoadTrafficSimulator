@@ -77,9 +77,9 @@ namespace RoadTrafficSimulator
             Road road13 = new Road(ref intersection1, ref intersection3, 2, 2, RoadOrientation.Horizontal, 120);
             Road road24 = new Road(ref intersection2, ref intersection4, 1, 1, RoadOrientation.Horizontal, 120);
             Road road34 = new Road(ref intersection3, ref intersection4, 1, 1, RoadOrientation.Vertical, 120);
-            Road road35 = new Road(ref intersection3, ref intersection5, 1, 1, RoadOrientation.Horizontal, 120);
+            Road road35 = new Road(ref intersection3, ref intersection5, 1, 3, RoadOrientation.Horizontal, 120);
             Road road46 = new Road(ref intersection4, ref intersection6, 1, 1, RoadOrientation.Horizontal, 120);
-            Road road56 = new Road(ref intersection5, ref intersection6, 1, 1, RoadOrientation.Vertical, 120);
+            Road road56 = new Road(ref intersection5, ref intersection6, 4, 1, RoadOrientation.Vertical, 120);
 
             // Add the stuff
             world.AddIntersection(intersection1);
@@ -113,7 +113,7 @@ namespace RoadTrafficSimulator
             Vector2 posIntersection2 = new Vector2(displayWidth - padding, displayHeight / 2);
             FourWayIntersection intersection2 = new FourWayIntersection(posIntersection2);
 
-            Road road = new Road(ref intersection2, ref intersection1, 1, 1, RoadOrientation.Horizontal, 30);
+            Road road = new Road(ref intersection2, ref intersection1, 3, 3, RoadOrientation.Horizontal, 30);
 
             world.AddIntersection(intersection1);
             world.AddIntersection(intersection2);
@@ -152,7 +152,7 @@ namespace RoadTrafficSimulator
             while (!added && numTries++ < 2 * world.Roads.Count)
             {
                 Road randomRoad = world.Roads[rng.Next(0, world.Roads.Count)];
-                Lane[] lanes = rng.Next() % 2 == 0 ? randomRoad.NorthBoundLanes : randomRoad.SouthBoundLanes;
+                Lane[] lanes = rng.Next() % 2 == 0 ? randomRoad.OutLanes : randomRoad.InLanes;
                 if (lanes.Length > 0)
                 {
                     CarParams carParams;

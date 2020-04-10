@@ -75,20 +75,30 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
         /// <summary>
         /// Splits the segment into even subsegments. Reversed flag flips 
         /// source and target of the segment (also flips the normals of the subsegments)
+        /// but keeps the same order
         /// </summary>
         /// <param name="numSubSegments">Number of subsegments to create</param>
         /// <param name="reversed">Flips source and target</param>
         /// <returns></returns>
-        public Segment[] SplitSegment(int numSubSegments, bool reversed)
+        public Segment[] SplitSegment(int numSubSegments, bool reversed = false)
         {
-            if (reversed) new Segment(Target, Source).SplitSegment(numSubSegments, !reversed);
-            Segment[] subSegments = new Segment[numSubSegments];
-
-            for (float i = 0; i < subSegments.Length; i++)
+            if (reversed)
             {
-                subSegments[(int)i] = SubSegment(i / numSubSegments, (i + 1) / numSubSegments);
+                Segment reversedSegment = new Segment(Target, Source);
+                Segment[] reversedSegments = reversedSegment.SplitSegment(numSubSegments, !reversed);
+                // Array.Reverse(reversedSegments);
+                return reversedSegments;
             }
-            return subSegments;
+            else
+            {
+                Segment[] subSegments = new Segment[numSubSegments];
+
+                for (float i = 0; i < subSegments.Length; i++)
+                {
+                    subSegments[(int)i] = SubSegment(i / numSubSegments, (i + 1) / numSubSegments);
+                }
+                return subSegments;
+            }
         }
 
         /// <summary>

@@ -66,13 +66,9 @@ namespace RoadTrafficSimulator.Graphics
         public void DrawRoad(Road road)
         {
             DrawRectange(road.GetGeometricalFigure(), roadColor);
-            foreach (Lane l in road.SouthBoundLanes) DrawLane(l, Color.Pink);
-            foreach (Lane l in road.NorthBoundLanes) DrawLane(l, Color.LimeGreen);
-            Segment srcSegment = road.RoadStartSegment;
-            Segment dstSegment = road.RoadTargetSegment;
-            Vector2 sepSrc = srcSegment.Lerp(road.NumLanesNorthBound * Lane.LANE_WIDTH / srcSegment.Length);
-            Vector2 sepDst = dstSegment.Lerp(road.NumLanesSouthBound * Lane.LANE_WIDTH/ dstSegment.Length);
-            DrawSegment(new Segment(sepSrc, sepDst), Color.Yellow);
+            foreach (Lane l in road.InLanes) DrawLane(l, Color.Pink);
+            foreach (Lane l in road.OutLanes) DrawLane(l, Color.LimeGreen);
+            DrawSegment(road.RoadMidline, Color.Yellow);
         }
 
         public void DrawLane(Lane l, Color c)
@@ -80,7 +76,9 @@ namespace RoadTrafficSimulator.Graphics
             // Draw the midline
             dRenderer.DrawPoint(l.Path.PathStart * Scale, Color.Green, 5);
             dRenderer.DrawPoint(l.Path.PathEnd * Scale, Color.Red, 5);
+            foreach (Segment s in l.Path.Segments) dRenderer.Draw(new Segment(s.Source * Scale, s.Target * Scale), Color.LightGray);
 
+            /*
             // Draw free space
             Segment freeLaneSpace = new Segment(
                 l.Path.PathStart * Scale, 
@@ -96,6 +94,7 @@ namespace RoadTrafficSimulator.Graphics
                 Vector2 p2 = c1.GetGeometricalFigure().ClosestVertex(p1);
                 dRenderer.Draw(new Segment(p1 * Scale, p2 * Scale), Color.Cyan);
             }
+            */
         }
 
         public void DrawCar(Car c, Color color)

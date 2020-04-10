@@ -21,12 +21,12 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public FourWayIntersection TargetIntersection { get; private set; }
 
         // Lane information
-        public int NumLanesSouthBound { get; }
-        public int NumLanesNorthBound { get; }
-        public int NumLanes => NumLanesSouthBound + NumLanesNorthBound;
+        public int NumInLanes { get; }
+        public int NumOutLanes { get; }
+        public int NumLanes => NumInLanes + NumOutLanes;
 
-        public Lane[] SouthBoundLanes { get; private set; }
-        public Lane[] NorthBoundLanes { get; private set; }
+        public Lane[] InLanes { get; private set; }
+        public Lane[] OutLanes { get; private set; }
 
         // Road orientation
         public RoadOrientation Orientation { get; }
@@ -35,6 +35,14 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         // Road position
         public Segment RoadStartSegment => SourceIntersection.GetRoadSegment(TargetIntersection, RoadWidth);
         public Segment RoadTargetSegment => TargetIntersection.GetRoadSegment(SourceIntersection, RoadWidth);
+        public Segment RoadMidline {
+            get
+            {
+                Vector2 sepSrc = RoadStartSegment.Lerp(NumInLanes * Lane.LANE_WIDTH / RoadStartSegment.Length);
+                Vector2 sepDst = RoadTargetSegment.Lerp(NumOutLanes * Lane.LANE_WIDTH/ RoadTargetSegment.Length);
+                return new Segment(sepSrc, sepDst);
+            }
+        }
         public Vector2 Position
         {
             get
@@ -45,7 +53,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         }
 
         // Road dimensions
-        public float RoadWidth => NumLanesSouthBound * Lane.LANE_WIDTH + NumLanesNorthBound * Lane.LANE_WIDTH;
+        public float RoadWidth => NumInLanes * Lane.LANE_WIDTH + NumOutLanes * Lane.LANE_WIDTH;
         public float RoadLength
         {
             get
@@ -76,12 +84,12 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         /// </summary>
         /// <param name="source"></param>
         /// <param name="target"></param>
-        /// <param name="numLanesSouthBound">Numlanes along negative orientation</param>
-        /// <param name="numLanesNorthBound">Numlanes along positive orientation</param>
+        /// <param name="numInLanes">Numlanes along negative orientation</param>
+        /// <param name="numOutLanes">Numlanes along positive orientation</param>
         /// <param name="orientation"></param>
         public Road(
             ref FourWayIntersection source, ref FourWayIntersection target, 
-            int numLanesSouthBound, int numLanesNorthBound, 
+            int numInLanes, int numOutLanes, 
             RoadOrientation orientation, float speedLimit)
         {
             Orientation = orientation;
@@ -109,10 +117,10 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             SourceIntersection = source;
             TargetIntersection = target;
 
-            this.NumLanesSouthBound = numLanesSouthBound;
-            this.NumLanesNorthBound = numLanesNorthBound;
-            SouthBoundLanes = InitLanes(numLanesSouthBound);
-            NorthBoundLanes = InitLanes(numLanesNorthBound);
+            this.NumInLanes = numInLanes;
+            this.NumOutLanes = numOutLanes;
+            InLanes = InitLanes(numInLanes);
+            OutLanes = InitLanes(numOutLanes);
 
             SourceIntersection.AddRoad(this);
             TargetIntersection.AddRoad(this);
@@ -136,31 +144,36 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 
         public void ComputeLaneGeometry()
         {
-            // Reverse the src segments since we start with south bound lanes on the left
-            Segment[] srcSubSegment = RoadStartSegment.SplitSegment(NumLanes, true);
-            Segment[] targetSubSegment = RoadTargetSegment.SplitSegment(NumLanes, false);
+            // In lanes go from top half of target segment, to bottom half of source segment
+            Segment inLanesTargets = new Segment(RoadTargetSegment.Target, RoadMidline.Target);
+            Segment inLanesSources = new Segment(RoadStartSegment.Source, RoadMidline.Source);
+            SetLaneSourceAndTargets(InLanes, inLanesSources, inLanesTargets);
 
-            // Set the source segments of the sourth bound lanes: targetIntersection -> sourceIntersection (left)
-            int i = 0;
-            for (; i < NumLanesSouthBound; i++)
-            {
-                SouthBoundLanes[i].SourceSegment = targetSubSegment[i];
-                SouthBoundLanes[i].TargetSegment = srcSubSegment[i];
-            }
+            // In lanes go from top half of source segment, to bottom half of target segment
+            Segment outLanesTargets = new Segment(RoadMidline.Source, RoadStartSegment.Target);
+            Segment outLanesSources = new Segment(RoadMidline.Target, RoadTargetSegment.Source);
+            SetLaneSourceAndTargets(OutLanes, outLanesSources, outLanesTargets);
+        }
 
-            // Set the source segments of the north bound lanes: sourceIntersection -> targetIntersection (right)
-            for (; i < NumLanes; i++)
+        private void SetLaneSourceAndTargets(Lane[] lanes, Segment sourceSegment, Segment targetSegment)
+        {
+            int numLanes = lanes.Length;
+            // Reverse target segments
+            Segment[] sourceSubSegment = sourceSegment.SplitSegment(numLanes);
+            Segment[] targetSubSegment = targetSegment.SplitSegment(numLanes);
+
+            for (int i = 0; i < lanes.Length; i++)
             {
-                NorthBoundLanes[i- NumLanesSouthBound].SourceSegment = srcSubSegment[i];
-                NorthBoundLanes[i- NumLanesSouthBound].TargetSegment = targetSubSegment[i];
+                lanes[i].SourceSegment = sourceSubSegment[numLanes - 1 - i];
+                lanes[i].TargetSegment = targetSubSegment[numLanes - 1 - i];
             }
         }
 
         public void Update(float deltaTime)
         {
             // Update all the lanes with new car information
-            foreach (Lane l in SouthBoundLanes) l.Update(deltaTime);
-            foreach (Lane l in NorthBoundLanes) l.Update(deltaTime);
+            foreach (Lane l in InLanes) l.Update(deltaTime);
+            foreach (Lane l in OutLanes) l.Update(deltaTime);
         }
 
         public Rectangle GetGeometricalFigure()
