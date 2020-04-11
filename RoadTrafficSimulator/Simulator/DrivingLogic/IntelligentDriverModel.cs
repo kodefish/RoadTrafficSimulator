@@ -15,6 +15,8 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
     {
         public static float SAFE_TIME_HEADWAY = 4f;    // Minimum possible time to car in front (in seconds)
         public static float MIN_BUMPER_TO_BUMPER_DISTANCE = 4; // Minimum gap between cars (in meters)
+        public static float MAX_BRAKING = 9;            // Maximum braking of a vehicle (in meters/seconds^2)
+        public static float MIN_ACCELERATION = 0.2f;    // Minimum acceleration of a vehicle (in meters/seconds^2)
 
         /// <summary>
         /// Computes the target acceleration of car based on the Intelligent Driver Model

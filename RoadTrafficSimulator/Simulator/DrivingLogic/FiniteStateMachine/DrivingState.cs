@@ -82,7 +82,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         /// <summary>
         /// Get the maximum driving speed based on the current state
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Maximum speed of the car in the current state</returns>
         public abstract float MaxSpeed();
 
         /// <summary>

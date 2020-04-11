@@ -27,7 +27,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         /// <summary>
         /// Returns the min between the car's maximum speed and the lane's speed limit
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Maximum speed of the car in the current state</returns>
         public override float MaxSpeed() => Math.Min(car.MaxCarSpeed, lane.MaxSpeed);
 
         /// <summary>
