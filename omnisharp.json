@@ -1,0 +1,5 @@
+{
+    "msbuild": {
+        "MSBuildExtensionsPath": "/usr/lib/mono/xbuild"
+    }
+}

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace RoadTrafficSimulator
 {
@@ -13,6 +14,9 @@ namespace RoadTrafficSimulator
         [STAThread]
         static void Main()
         {
+            // Outputs Debug.WriteLine to console
+            TextWriterTraceListener myWriter = new TextWriterTraceListener(System.Console.Out);
+            Debug.Listeners.Add(myWriter);
             using (var game = new RoadTrafficSimulator())
                 game.Run();
         }
