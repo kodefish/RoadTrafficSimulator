@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
 using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
 using RoadTrafficSimulator.Simulator.WorldEntities;
@@ -46,7 +47,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
         /// <summary>
         /// Information about car directly in front
         /// </summary>
-        public LeaderCarInfo LeaderCarInfo { get; set; }
+        public Dictionary<int, LeaderCarInfo> LeaderCarInfo { get; }
 
         /// <summary>
         /// Creates a car controller that follows some path
@@ -57,6 +58,13 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
         {
             this.car = car;
             this.Path = path;
+
+            LeaderCarInfo = new Dictionary<int, LeaderCarInfo>();
+        }
+
+        public void SetLeaderCarInfo(int laneIdx, LeaderCarInfo leaderCarInfo)
+        {
+            LeaderCarInfo[laneIdx] = leaderCarInfo;
         }
 
         /// <summary>
@@ -195,8 +203,8 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
             Vector2 idmAcceleration = IntelligentDriverModel.ComputeAccelerationIntensity(
                 car, 
                 Path.TangentOfProjectedPosition(car.Position),
-                LeaderCarInfo.DistToNextCar,
-                LeaderCarInfo.ApproachingRate
+                LeaderCarInfo[lane.LaneIdx].DistToNextCar,
+                LeaderCarInfo[lane.LaneIdx].ApproachingRate
                 );
 
             // Figure out the force we have to apply on the car to reach target acceleration
