@@ -129,7 +129,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         private Lane[] InitLanes(int numLanes)
         {
             Lane[] lanes = new Lane[numLanes];
-            for (int i = 0; i < numLanes; i++) lanes[i] = new Lane(speedLimit);
+            for (int i = 0; i < numLanes; i++) lanes[i] = new Lane(i, speedLimit);
             return lanes;
         }
 
@@ -149,10 +149,10 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             Segment inLanesSources = new Segment(RoadStartSegment.Source, RoadMidline.Source);
             SetLaneSourceAndTargets(InLanes, inLanesSources, inLanesTargets, false);
 
-            // In lanes go from top half of source segment, to bottom half of target segment
-            Segment outLanesTargets = new Segment(RoadMidline.Source, RoadStartSegment.Target);
-            Segment outLanesSources = new Segment(RoadMidline.Target, RoadTargetSegment.Source);
-            SetLaneSourceAndTargets(OutLanes, outLanesSources, outLanesTargets, true);
+            // Out lanes go from top half of source segment, to bottom half of target segment
+            Segment outLanesTargets = new Segment(RoadStartSegment.Target, RoadMidline.Source);
+            Segment outLanesSources = new Segment(RoadTargetSegment.Source, RoadMidline.Target);
+            SetLaneSourceAndTargets(OutLanes, outLanesSources, outLanesTargets, false);
         }
 
         private void SetLaneSourceAndTargets(Lane[] lanes, Segment sourceSegment, Segment targetSegment, bool flipNormals)
@@ -164,8 +164,8 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 
             for (int i = 0; i < lanes.Length; i++)
             {
-                lanes[i].SourceSegment = sourceSubSegment[numLanes - 1 - i];
-                lanes[i].TargetSegment = targetSubSegment[numLanes - 1 - i];
+                lanes[i].SourceSegment = sourceSubSegment[i];
+                lanes[i].TargetSegment = targetSubSegment[i];
             }
         }
 

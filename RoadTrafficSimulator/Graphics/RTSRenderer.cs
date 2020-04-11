@@ -75,8 +75,8 @@ namespace RoadTrafficSimulator.Graphics
         public void DrawRoad(Road road)
         {
             DrawRectange(road.GetGeometricalFigure(), roadColor);
-            foreach (Lane l in road.InLanes) DrawLane(l, Color.Pink);
-            foreach (Lane l in road.OutLanes) DrawLane(l, Color.LimeGreen);
+            foreach (Lane l in road.InLanes) DrawLane(l, colors[l.LaneIdx % colors.Length]);
+            foreach (Lane l in road.OutLanes) DrawLane(l, colors[l.LaneIdx % colors.Length]);
             DrawSegment(road.RoadMidline, Color.Yellow);
 
             // Draw the source and target segment normals
@@ -87,6 +87,9 @@ namespace RoadTrafficSimulator.Graphics
         public void DrawLane(Lane l, Color c)
         {
             // Draw the midline
+            foreach (Segment s in l.Path.Segments) DrawSegment(s, c, 5);
+
+            // Draw arrival points
             dRenderer.DrawPoint(l.Path.PathStart * Scale, Color.Green, 5);
             dRenderer.DrawPoint(l.Path.PathEnd * Scale, Color.Red, 5);
             foreach (Segment s in l.Path.Segments) dRenderer.Draw(new Segment(s.Source * Scale, s.Target * Scale), Color.LightGray);

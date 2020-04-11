@@ -13,6 +13,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         // Lane params
         public const float LANE_WIDTH = 3;          // Width of a lane, in meters
         public float MaxSpeed { get; private set; } // Speedlimit
+        public int LaneIdx;               // Lane index in lane[] of parent road
 
         // Lane geometry
         private Segment _sourceSegment;
@@ -39,8 +40,9 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         /// <summary>
         /// Contruct a lane between two segments
         /// </summary>
-        public Lane(float speedLimit)
+        public Lane(int laneIdx, float speedLimit)
         {
+            LaneIdx = laneIdx;
             MaxSpeed = speedLimit;
 
             // Keep track of cars on the lane
