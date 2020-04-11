@@ -75,12 +75,13 @@ namespace RoadTrafficSimulator.Graphics
         public void DrawRoad(Road road)
         {
             DrawRectange(road.GetGeometricalFigure(), roadColor);
-            foreach (Lane l in road.InLanes) DrawLane(l, colors[l.LaneIdx % colors.Length]);
-            foreach (Lane l in road.OutLanes) DrawLane(l, colors[l.LaneIdx % colors.Length]);
+            // foreach (Lane l in road.InLanes) DrawLane(l, colors[l.LaneIdx % colors.Length]);
+            // foreach (Lane l in road.OutLanes) DrawLane(l, colors[l.LaneIdx % colors.Length]);
+            DrawLane(road.InLanes[0], Color.Green);
             DrawSegment(road.RoadMidline, Color.Yellow);
 
             // Draw the source and target segment normals
-            DrawNormal(road.RoadStartSegment, Color.Purple, 2);
+            DrawNormal(road.RoadStartSegment, Color.Pink, 2);
             DrawNormal(road.RoadTargetSegment, Color.Purple, 2);
         }
 

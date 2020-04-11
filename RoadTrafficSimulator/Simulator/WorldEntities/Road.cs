@@ -145,14 +145,14 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public void ComputeLaneGeometry()
         {
             // In lanes go from top half of target segment, to bottom half of source segment
-            Segment inLanesTargets = new Segment(RoadTargetSegment.Target, RoadMidline.Target);
-            Segment inLanesSources = new Segment(RoadStartSegment.Source, RoadMidline.Source);
-            SetLaneSourceAndTargets(InLanes, inLanesSources, inLanesTargets, false);
+            Segment outLanesSources = new Segment(RoadStartSegment.Source, RoadMidline.Source);
+            Segment outLanesTargets = new Segment(RoadTargetSegment.Target, RoadMidline.Target);
+            SetLaneSourceAndTargets(OutLanes, outLanesSources, outLanesTargets, false);
 
             // Out lanes go from top half of source segment, to bottom half of target segment
-            Segment outLanesTargets = new Segment(RoadStartSegment.Target, RoadMidline.Source);
-            Segment outLanesSources = new Segment(RoadTargetSegment.Source, RoadMidline.Target);
-            SetLaneSourceAndTargets(OutLanes, outLanesSources, outLanesTargets, false);
+            Segment inLanesSources = new Segment(RoadTargetSegment.Source, RoadMidline.Target);
+            Segment inLanesTargets = new Segment(RoadStartSegment.Target, RoadMidline.Source);
+            SetLaneSourceAndTargets(InLanes, inLanesSources, inLanesTargets, false);
         }
 
         private void SetLaneSourceAndTargets(Lane[] lanes, Segment sourceSegment, Segment targetSegment, bool flipNormals)
