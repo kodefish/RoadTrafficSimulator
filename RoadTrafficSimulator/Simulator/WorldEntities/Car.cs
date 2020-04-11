@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
 using RoadTrafficSimulator.Simulator.Physics;
-using RoadTrafficSimulator.Simulator.DrivingLogic;
+using RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine;
 using RoadTrafficSimulator.Simulator.Interfaces;
 using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
 

@@ -60,7 +60,8 @@
     <Compile Include="Simulator\Interfaces\IRTSGeometry.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Simulator\DrivingLogic\DrivingStates.cs" />
+    <Compile Include="Simulator\DrivingLogic\FiniteStateMachine\DrivingState.cs" />
+    <Compile Include="Simulator\DrivingLogic\FiniteStateMachine\KeepLaneState.cs" />
     <Compile Include="Simulator\Interfaces\IRTSUpdateable.cs" />
     <Compile Include="Simulator\WorldEntities\Car.cs" />
     <Compile Include="Simulator\WorldEntities\FourWayIntersection.cs" />

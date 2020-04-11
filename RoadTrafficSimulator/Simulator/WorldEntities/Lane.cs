@@ -1,10 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using RoadTrafficSimulator.Simulator.Interfaces;
 using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
 using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
-using RoadTrafficSimulator.Simulator.DrivingLogic;
-using System;
+using RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine;
 
 namespace RoadTrafficSimulator.Simulator.WorldEntities
 {
