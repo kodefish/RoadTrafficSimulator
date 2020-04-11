@@ -147,20 +147,20 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             // In lanes go from top half of target segment, to bottom half of source segment
             Segment outLanesSources = new Segment(RoadStartSegment.Source, RoadMidline.Source);
             Segment outLanesTargets = new Segment(RoadTargetSegment.Target, RoadMidline.Target);
-            SetLaneSourceAndTargets(OutLanes, outLanesSources, outLanesTargets, false);
+            SetLaneSourceAndTargets(OutLanes, outLanesSources, outLanesTargets);
 
             // Out lanes go from top half of source segment, to bottom half of target segment
             Segment inLanesSources = new Segment(RoadTargetSegment.Source, RoadMidline.Target);
             Segment inLanesTargets = new Segment(RoadStartSegment.Target, RoadMidline.Source);
-            SetLaneSourceAndTargets(InLanes, inLanesSources, inLanesTargets, false);
+            SetLaneSourceAndTargets(InLanes, inLanesSources, inLanesTargets);
         }
 
-        private void SetLaneSourceAndTargets(Lane[] lanes, Segment sourceSegment, Segment targetSegment, bool flipNormals)
+        private void SetLaneSourceAndTargets(Lane[] lanes, Segment sourceSegment, Segment targetSegment)
         {
             int numLanes = lanes.Length;
             // Reverse target segments
-            Segment[] sourceSubSegment = sourceSegment.SplitSegment(numLanes, flipNormals);
-            Segment[] targetSubSegment = targetSegment.SplitSegment(numLanes, flipNormals);
+            Segment[] sourceSubSegment = sourceSegment.SplitSegment(numLanes);
+            Segment[] targetSubSegment = targetSegment.SplitSegment(numLanes);
 
             for (int i = 0; i < lanes.Length; i++)
             {
