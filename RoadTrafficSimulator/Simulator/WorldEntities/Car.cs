@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
 using RoadTrafficSimulator.Simulator.Physics;
+using RoadTrafficSimulator.Simulator.DrivingLogic;
 using RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine;
 using RoadTrafficSimulator.Simulator.Interfaces;
 using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
@@ -10,12 +11,30 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 {
     struct CarParams
     {
-        public float Mass,
-            CarWidth,
-            CarLength,
-            MaxSpeed,
-            MaxAccleration,
-            BrakingDeceleration;
+        public CarParams(float mass,
+            float carWidth,
+            float carLength,
+            float maxSpeed,
+            float maxAccleration,
+            float brakingDeceleration,
+            float politenessFactor)
+        {
+            Mass = mass;
+            CarWidth = carWidth;
+            CarLength = carLength;
+            MaxSpeed = maxSpeed;
+            MaxAccleration = maxAccleration;
+            BrakingDeceleration = brakingDeceleration;
+            PolitenessFactor = politenessFactor;
+        }
+        public float Mass { get; }
+        public float CarWidth { get; }
+        public float CarLength { get; }
+        public float MaxSpeed { get; }
+        public float MaxAccleration { get; }
+        public float BrakingDeceleration { get; }
+        public float PolitenessFactor { get; }
+
     }
 
     class Car : RigidBody, IRTSGeometry<Rectangle>
@@ -29,10 +48,12 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public float BrakingDeceleration => carParams.BrakingDeceleration;
         public float CarWidth => carParams.CarWidth;
         public float CarLength => carParams.CarLength;
+        public float PolitnessFactor => carParams.PolitenessFactor;
 
         // AI Finite state machine
         public DrivingState DrivingState { get; private set; }
         public float MaxOverrallSpeed => DrivingState.MaxSpeed();
+
 
         /// <summary>
         /// Creates a car with a mass and an initial position
@@ -43,6 +64,12 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public Car(CarParams carParams, Lane initialLane, float timeOffset = 0)
             : base(carParams.Mass, ComputeCarMomentOfInertia(carParams), initialLane.Path.PathStart, (-(initialLane.Path.TangentOfProjectedPosition(initialLane.Path.PathStart).Normal)).Angle)
         {
+            // Make sure vehicle respects min and max acceleration params
+            if (carParams.MaxAccleration < IntelligentDriverModel.MIN_ACCELERATION) 
+                throw new ArgumentException(String.Format("Car acceleration ({0} m/s2) too low! Min: {1} m/s2", carParams.MaxAccleration, IntelligentDriverModel.MIN_ACCELERATION));
+            if (carParams.BrakingDeceleration > IntelligentDriverModel.MAX_BRAKING) 
+                throw new ArgumentException(String.Format("Car braking ({0} m/s2) too high! Max: {1} m/s2", carParams.MaxAccleration, IntelligentDriverModel.MAX_BRAKING));
+
             DrivingState = new KeepLaneState(this, initialLane);
             DrivingState.OnEnter();
             this.carParams = carParams;

@@ -87,6 +87,13 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
         public Vector2 NormalPoint(Vector2 p) => Segments[ClosestSegment(p)].ProjectOntoSupportingLine(p);
 
         /// <summary>
+        /// Distance of a point p to the path (distance from p to p's projection)
+        /// </summary>
+        /// <param name="p">Point to project</param>
+        /// <returns>Orthogonal distance to closest segment on the path</returns>
+        public float DistanceToPath(Vector2 p) => Vector2.Distance(p, NormalPoint(p));
+
+        /// <summary>
         /// Computes the tangent vector of a projected point along the path. Since the path 
         /// is a series of segments, the tangent is the direction of the closest segment.
         /// This is an approximation, but should be accurate enough if the sampling rate is high enough
@@ -113,5 +120,11 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
             distance += Vector2.Distance(Segments[segIdx].Source, Segments[segIdx].ProjectOntoSupportingLine(position));
             return distance;
         }
+
+        /// <summary>
+        /// Inverse lerp operation by approximating the position along the path by projecting 
+        /// onto closest segment, and computing the distance along the path.
+        /// </summary>
+        public float InverseLerp(Vector2 position) => DistanceOfProjectionAlongPath(position) / Length;
     }
 }

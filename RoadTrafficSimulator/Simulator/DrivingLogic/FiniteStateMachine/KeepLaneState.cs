@@ -56,6 +56,15 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         {
             DrivingState state = base.Update(deltaTime);
             // TODO Determine if I need to change lanes or if I'm at the end of a lane, and trigger a state change
+            if (false) // End of the lane reached
+                state = null; // New wait for light state
+            else 
+            {
+                // Check via MOBIL for potential lane change
+                int newLaneIdx = Mobil.OptimalLane(car, lane, lane.NeighboringLanes);
+                if (newLaneIdx != lane.LaneIdx)
+                    state = new ChangeLaneState(car, lane, lane.NeighboringLanes[newLaneIdx]);
+            }
             return state;
         }
 

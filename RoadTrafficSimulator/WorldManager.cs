@@ -113,7 +113,7 @@ namespace RoadTrafficSimulator
             Vector2 posIntersection2 = new Vector2(displayWidth - padding, displayHeight / 2);
             FourWayIntersection intersection2 = new FourWayIntersection(posIntersection2);
 
-            Road road = new Road(ref intersection1, ref intersection2, 3, 3, 30);
+            Road road = new Road(ref intersection1, ref intersection2, 2, 2, 30);
 
             world.AddIntersection(intersection1);
             world.AddIntersection(intersection2);
@@ -156,12 +156,32 @@ namespace RoadTrafficSimulator
                 if (lanes.Length > 0)
                 {
                     CarParams carParams;
-                    carParams.Mass = 500;
-                    carParams.CarWidth = 2;
-                    carParams.CarLength = rng.Next(3, 7);
-                    carParams.MaxSpeed = 92;
-                    carParams.MaxAccleration = 1.97f;
-                    carParams.BrakingDeceleration = 4.20f;
+                    if (rng.Next() % 4 != 0)
+                    {
+                        // Car parameters
+                        carParams = new CarParams(
+                            mass : 500,
+                            carWidth : 2,
+                            carLength : 3,
+                            maxSpeed : 120,
+                            maxAccleration : 1.3f,
+                            brakingDeceleration: 3f,
+                            politenessFactor: 0.0f
+                        );
+                    }
+                    else
+                    {
+                        // Truck parameters
+                        carParams = new CarParams(
+                            mass : 5000,
+                            carWidth : 2,
+                            carLength : 7,
+                            maxSpeed : 80,
+                            maxAccleration : 0.3f,
+                            brakingDeceleration: 2f,
+                            politenessFactor: 0.0f
+                        );
+                    }
 
                     Lane randomLane = lanes[rng.Next(0, lanes.Length)];
                     if (randomLane.FreeLaneSpace() > carParams.CarLength + IntelligentDriverModel.MIN_BUMPER_TO_BUMPER_DISTANCE)
@@ -192,12 +212,13 @@ namespace RoadTrafficSimulator
             foreach (Car car in world.Cars) rtsRenderer.DrawCar(car, carColor[car]);
 
             // Print stats to console
+            /*
             Debug.WriteLine("World Stats:");
             Debug.WriteLine("Num active cars: {0}", world.Cars.Count);
             Debug.WriteLine("Num roads: {0}", world.Roads.Count);
             Debug.WriteLine("Num intersections: {0}", world.Intersections.Count);
             Debug.WriteLine("FPS: {0}", 1 / (float)gameTime.ElapsedGameTime.TotalSeconds);
-
+            */
         }
 
         public void Update(GameTime gameTime)

@@ -57,7 +57,10 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         public override DrivingState Update(float deltaTime)
         {
             DrivingState state = base.Update(deltaTime);
-            // TODO Determine if lane change is complete
+            // Determine if lane change is complete (car is close enough to next lane trajectory)
+            // Sterring behavior will kick in and complete the change
+            if (Path.DistanceToPath(car.Position) <= Path.Radius)
+                state = new KeepLaneState(car, nextLane);
             return state;
         }
 

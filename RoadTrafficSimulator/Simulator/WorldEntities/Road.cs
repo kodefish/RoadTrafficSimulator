@@ -104,6 +104,33 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         {
             Lane[] lanes = new Lane[numLanes];
             for (int i = 0; i < numLanes; i++) lanes[i] = new Lane(i, speedLimit);
+
+            // Setup lane neighbors
+            for (int i = 0; i < numLanes; i++)
+            {
+                // Get lane neighbors
+                Lane[] neighboringLanes;
+                if (0 < i && i < numLanes - 1)
+                {
+                    neighboringLanes = new Lane[] {
+                        lanes[i - 1],
+                        lanes[i + 1]
+                    };
+                }
+                else if (numLanes > 1)
+                {
+                    neighboringLanes = new Lane[] {
+                        i == 0 ? lanes[i + 1] : lanes[i - 1]
+                    };
+                }
+                else
+                {
+                    neighboringLanes = new Lane[0];
+                }
+
+                lanes[i].NeighboringLanes = neighboringLanes;
+            }
+
             return lanes;
         }
 

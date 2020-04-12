@@ -57,11 +57,13 @@
     <Compile Include="Graphics\Primitives2D.cs" />
     <Compile Include="Graphics\RTSRenderer.cs" />
     <Compile Include="Simulator\DrivingLogic\IntelligentDriverModel.cs" />
+    <Compile Include="Simulator\DrivingLogic\Mobil.cs" />
     <Compile Include="Simulator\Interfaces\IRTSGeometry.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Simulator\DrivingLogic\FiniteStateMachine\DrivingState.cs" />
     <Compile Include="Simulator\DrivingLogic\FiniteStateMachine\KeepLaneState.cs" />
+    <Compile Include="Simulator\DrivingLogic\FiniteStateMachine\ChangeLaneState.cs" />
     <Compile Include="Simulator\Interfaces\IRTSUpdateable.cs" />
     <Compile Include="Simulator\WorldEntities\Car.cs" />
     <Compile Include="Simulator\WorldEntities\FourWayIntersection.cs" />
