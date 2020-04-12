@@ -5,18 +5,11 @@ using RoadTrafficSimulator.Simulator.Interfaces;
 
 namespace RoadTrafficSimulator.Simulator.WorldEntities
 {
-    enum RoadOrientation
-    {
-        Vertical, Horizontal
-    }
-
     class Road : IRTSUpdateable, IRTSGeometry<Rectangle>
     {
         private readonly float speedLimit;
 
         // Road Geometry
-        // Code contract : source.Origin.X < target.Origin.X for horizontal streets
-        // Code contract : source.Origin.Y < target.Origin.Y for vertical streets
         public FourWayIntersection SourceIntersection { get; private set; }
         public FourWayIntersection TargetIntersection { get; private set; }
 
@@ -28,9 +21,9 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public Lane[] InLanes { get; private set; }
         public Lane[] OutLanes { get; private set; }
 
-        // Road orientation
-        public RoadOrientation Orientation { get; }
-        public bool IsHorizontal => Orientation == RoadOrientation.Horizontal;
+        // Road direction
+        public Vector2 Direction => TargetIntersection.Origin - SourceIntersection.Origin;
+        public bool IsHorizontal => Direction.Y == 0;
 
         // Road position
         public Segment RoadStartSegment => SourceIntersection.GetRoadSegment(TargetIntersection, RoadWidth);
@@ -59,12 +52,12 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             get
             {
                 Vector2 srcIntersectionOffset, targetIntersectionOffset;
-                if (Orientation == RoadOrientation.Vertical)
+                if (!IsHorizontal)
                 {
                     srcIntersectionOffset = new Vector2(0, SourceIntersection.Height / 2);
                     targetIntersectionOffset = new Vector2(0, TargetIntersection.Height / 2);
                 }
-                else if (Orientation == RoadOrientation.Horizontal)
+                else if (IsHorizontal)
                 {
                     srcIntersectionOffset = new Vector2(SourceIntersection.Width / 2, 0);
                     targetIntersectionOffset = new Vector2(TargetIntersection.Width / 2, 0);
@@ -78,7 +71,8 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
                 return Vector2.Distance(roadStart, roadEnd);
             }
         }
-             
+
+
         /// <summary>
         /// Creates a the road between 2 intersections
         /// </summary>
@@ -90,30 +84,10 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public Road(
             ref FourWayIntersection source, ref FourWayIntersection target, 
             int numInLanes, int numOutLanes, 
-            RoadOrientation orientation, float speedLimit)
+            float speedLimit)
         {
-            Orientation = orientation;
             this.speedLimit = speedLimit;
 
-            // Make sure road points along positive X or Y axis, and are aligned along the orientation
-            // Not sure we still really need this bit ahahahahaha
-            /*
-            Vector2 sourceOrigin = source.Origin;
-            Vector2 targetOrigin = target.Origin;
-            if (orientation == RoadOrientation.Vertical && sourceOrigin.X == targetOrigin.X)
-            {
-                SourceIntersection = sourceOrigin.Y < targetOrigin.Y ? source : target;
-                TargetIntersection = sourceOrigin.Y < targetOrigin.Y ? target : source;
-            } else if (orientation == RoadOrientation.Horizontal && sourceOrigin.Y == targetOrigin.Y)
-            {
-                SourceIntersection = sourceOrigin.X < targetOrigin.X ? source : target;
-                TargetIntersection = sourceOrigin.X < targetOrigin.X ? target : source;
-            }
-            else
-            {
-                throw new ArgumentException("Alignement of intersections does not correspond to orientation!");
-            }
-            */
             SourceIntersection = source;
             TargetIntersection = target;
 
@@ -176,12 +150,6 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             foreach (Lane l in OutLanes) l.Update(deltaTime);
         }
 
-        public Rectangle GetGeometricalFigure()
-        {
-            if (IsHorizontal)
-                return new Rectangle(Position, RoadWidth, RoadLength, (float)Math.PI / 2);
-            else 
-                return new Rectangle(Position, RoadWidth, RoadLength, 0);
-        }
+        public Rectangle GetGeometricalFigure() => new Rectangle(Position, RoadWidth, RoadLength, Direction.Angle - (float)Math.PI / 2); // Minus 90° cuz direction is along Y-axis
     }
 }
