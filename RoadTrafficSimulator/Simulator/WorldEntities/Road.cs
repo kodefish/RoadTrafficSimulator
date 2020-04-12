@@ -31,8 +31,8 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public Segment RoadMidline {
             get
             {
-                Vector2 sepSrc = RoadStartSegment.Lerp(NumInLanes * Lane.LANE_WIDTH / RoadStartSegment.Length);
-                Vector2 sepDst = RoadTargetSegment.Lerp(NumOutLanes * Lane.LANE_WIDTH/ RoadTargetSegment.Length);
+                Vector2 sepSrc = RoadStartSegment.Lerp(NumOutLanes * Lane.LANE_WIDTH / RoadStartSegment.Length);
+                Vector2 sepDst = RoadTargetSegment.Lerp(NumInLanes * Lane.LANE_WIDTH/ RoadTargetSegment.Length);
                 return new Segment(sepSrc, sepDst);
             }
         }
