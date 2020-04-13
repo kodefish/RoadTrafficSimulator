@@ -73,26 +73,21 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         /// Apply Intelligent Driver Model based acceleration to the vehicle for both lanes, and use the min of the two
         /// </summary>
         /// <returns>Force based on acceleration given by IDM</returns>
-        protected override Vector2 GetForce()
+        protected override float ComputeTangentialAcceleration()
         {
             // Get the acceleration in both lanes
-            Vector2 currentIdmAcceleration = IdmAcceleration(currentLane.LaneIdx);
-            Vector2 nextIdmAcceleration = IdmAcceleration(nextLane.LaneIdx);
+            float currentIdmAcceleration = IdmAcceleration(currentLane.LaneIdx);
+            float nextIdmAcceleration = IdmAcceleration(nextLane.LaneIdx);
 
             // Stay safe and take the min of the two -> don't crash for sure
-            Vector2 idmAcceleration = currentIdmAcceleration.Norm < nextIdmAcceleration.Norm ? currentIdmAcceleration : nextIdmAcceleration;
-
-            // Figure out the force we have to apply on the car to reach target acceleration
-            Vector2 deltaAcceleration = idmAcceleration - car.Acceleration;
-            Vector2 deltaForce = deltaAcceleration * car.Mass;
-            return deltaForce;
+            return (float) Math.Min(currentIdmAcceleration, nextIdmAcceleration);
         }
 
         /// <summary>
         /// Get the Intelligent Driver Model from a lane, just a helper method
         /// </summary>
         /// <returns>Force based on acceleration given by IDM</returns>
-        private Vector2 IdmAcceleration(int laneIdx)
+        private float IdmAcceleration(int laneIdx)
         {
             return IntelligentDriverModel.ComputeAccelerationIntensity(
                 car, 

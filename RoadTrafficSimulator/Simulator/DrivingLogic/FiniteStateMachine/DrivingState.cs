@@ -94,21 +94,22 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         /// <returns>Potential state change</returns>
         public virtual DrivingState Update(float deltaTime)
         {
-            // Control speed -> gas pedal goes vroomvroom
-            Vector2 gasPedalForce = car.Direction * Vector2.Dot(GetForce(), car.Direction);
-            car.ApplyForce(gasPedalForce);
+            // Direction of the force
+            Vector2 carDirection = Path.TangentOfProjectedPosition(car.Position);
+            Vector2 acceleration = carDirection * ComputeTangentialAcceleration() 
+                + carDirection.Normal * ComputeNormalAcceleration(deltaTime);
 
-            // Control steering -> steering wheel goes whoosh
-            car.ApplyTorque(GetTorque(deltaTime));
+            Vector2 force = acceleration * car.Mass;            
+            car.ApplyForce(force);
 
-            return this;
+            return null;
         }
 
         /// <summary>
         /// Computes the acceleration / braking of the car
         /// </summary>
         /// <returns></returns>
-        protected abstract Vector2 GetForce();
+        protected abstract float ComputeTangentialAcceleration();
 
         /// <summary>
         /// Computes the steering. Right now uses torque to rotate 
@@ -117,27 +118,18 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         /// </summary>
         /// <param name="deltaTime"></param>
         /// <returns></returns>
-        protected virtual float GetTorque(float deltaTime)
+        protected virtual float ComputeNormalAcceleration(float deltaTime)
         {
-            // 1. Compute future position
-            Vector2 futurePos = car.Position + car.LinearVelocity * deltaTime;
+            float maxSteeringAcc = 5;
+            Vector2 normalPoint = Path.NormalPoint(car.Position);
+            Vector2 posToNormalPoint = normalPoint - car.Position;
+            float factor = Vector2.Dot(posToNormalPoint, Path.TangentOfProjectedPosition(normalPoint).Normal);
 
-            // 2. Project future position onto the path
-            Vector2 projectedFuturePosition = Path.NormalPoint(futurePos);
+            // clamp to max steering acc
+            if (factor < -maxSteeringAcc) factor = -maxSteeringAcc;
+            if (factor > maxSteeringAcc) factor = maxSteeringAcc;
 
-            // 3. Go along the path from the projected position by a wee bit to get target
-            float epsilon = car.CarLength;
-            Vector2 target = projectedFuturePosition + Path.TangentOfProjectedPosition(projectedFuturePosition) * epsilon;
-
-            // 4. Compute desired angle from current position and target
-            float desiredAngle = (target - car.Position).Angle;
-
-            // 5. Compute desired angular velocity (dAngle / dt)
-            // 6. Compute desired angular acceleration (dAngularVelocity / dt)
-            // 7. Compute and apply torque
-            // 5-7 give the following expression
-            float angularAcceleration = ((desiredAngle - car.Direction.Angle) / deltaTime - car.AngularVelocity) / deltaTime;
-            return angularAcceleration * car.MoI;
+            return factor;
         }
     }
 }

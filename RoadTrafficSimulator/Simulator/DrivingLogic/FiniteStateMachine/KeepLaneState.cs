@@ -71,20 +71,17 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         /// <summary>
         /// Apply Intelligent Driver Model based acceleration to the vehicle
         /// </summary>
-        /// <returns>Force based on acceleration given by IDM</returns>
-        protected override Vector2 GetForce()
+        /// <returns>Acceleration given by IDM</returns>
+        protected override float ComputeTangentialAcceleration()
         {
-            Vector2 idmAcceleration = IntelligentDriverModel.ComputeAccelerationIntensity(
+            float idmAcceleration = IntelligentDriverModel.ComputeAccelerationIntensity(
                 car, 
                 Path.TangentOfProjectedPosition(car.Position),
                 LeaderCarInfo[lane.LaneIdx].DistToNextCar,
                 LeaderCarInfo[lane.LaneIdx].ApproachingRate
                 );
 
-            // Figure out the force we have to apply on the car to reach target acceleration
-            Vector2 deltaAcceleration = idmAcceleration - car.Acceleration;
-            Vector2 deltaForce = deltaAcceleration * car.Mass;
-            return deltaForce;
+            return idmAcceleration;
         }
     }
 

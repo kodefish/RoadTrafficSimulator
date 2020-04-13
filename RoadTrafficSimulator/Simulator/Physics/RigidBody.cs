@@ -23,7 +23,7 @@ namespace RoadTrafficSimulator.Simulator.Physics
         public Vector2 Acceleration { get { return Force / Mass; } }    // In [meters/second^2]
 
         // Direction faces along the y-axis of the rigid body
-        public Vector2 Direction {
+        public virtual Vector2 Direction {
             get {
                 return new Vector2((float)Math.Cos(Angle), (float)Math.Sin(Angle)).Normal;
             }

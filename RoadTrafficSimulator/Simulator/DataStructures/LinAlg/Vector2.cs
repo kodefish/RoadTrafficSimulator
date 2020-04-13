@@ -66,11 +66,6 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.LinAlg
         public static Vector2 operator /(Vector2 a, float c) => new Vector2(a.X / c, a.Y / c);
 
         /// <summary>
-        /// Signed distance between two vectors
-        /// </summary>
-        public static float SignedDistance(Vector2 a, Vector2 b) => (b - a).Norm;
-
-        /// <summary>
         /// Absolute distance between two vectors
         /// </summary>
         public static float Distance(Vector2 a, Vector2 b) => Math.Abs((b - a).Norm);

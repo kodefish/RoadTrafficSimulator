@@ -54,7 +54,6 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public DrivingState DrivingState { get; private set; }
         public float MaxOverrallSpeed => DrivingState.MaxSpeed();
 
-
         /// <summary>
         /// Creates a car with a mass and an initial position
         /// </summary>
