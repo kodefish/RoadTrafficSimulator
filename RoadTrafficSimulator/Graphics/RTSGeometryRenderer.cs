@@ -84,5 +84,10 @@ namespace RoadTrafficSimulator.Graphics
             }
         }
 
+        public void Draw(Path path, Color color, float thickness = 1) 
+        {
+            foreach(Segment s in path.Segments) Draw(s, color, thickness);
+        }
+
     }
 }

@@ -237,31 +237,6 @@ namespace RoadTrafficSimulator
             foreach (Road road in world.Roads) rtsRenderer.DrawRoad(road);
             foreach (Car car in world.Cars) rtsRenderer.DrawCar(car, carColor[car]);
 
-            // Draw neighbor info for each car in the middle lane
-            Road r = world.Roads[0];
-            Lane observedLane = r.InLanes[1];
-            for (int i = 0; i < observedLane.Cars.Count; i++)
-            {
-                Car c = observedLane.Cars[i];
-                // Get neighbor info
-                foreach (Lane l in observedLane.NeighboringLanes)
-                {
-                    VehicleNeighbors vNeighbors = l.VehicleNeighbors(c);
-                    if (vNeighbors.VehicleBack != null) rtsRenderer.DrawSegment(new Segment(c.Position, vNeighbors.VehicleBack.Position), Color.Red);
-                    if (vNeighbors.VehicleFront != null) rtsRenderer.DrawSegment(new Segment(c.Position, vNeighbors.VehicleFront.Position), Color.Green);
-                }
-
-                // Get lane info
-                LeaderCarInfo leaderCarInfo;
-                Vector2 frontBumper = c.Position + c.Direction * c.CarLength / 2;
-                if (i < observedLane.Cars.Count - 1)
-                    leaderCarInfo = observedLane.ComputeLeaderCarInfo(c, observedLane.Cars[i + 1]);
-                else
-                    leaderCarInfo = observedLane.ComputeLeaderCarInfo(c);
-
-                rtsRenderer.DrawSegment(new Segment(frontBumper, frontBumper + c.Direction * leaderCarInfo.DistToNextCar), Color.Black);
-            }
-
             // Print stats to console
             /*
             Debug.WriteLine("World Stats:");
