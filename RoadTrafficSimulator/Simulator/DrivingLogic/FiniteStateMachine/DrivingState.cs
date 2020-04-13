@@ -120,7 +120,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         /// <returns></returns>
         protected virtual float ComputeNormalAcceleration(float deltaTime)
         {
-            float maxSteeringAcc = 5;
+            float maxSteeringAcc = car.MaxAcceleration;
             Vector2 normalPoint = Path.NormalPoint(car.Position);
             Vector2 posToNormalPoint = normalPoint - car.Position;
             float factor = Vector2.Dot(posToNormalPoint, Path.TangentOfProjectedPosition(normalPoint).Normal);
