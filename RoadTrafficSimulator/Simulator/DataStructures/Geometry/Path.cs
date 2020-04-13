@@ -121,6 +121,22 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
             return distance;
         }
 
+        public Vector2 Lerp(float lerpOffset)
+        {
+            if (lerpOffset > 1) throw new ArgumentOutOfRangeException(String.Format("Lerp offset ({0}) must be between 0 and 1!", lerpOffset));
+            float distAlongPath = Length * lerpOffset;
+
+            // Skip over all the segments that are covered already
+            int i = 0;
+            while(Segments[i].Length < distAlongPath)
+            {
+                distAlongPath -= Segments[i].Length;;
+                i++;
+            }
+
+            return Segments[i].Lerp(distAlongPath / Segments[i].Length);
+        }
+
         /// <summary>
         /// Inverse lerp operation by approximating the position along the path by projecting 
         /// onto closest segment, and computing the distance along the path.
