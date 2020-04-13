@@ -72,13 +72,10 @@ namespace RoadTrafficSimulator.Graphics
             dRenderer.DrawPoint(l.Path.PathEnd * Scale, Color.Red, 5);
         }
 
-        public void DrawCar(Car c, Color color, bool drawPath = false)
+        public void DrawCar(Car c, Color color)
         {
             DrawScaledRectange(c.GetGeometricalFigure(), color);
-            if (drawPath)
-            {
-                foreach(Segment s in c.DrivingState.Path.Segments) DrawScaledSegment(s, color);
-            }
+            foreach(Segment s in c.DrivingState.Path.Segments) DrawScaledSegment(s, Color.Pink, 5);
         }
     }
 }
