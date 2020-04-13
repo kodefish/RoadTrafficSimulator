@@ -130,13 +130,13 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
             Vector2 target = projectedFuturePosition + Path.TangentOfProjectedPosition(projectedFuturePosition) * epsilon;
 
             // 4. Compute desired angle from current position and target
-            float desiredAngle = (target - car.Position).Angle + (float) Math.PI / 2;
+            float desiredAngle = (target - car.Position).Angle;
 
             // 5. Compute desired angular velocity (dAngle / dt)
             // 6. Compute desired angular acceleration (dAngularVelocity / dt)
             // 7. Compute and apply torque
             // 5-7 give the following expression
-            float angularAcceleration = ((desiredAngle - car.Angle) / deltaTime - car.AngularVelocity) / deltaTime;
+            float angularAcceleration = ((desiredAngle - car.Direction.Angle) / deltaTime - car.AngularVelocity) / deltaTime;
             return angularAcceleration * car.MoI;
         }
     }
