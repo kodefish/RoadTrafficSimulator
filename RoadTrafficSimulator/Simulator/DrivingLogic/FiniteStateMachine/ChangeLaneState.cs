@@ -38,15 +38,17 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         /// </summary>
         public override void OnEnter()
         {
+            currentLane.AddCar(car);
             nextLane.AddCar(car);
         }
 
         /// <summary>
-        /// Remove the car from the lane the car left
+        /// Remove the car from the two lanes (let the next state handle it)
         /// </summary>
         public override void OnExit()
         {
             currentLane.RemoveCar(car);
+            nextLane.RemoveCar(car);
         }
 
         /// <summary>
