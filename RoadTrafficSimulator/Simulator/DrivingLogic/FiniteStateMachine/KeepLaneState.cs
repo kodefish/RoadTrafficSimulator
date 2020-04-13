@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
 using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
 using RoadTrafficSimulator.Simulator.WorldEntities;
@@ -62,7 +62,8 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
             {
                 // Check via MOBIL for potential lane change
                 int newLaneIdx = Mobil.OptimalLane(car, lane, lane.NeighboringLanes);
-                // if (newLaneIdx != lane.LaneIdx) state = new ChangeLaneState(car, lane, lane.NeighboringLanes[newLaneIdx]);
+                if (newLaneIdx != lane.LaneIdx) // Debug.WriteLine("Changine lane from {0} to {1}", lane.LaneIdx, newLaneIdx);
+                    state = new ChangeLaneState(car, lane, lane.NeighboringLanes[newLaneIdx]);
             }
             return state;
         }

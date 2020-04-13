@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Collections.Generic;
 using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
 
@@ -45,6 +44,20 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
             for (float i = 0; i < 1; i += sampleRate)
                 segments.Add(new Segment(c.GetPosition(i), c.GetPosition(i + sampleRate)));
             return new Path(segments, radius);
+        }
+
+        public static Path TransitionPath(Path source, Path target, Vector2 carPosition, float carLength, Vector2 carDirection)
+        {
+            Vector2 startingPos = source.NormalPoint(carPosition);
+            Vector2 normalPoint = target.NormalPoint(carPosition); 
+            Vector2 targetPos = normalPoint + target.TangentOfProjectedPosition(normalPoint) * carLength;
+            Vector2 direction = targetPos - startingPos;
+
+            BezierCurve bezierCurve = new BezierCurve(
+                startingPos, startingPos + carDirection,
+                targetPos, targetPos + carDirection);
+
+            return FromBezierCurve(bezierCurve, 1);
         }
 
         /// <summary>
