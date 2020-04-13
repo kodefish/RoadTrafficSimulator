@@ -60,9 +60,13 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         /// </summary>
         /// <param name="carParams">Description of the car</param>
         /// <param name="initialLane">Starting lane</param>
-        /// <param name="timeOffset">Offset along the lane trajectory</param>
-        public Car(CarParams carParams, Lane initialLane, float timeOffset = 0)
-            : base(carParams.Mass, ComputeCarMomentOfInertia(carParams), initialLane.Path.PathStart, (-(initialLane.Path.TangentOfProjectedPosition(initialLane.Path.PathStart).Normal)).Angle)
+        /// <param name="lerpOffset">Offset along the lane trajectory</param>
+        public Car(CarParams carParams, Lane initialLane, float lerpOffset = 0)
+            : base(
+                carParams.Mass, 
+                ComputeCarMomentOfInertia(carParams), 
+                initialLane.Path.Lerp(lerpOffset), 
+                (-(initialLane.Path.TangentOfProjectedPosition(initialLane.Path.PathStart).Normal)).Angle)
         {
             // Make sure vehicle respects min and max acceleration params
             if (carParams.MaxAccleration < IntelligentDriverModel.MIN_ACCELERATION) 
