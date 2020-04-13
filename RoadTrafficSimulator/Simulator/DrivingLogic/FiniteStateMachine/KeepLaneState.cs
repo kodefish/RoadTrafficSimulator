@@ -62,8 +62,8 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
             {
                 // Check via MOBIL for potential lane change
                 Lane newLane = Mobil.OptimalLane(car, lane);
-                if (newLane.LaneIdx != lane.LaneIdx) // Debug.WriteLine("Changine lane from {0} to {1}", lane.LaneIdx, newLaneIdx);
-                    state = new ChangeLaneState(car, lane, newLane);
+                if (newLane.LaneIdx != lane.LaneIdx) Debug.WriteLine("Changine lane from {0} to {1}", lane.LaneIdx, newLane.LaneIdx);
+                    // state = new ChangeLaneState(car, lane, newLane);
             }
             return state;
         }
@@ -72,16 +72,19 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         /// Apply Intelligent Driver Model based acceleration to the vehicle
         /// </summary>
         /// <returns>Acceleration given by IDM</returns>
-        protected override float ComputeTangentialAcceleration()
+        protected override Vector2 ComputeTangentialAcceleration()
         {
-            float idmAcceleration = IntelligentDriverModel.ComputeAccelerationIntensity(
+            Vector2 laneDir = lane.Path.TangentOfProjectedPosition(car.Position);
+            Vector2 laneDirAcc = IntelligentDriverModel.ComputeAccelerationIntensity(
                 car, 
-                Path.TangentOfProjectedPosition(car.Position),
+                laneDir,
                 LeaderCarInfo[lane.LaneIdx].DistToNextCar,
                 LeaderCarInfo[lane.LaneIdx].ApproachingRate
                 );
-
-            return idmAcceleration;
+            
+            Vector2 vehicleDir = Path.TangentOfProjectedPosition(car.Position);
+            Vector2 longitudinalAcc = Vector2.Dot(laneDirAcc, vehicleDir) * vehicleDir;
+            return longitudinalAcc;
         }
     }
 

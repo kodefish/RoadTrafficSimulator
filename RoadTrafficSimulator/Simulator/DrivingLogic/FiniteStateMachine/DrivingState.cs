@@ -95,9 +95,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         public virtual DrivingState Update(float deltaTime)
         {
             // Direction of the force
-            Vector2 carDirection = Path.TangentOfProjectedPosition(car.Position);
-            Vector2 acceleration = carDirection * ComputeTangentialAcceleration() 
-                + carDirection.Normal * ComputeNormalAcceleration(deltaTime);
+            Vector2 acceleration = ComputeTangentialAcceleration() + ComputeNormalAcceleration(deltaTime);
 
             Vector2 force = acceleration * car.Mass;            
             car.ApplyForce(force);
@@ -109,7 +107,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         /// Computes the acceleration / braking of the car
         /// </summary>
         /// <returns></returns>
-        protected abstract float ComputeTangentialAcceleration();
+        protected abstract Vector2 ComputeTangentialAcceleration();
 
         /// <summary>
         /// Computes the steering. Right now uses torque to rotate 
@@ -118,18 +116,29 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         /// </summary>
         /// <param name="deltaTime"></param>
         /// <returns></returns>
-        protected virtual float ComputeNormalAcceleration(float deltaTime)
+        protected virtual Vector2 ComputeNormalAcceleration(float deltaTime)
         {
-            float maxSteeringAcc = car.MaxAcceleration;
-            Vector2 normalPoint = Path.NormalPoint(car.Position);
-            Vector2 posToNormalPoint = normalPoint - car.Position;
-            float factor = Vector2.Dot(posToNormalPoint, Path.TangentOfProjectedPosition(normalPoint).Normal);
+            // Get orthogonal distance to path
+            Segment closestSegment = Path.Segments[Path.ClosestSegment(car.Position)];
+            Vector2 target = closestSegment.ProjectOntoSupportingLine(car.Position);
 
-            // clamp to max steering acc
-            if (factor < -maxSteeringAcc) factor = -maxSteeringAcc;
-            if (factor > maxSteeringAcc) factor = maxSteeringAcc;
-
-            return factor;
+            Vector2 desired = target - car.Position;
+            float distance = desired.Norm;
+            if (distance > 0)
+            {
+                desired = desired.Normalized * Math.Min(car.MaxCarSpeed, distance / deltaTime);
+               
+                // Compute normal dV 
+                Vector2 dV = desired - Vector2.Dot(car.LinearVelocity, desired) * desired.Normalized;
+                return desired / deltaTime;
+            }
+            else return new Vector2();
         }
+
+        private float Map(float s, float a1, float a2, float b1, float b2)
+        {
+            return b1 + (s-a1)*(b2-b1)/(a2-a1);
+        }
+ 
     }
 }

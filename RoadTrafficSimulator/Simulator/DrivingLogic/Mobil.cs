@@ -110,7 +110,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
                 lane.Path.TangentOfProjectedPosition(car.Position),
                 leaderCarInfo.DistToNextCar,
                 leaderCarInfo.ApproachingRate
-            );
+            ).Norm;
         }
     }
 }

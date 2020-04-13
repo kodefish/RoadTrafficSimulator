@@ -19,7 +19,7 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
         /// </summary>
         /// <param name="segments">Segments that make up the center of the path</param>
         /// <param name="radius">Width of the path</param>
-        private Path(List<Segment> segments, float radius = 0.1f)
+        private Path(List<Segment> segments, float radius = 0.5f)
         {
             if (radius < 0) throw new ArgumentException("Radius must be positive");
             if (segments == null) throw new ArgumentException("Segments must be non-null");
@@ -36,7 +36,7 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
         /// <param name="c">Curve to sample</param>
         /// <param name="numSamples">Number of sample, default is 10</param>
         /// <param name="Radius">Radius of the path</param>
-        public static Path FromBezierCurve(BezierCurve c, float numSamples = 10, float radius = 0.1f)
+        public static Path FromBezierCurve(BezierCurve c, float numSamples = 10, float radius = 0.01f)
         {
             if (numSamples < 1) throw new ArgumentException(String.Format("Number of samples ({0}) must not be < 1!", numSamples));
             float sampleRate = 1 / numSamples;
@@ -77,7 +77,7 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
         /// </summary>
         /// <param name="position">Position in the world</param>
         /// <returns>Closest segment to the position along the path</returns>
-        private int ClosestSegment(Vector2 position)
+        public int ClosestSegment(Vector2 position)
         {
             float minDist = float.PositiveInfinity;
             int idx = -1;

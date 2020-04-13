@@ -22,9 +22,9 @@ namespace RoadTrafficSimulator
         private RTSRenderer rtsRenderer;
 
         // Car adder
-        private readonly int NUM_CARS;
+        private int NUM_CARS;
         private Random rng;
-        private readonly double CAR_ADDITION_WAIT_TIME = 1;
+        private readonly double CAR_ADDITION_WAIT_TIME = 3;
         private double lastCarAddedTime;
         private Color[] colors = { Color.Red, Color.Green, Color.Beige, Color.Blue, Color.Yellow, Color.Purple, Color.White, Color.Black };
         private Dictionary<Car, Color> carColor;
@@ -35,7 +35,6 @@ namespace RoadTrafficSimulator
             world = new SimulatorWorld();
             rtsRenderer = new RTSRenderer();
 
-            NUM_CARS = 100;
             rng = new Random(NUM_CARS);
             lastCarAddedTime = 0;
             carColor = new Dictionary<Car, Color>();
@@ -49,7 +48,8 @@ namespace RoadTrafficSimulator
 
             // Generate cars
             // TestNeighbors();
-            TestOvertaking();
+            // TestOvertaking();
+            FillWorld();
         }
 
         private void GenerateGrid()
@@ -126,6 +126,8 @@ namespace RoadTrafficSimulator
             world.AddRoad(road);
         }
 
+        private void FillWorld() => NUM_CARS = 50;
+
         private void TestNeighbors()
         {
             CarParams carParams = new CarParams(                            
@@ -159,7 +161,7 @@ namespace RoadTrafficSimulator
             world.AddCar(c3);
             world.AddCar(cI);
             world.AddCar(cJ);
-
+            NUM_CARS = world.Cars.Count;
 
             carColor.Add(cA, colors[rng.Next(colors.Length)]);
             carColor.Add(cB, colors[rng.Next(colors.Length)]);
@@ -169,7 +171,6 @@ namespace RoadTrafficSimulator
             carColor.Add(cI, colors[rng.Next(colors.Length)]);
             carColor.Add(cJ, colors[rng.Next(colors.Length)]);
         }
-
         private void TestOvertaking()
         {
             GenerateHorizontalStrip();
@@ -203,6 +204,7 @@ namespace RoadTrafficSimulator
 
             carColor.Add(cA, colors[rng.Next(colors.Length)]);
             carColor.Add(cB, colors[rng.Next(colors.Length)]);
+            NUM_CARS = world.Cars.Count;
         }
 
         private void AddRandomCar(Random rng)
@@ -246,7 +248,7 @@ namespace RoadTrafficSimulator
                         );
                     }
 
-                    Lane randomLane = lanes[0];//rng.Next(0, lanes.Length)];
+                    Lane randomLane = lanes[rng.Next(0, lanes.Length)];
                     if (randomLane.FreeLaneSpace() > carParams.CarLength + IntelligentDriverModel.MIN_BUMPER_TO_BUMPER_DISTANCE)
                     {
                         Car car = new Car(carParams, randomLane);
@@ -286,14 +288,12 @@ namespace RoadTrafficSimulator
 
         public void Update(GameTime gameTime)
         {
-            /*
             // Add a car every 3 seconds
             if (world.Cars.Count < NUM_CARS && gameTime.TotalGameTime.TotalSeconds - lastCarAddedTime > CAR_ADDITION_WAIT_TIME)
             {
                 AddRandomCar(rng);
                 lastCarAddedTime = gameTime.TotalGameTime.TotalSeconds;
             }
-            */
 
             //  Update the stuff
             world.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
