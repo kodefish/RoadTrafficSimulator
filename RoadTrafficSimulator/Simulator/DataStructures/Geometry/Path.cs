@@ -46,16 +46,18 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
             return new Path(segments, radius);
         }
 
-        public static Path TransitionPath(Path source, Path target, Vector2 carPosition, float carLength, Vector2 carDirection)
+        public static Path TransitionPath(Path source, Path target, Vector2 origin, float forwardOffset)
         {
-            Vector2 startingPos = source.NormalPoint(carPosition);
-            Vector2 normalPoint = target.NormalPoint(carPosition); 
-            Vector2 targetPos = normalPoint + target.TangentOfProjectedPosition(normalPoint) * 10 * carLength;
-            Vector2 direction = (targetPos - startingPos).Normalized;
+            Segment closestSourceSegment = source.Segments[source.ClosestSegment(origin)];
+            Vector2 startingPos = closestSourceSegment.ProjectOntoSupportingLine(origin);
+
+            Segment closestTargetSegment = target.Segments[source.ClosestSegment(origin)];
+            Vector2 normalPoint = closestTargetSegment.ProjectOntoSupportingLine(origin); 
+            Vector2 targetPos = normalPoint + closestTargetSegment.Direction * forwardOffset;
 
             BezierCurve bezierCurve = new BezierCurve(
-                startingPos, startingPos + carDirection * carLength,
-                targetPos, targetPos + carDirection * carLength);
+                startingPos, startingPos + closestSourceSegment.Direction,
+                targetPos, targetPos + closestTargetSegment.Direction);
 
             return FromBezierCurve(bezierCurve);
         }

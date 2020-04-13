@@ -21,7 +21,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         /// <param name="currentLane">Lane car is changing from</param>
         /// <param name="nextLane">Lane car is changing to</param>
         public ChangeLaneState(Car car, Lane currentLane, Lane nextLane) 
-            : base(car, Path.TransitionPath(currentLane.Path, nextLane.Path, car.Position, car.CarLength, car.Direction))
+            : base(car, Path.TransitionPath(currentLane.Path, nextLane.Path, car.Position, 3*car.CarLength))
         {
             if (currentLane.LaneIdx == nextLane.LaneIdx) throw new Exception("Lane change must occur between different lanes!");
             this.currentLane = currentLane;
