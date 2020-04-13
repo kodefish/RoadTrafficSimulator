@@ -36,7 +36,7 @@ namespace RoadTrafficSimulator.Graphics
             carTexture = content.Load<Texture2D>("Vehicles/Car");
         }
 
-        private void DrawRectange(Rectangle rectangle, Color c)
+        public void DrawRectange(Rectangle rectangle, Color c)
         {
             Vector2 location = rectangle.Origin * Scale;
             Rectangle sourceRectangle = new Rectangle(new Vector2(0, 0), rectangle.Width, rectangle.Length);
@@ -46,7 +46,7 @@ namespace RoadTrafficSimulator.Graphics
             dRenderer.Draw(sourceRectangle, c, location, origin, scale, rectangle.Angle);
         }
 
-        private void DrawSegment(Segment s, Color c, float thickness = 1)
+        public void DrawSegment(Segment s, Color c, float thickness = 1)
         {
             Segment scaledSegment = new Segment(s.Source * Scale, s.Target * Scale);
             dRenderer.Draw(scaledSegment, c, thickness);
@@ -78,24 +78,17 @@ namespace RoadTrafficSimulator.Graphics
             foreach (Lane l in road.InLanes) DrawLane(l, colors[l.LaneIdx % colors.Length]);
             foreach (Lane l in road.OutLanes) DrawLane(l, colors[l.LaneIdx % colors.Length]);
             DrawSegment(road.RoadMidline, Color.Yellow);
-
-            // Draw the source and target segment normals
-            DrawNormal(road.RoadStartSegment, Color.Pink, 2);
-            DrawNormal(road.RoadTargetSegment, Color.Purple, 2);
         }
 
         public void DrawLane(Lane l, Color c)
         {
             // Draw the midline
-            foreach (Segment s in l.Path.Segments) DrawSegment(s, c, 5);
+            foreach (Segment s in l.Path.Segments) DrawSegment(s, c, 1);
 
             // Draw arrival points
             dRenderer.DrawPoint(l.Path.PathStart * Scale, Color.Green, 5);
             dRenderer.DrawPoint(l.Path.PathEnd * Scale, Color.Red, 5);
-            foreach (Segment s in l.Path.Segments) dRenderer.Draw(new Segment(s.Source * Scale, s.Target * Scale), Color.LightGray);
 
-            DrawNormal(l.SourceSegment, Color.MonoGameOrange, 3);
-            DrawNormal(l.TargetSegment, Color.MonoGameOrange, 3);
             /*
             // Draw free space
             Segment freeLaneSpace = new Segment(
