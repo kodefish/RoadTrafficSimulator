@@ -66,7 +66,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
                 carParams.Mass, 
                 ComputeCarMomentOfInertia(carParams), 
                 initialLane.Path.Lerp(lerpOffset), 
-                (-(initialLane.Path.TangentOfProjectedPosition(initialLane.Path.Lerp(lerpOffset)).Normal)).Angle)
+                (-initialLane.Path.TangentOfProjectedPosition(initialLane.Path.Lerp(lerpOffset)).Normal).Angle)
         {
             // Make sure vehicle respects min and max acceleration params
             if (carParams.MaxAccleration < IntelligentDriverModel.MIN_ACCELERATION) 
