@@ -126,7 +126,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             {
                 distToNextCar = Vector2.Distance(
                     c1.Position + c1.Direction * c1.CarLength / 2,
-                    Path.PathEnd - Path.TangentOfProjectedPosition(Path.PathEnd) * c1.CarLength / 2); 
+                    Path.PathEnd); 
                 approachingRate = c1.LinearVelocity.Norm;
             }
             else
@@ -182,7 +182,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             else 
             {
                 j = firstGreaterThanIdx;
-                i = j - 1;
+                i = Cars.Contains(car) ? j - 2 : j - 1;
             }
 
             // Check if there is a vehicle at the same position as c
