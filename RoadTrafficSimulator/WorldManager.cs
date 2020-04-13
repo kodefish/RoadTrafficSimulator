@@ -48,8 +48,8 @@ namespace RoadTrafficSimulator
 
             // Generate cars
             // TestNeighbors();
-            // TestOvertaking();
-            FillWorld();
+            TestOvertaking();
+            // FillWorld();
         }
 
         private void GenerateGrid()
