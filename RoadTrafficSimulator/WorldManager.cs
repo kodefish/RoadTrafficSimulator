@@ -43,9 +43,13 @@ namespace RoadTrafficSimulator
 
         public void Initialize()
         {
+            // Generate world
             // GenerateGrid();
-            // GenerateHorizontalStrip();
-            TestNeighbors();
+            GenerateHorizontalStrip();
+
+            // Generate cars
+            // TestNeighbors();
+            TestOvertaking();
         }
 
         private void GenerateGrid()
@@ -124,8 +128,6 @@ namespace RoadTrafficSimulator
 
         private void TestNeighbors()
         {
-            GenerateHorizontalStrip();
-
             CarParams carParams = new CarParams(                            
                 mass : 500,
                 carWidth : 2,
@@ -166,6 +168,41 @@ namespace RoadTrafficSimulator
             carColor.Add(c3, colors[rng.Next(colors.Length)]);
             carColor.Add(cI, colors[rng.Next(colors.Length)]);
             carColor.Add(cJ, colors[rng.Next(colors.Length)]);
+        }
+
+        private void TestOvertaking()
+        {
+            GenerateHorizontalStrip();
+
+            Road r = world.Roads[0];
+            Lane[] lanes = r.InLanes;
+            Lane laneUp = lanes[2];
+
+            CarParams carParamsA = new CarParams(                            
+                mass : 500,
+                carWidth : 2,
+                carLength : 2,
+                maxSpeed : 120,
+                maxAccleration : 0.3f,
+                brakingDeceleration: 3f,
+                politenessFactor: 0.0f);
+            Car cA = new Car(carParamsA, laneUp, 0.3f);
+            
+            CarParams carParamsB = new CarParams(                            
+                mass : 500,
+                carWidth : 2,
+                carLength : 2,
+                maxSpeed : 120,
+                maxAccleration : 1.3f,
+                brakingDeceleration: 3f,
+                politenessFactor: 0.0f);
+            Car cB = new Car(carParamsB, laneUp, 0.1f);
+
+            world.AddCar(cA);
+            world.AddCar(cB);
+
+            carColor.Add(cA, colors[rng.Next(colors.Length)]);
+            carColor.Add(cB, colors[rng.Next(colors.Length)]);
         }
 
         private void AddRandomCar(Random rng)
