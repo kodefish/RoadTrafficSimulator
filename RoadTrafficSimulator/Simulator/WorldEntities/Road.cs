@@ -125,6 +125,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
                 }
                 else
                 {
+                    // no neighboring lanes -> empty array
                     neighboringLanes = new Lane[0];
                 }
 

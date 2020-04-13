@@ -61,9 +61,9 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
             else 
             {
                 // Check via MOBIL for potential lane change
-                int newLaneIdx = Mobil.OptimalLane(car, lane, lane.NeighboringLanes);
-                if (newLaneIdx != lane.LaneIdx) // Debug.WriteLine("Changine lane from {0} to {1}", lane.LaneIdx, newLaneIdx);
-                    state = new ChangeLaneState(car, lane, lane.NeighboringLanes[newLaneIdx]);
+                Lane newLane = Mobil.OptimalLane(car, lane);
+                if (newLane.LaneIdx != lane.LaneIdx) // Debug.WriteLine("Changine lane from {0} to {1}", lane.LaneIdx, newLaneIdx);
+                    state = new ChangeLaneState(car, lane, newLane);
             }
             return state;
         }

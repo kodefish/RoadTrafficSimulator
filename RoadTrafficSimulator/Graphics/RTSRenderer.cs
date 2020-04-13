@@ -75,7 +75,7 @@ namespace RoadTrafficSimulator.Graphics
         public void DrawCar(Car c, Color color)
         {
             DrawScaledRectange(c.GetGeometricalFigure(), color);
-            foreach(Segment s in c.DrivingState.Path.Segments) DrawScaledSegment(s, Color.Pink, 5);
+            foreach(Segment s in c.DrivingState.Path.Segments) DrawScaledSegment(s, Color.Pink, 1);
         }
     }
 }

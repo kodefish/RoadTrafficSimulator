@@ -14,8 +14,9 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
         /// <param name="currentLane">Car's current lane</param>
         /// <param name="possibleLane">All the possible future lanes</param>
         /// <returns>Optimal lane from possible lanes</returns>
-        public static int OptimalLane(Car car, Lane currentLane, Lane[] possibleLanes)
+        public static Lane OptimalLane(Car car, Lane currentLane)
         {
+            Lane[] possibleLanes = currentLane.NeighboringLanes;
             VehicleNeighbors currentVehicleNeighbors = currentLane.VehicleNeighbors(car);
             float maxIncentiveCriterion = IncentiveCriterion(
                 car, 
@@ -46,7 +47,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
             }
 
             // If better alternative is not found, stick to current lane, otherwise change
-            return optimalLaneIdx < 0 ? currentLane.LaneIdx : optimalLaneIdx;
+            return optimalLaneIdx < 0 ? currentLane : possibleLanes[optimalLaneIdx];
         }
 
         /// <summary>
