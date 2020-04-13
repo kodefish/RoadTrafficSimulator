@@ -45,7 +45,7 @@ namespace RoadTrafficSimulator
         {
             // GenerateGrid();
             // GenerateHorizontalStrip();
-            TestNeihbors();
+            TestNeighbors();
         }
 
         private void GenerateGrid()
@@ -122,7 +122,7 @@ namespace RoadTrafficSimulator
             world.AddRoad(road);
         }
 
-        private void TestNeihbors()
+        private void TestNeighbors()
         {
             GenerateHorizontalStrip();
 
