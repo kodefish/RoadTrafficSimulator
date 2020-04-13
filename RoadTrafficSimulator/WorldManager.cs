@@ -44,8 +44,8 @@ namespace RoadTrafficSimulator
         public void Initialize()
         {
             // GenerateGrid();
-            // GenerateHorizontalStrip();
-            TestNeihboss();
+            GenerateHorizontalStrip();
+            // TestNeihboss();
         }
 
         private void TestNeihboss()
@@ -223,7 +223,7 @@ namespace RoadTrafficSimulator
                     Lane randomLane = lanes[0];//rng.Next(0, lanes.Length)];
                     if (randomLane.FreeLaneSpace() > carParams.CarLength + IntelligentDriverModel.MIN_BUMPER_TO_BUMPER_DISTANCE)
                     {
-                        Car car = new Car(carParams, randomLane, (float)rng.NextDouble());
+                        Car car = new Car(carParams, randomLane);
                         world.AddCar(car);
 
                         // Give the car a random color
@@ -249,6 +249,7 @@ namespace RoadTrafficSimulator
             foreach (Car car in world.Cars) rtsRenderer.DrawCar(car, carColor[car]);
 
             // Draw neighbor info for each car in the middle lane
+            /*
             Road r = world.Roads[0];
             Lane observedLane = r.OutLanes[2];
             for (int i = 0; i < observedLane.Cars.Count; i++)
@@ -272,6 +273,7 @@ namespace RoadTrafficSimulator
 
                 rtsRenderer.DrawSegment(new Segment(frontBumper, frontBumper + c.Direction * leaderCarInfo.DistToNextCar), Color.Black);
             }
+            */
 
             // Print stats to console
             /*
@@ -285,14 +287,12 @@ namespace RoadTrafficSimulator
 
         public void Update(GameTime gameTime)
         {
-            /*
             // Add a car every 3 seconds
             if (world.Cars.Count < NUM_CARS && gameTime.TotalGameTime.TotalSeconds - lastCarAddedTime > CAR_ADDITION_WAIT_TIME)
             {
                 AddRandomCar(rng);
                 lastCarAddedTime = gameTime.TotalGameTime.TotalSeconds;
             }
-            */
             //  Update the stuff
             world.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
         }
