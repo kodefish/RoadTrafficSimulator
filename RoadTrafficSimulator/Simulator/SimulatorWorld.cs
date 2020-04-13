@@ -30,15 +30,18 @@ namespace RoadTrafficSimulator.Simulator
 
         public void Update(float deltaTime)
         {
-            // TODO: Update all the light controls
-            // Update all the lanes (compute new leader cars, take care of light controllers)
-            foreach (Road r in Roads) r.Update(deltaTime);
+            if (deltaTime > 0)
+            {
+                // TODO: Update all the light controls
+                // Update all the lanes (compute new leader cars, take care of light controllers)
+                foreach (Road r in Roads) r.Update(deltaTime);
 
-            // Update car decisions
-            foreach (Car c in Cars) c.Update(deltaTime);
+                // Update car decisions
+                foreach (Car c in Cars) c.Update(deltaTime);
 
-            // Apply the decisions using physics
-            foreach (Car c in Cars) c.IntegrateForces(deltaTime);
+                // Apply the decisions using physics
+                foreach (Car c in Cars) c.IntegrateForces(deltaTime);
+            }
         }
 
     }
