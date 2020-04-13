@@ -81,12 +81,12 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
             float currAccNextVehicleBehind = AccelerationOfCarInLane(neighborsNextLane.VehicleBack, neighborsNextLane.VehicleFront, nextLane);
 
             // Accelerations of car behind current car in current lane
-            float nextAccCurrVehicleBehind = AccelerationOfCarInLane(neighborsCurrLane.VehicleBack, car, nextLane);
-            float currAccCurrVehicleBehind = AccelerationOfCarInLane(neighborsCurrLane.VehicleBack, neighborsCurrLane.VehicleFront, nextLane);
+            float nextAccCurrVehicleBehind = AccelerationOfCarInLane(neighborsCurrLane.VehicleBack, car, currentLane);
+            float currAccCurrVehicleBehind = AccelerationOfCarInLane(neighborsCurrLane.VehicleBack, neighborsCurrLane.VehicleFront, currentLane);
 
             // TODO actually legit use this better
-            float accThreshold = 0; // IntelligentDriverModel.MIN_ACCELERATION;
-            float accBias = 0; // currentLane.AccelerationBias;
+            float accThreshold = IntelligentDriverModel.MIN_ACCELERATION;
+            float accBias = currentLane.AccelerationBias;
 
             float politenessFactor = car.PolitnessFactor;
 

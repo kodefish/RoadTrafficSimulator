@@ -42,7 +42,7 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
             float sampleRate = 1 / numSamples;
             List<Segment> segments = new List<Segment>();
             for (float i = 0; i < 1; i += sampleRate)
-                segments.Add(new Segment(c.GetPosition(i), c.GetPosition(i + sampleRate)));
+                segments.Add(new Segment(c.GetPosition(Math.Min(i, 1)), c.GetPosition(Math.Min(i + sampleRate, 1))));
             return new Path(segments, radius);
         }
 
@@ -50,14 +50,14 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
         {
             Vector2 startingPos = source.NormalPoint(carPosition);
             Vector2 normalPoint = target.NormalPoint(carPosition); 
-            Vector2 targetPos = normalPoint + target.TangentOfProjectedPosition(normalPoint) * carLength;
-            Vector2 direction = targetPos - startingPos;
+            Vector2 targetPos = normalPoint + target.TangentOfProjectedPosition(normalPoint) * 10 * carLength;
+            Vector2 direction = (targetPos - startingPos).Normalized;
 
             BezierCurve bezierCurve = new BezierCurve(
-                startingPos, startingPos + carDirection,
-                targetPos, targetPos + carDirection);
+                startingPos, startingPos + carDirection * carLength,
+                targetPos, targetPos + carDirection * carLength);
 
-            return FromBezierCurve(bezierCurve, 1);
+            return FromBezierCurve(bezierCurve);
         }
 
         /// <summary>
