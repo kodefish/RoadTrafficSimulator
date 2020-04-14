@@ -63,7 +63,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
 
             LeaderCarInfo = new Dictionary<int, LeaderCarInfo>();
 
-            pidController = new PIDController(0.0f, 0.0f, 0.0f);
+            pidController = new PIDController(9.0f, 0.0f, 9.0f);
         }
 
         public void SetLeaderCarInfo(int laneIdx, LeaderCarInfo leaderCarInfo)
@@ -130,7 +130,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
             Vector2 dist = target - car.Position;
             Vector2 normal = closestSegment.Direction.Normal;
             float error = Vector2.Dot(dist, normal);
-            pidController.UpdateError(error);
+            pidController.UpdateError(error, deltaTime);
             float adjustement = pidController.PIDError();
             if (adjustement < -car.BrakingDeceleration) adjustement = -car.BrakingDeceleration;
             if (adjustement > car.MaxAcceleration) adjustement = car.MaxAcceleration;
