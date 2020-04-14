@@ -47,9 +47,9 @@ namespace RoadTrafficSimulator
             GenerateHorizontalStrip();
 
             // Generate cars
-            TestNeighbors();
+            // TestNeighbors();
             // TestOvertaking();
-            // FillWorld();
+            FillWorld();
         }
 
         private void GenerateGrid()
@@ -151,16 +151,16 @@ namespace RoadTrafficSimulator
             Car c3 = new Car(4, carParams, laneMiddle, 0.75f);
 
             Lane laneDown = lanes[0];
-            // Car cI = new Car(5, carParams, laneDown, 0.333f);
-            // Car cJ = new Car(6, carParams, laneDown, 0.666f);
+            Car cI = new Car(5, carParams, laneDown, 0.333f);
+            Car cJ = new Car(6, carParams, laneDown, 0.666f);
 
             world.AddCar(cA);
             world.AddCar(cB);
             world.AddCar(c1);
             world.AddCar(c2);
             world.AddCar(c3);
-            // world.AddCar(cI);
-            // world.AddCar(cJ);
+            world.AddCar(cI);
+            world.AddCar(cJ);
             NUM_CARS = world.Cars.Count;
 
             carColor.Add(cA, colors[rng.Next(colors.Length)]);
@@ -168,8 +168,8 @@ namespace RoadTrafficSimulator
             carColor.Add(c1, colors[rng.Next(colors.Length)]);
             carColor.Add(c2, colors[rng.Next(colors.Length)]);
             carColor.Add(c3, colors[rng.Next(colors.Length)]);
-            // carColor.Add(cI, colors[rng.Next(colors.Length)]);
-            // carColor.Add(cJ, colors[rng.Next(colors.Length)]);
+            carColor.Add(cI, colors[rng.Next(colors.Length)]);
+            carColor.Add(cJ, colors[rng.Next(colors.Length)]);
         }
         private void TestOvertaking()
         {
@@ -275,30 +275,6 @@ namespace RoadTrafficSimulator
             foreach (FourWayIntersection intersection in world.Intersections) rtsRenderer.DrawIntersection(intersection);
             foreach (Road road in world.Roads) rtsRenderer.DrawRoad(road);
             foreach (Car car in world.Cars) rtsRenderer.DrawCar(car, carColor[car]);
-
-            Road r = world.Roads[0];
-            Lane observedLane = r.InLanes[1];
-            for (int i = 0; i < observedLane.Cars.Count; i++)
-            {
-                Car c = observedLane.Cars[i];
-                // Get neighbor info
-                foreach (Lane l in observedLane.NeighboringLanes)
-                {
-                    VehicleNeighbors vNeighbors = l.VehicleNeighbors(c);
-                    if (vNeighbors.VehicleBack != null) rtsRenderer.DrawScaledSegment(new Segment(c.Position, vNeighbors.VehicleBack.Position), Color.Red);
-                    if (vNeighbors.VehicleFront != null) rtsRenderer.DrawScaledSegment(new Segment(c.Position, vNeighbors.VehicleFront.Position), Color.Green);
-                }
-
-                // Get lane info
-                LeaderCarInfo leaderCarInfo;
-                Vector2 frontBumper = c.Position + c.Direction * c.CarLength / 2;
-                if (i < observedLane.Cars.Count - 1)
-                    leaderCarInfo = observedLane.ComputeLeaderCarInfo(c, observedLane.Cars[i + 1]);
-                else
-                    leaderCarInfo = observedLane.ComputeLeaderCarInfo(c);
-
-                rtsRenderer.DrawScaledSegment(new Segment(frontBumper, frontBumper + c.Direction * leaderCarInfo.DistToNextCar), Color.Black);
-            }
 
             // Print stats to console
             /*
