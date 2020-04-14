@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using RoadTrafficSimulator.Simulator.WorldEntities;
+using RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine;
 using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
 using Rectangle = RoadTrafficSimulator.Simulator.DataStructures.Geometry.Rectangle;
 using Vector2 = RoadTrafficSimulator.Simulator.DataStructures.LinAlg.Vector2;
@@ -72,8 +73,12 @@ namespace RoadTrafficSimulator.Graphics
             dRenderer.DrawPoint(l.Path.PathEnd * Scale, Color.Red, 5);
         }
 
-        public void DrawCar(Car c, Color color)
+        public void DrawCar(Car c)
         {
+            Color color;
+            if (c.DrivingState is KeepLaneState) color = Color.Green;
+            else if (c.DrivingState is ChangeLaneState) color = Color.Yellow;
+            else /*if (c.DrivingState is WaitingForLightState)*/ color = Color.Red;
             DrawScaledRectange(c.GetGeometricalFigure(), color);
             Segment carVel = new Segment(c.Position, c.Position + c.LinearVelocity);
             DrawScaledSegment(carVel, Color.Yellow, 2);

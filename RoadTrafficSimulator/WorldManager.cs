@@ -26,8 +26,6 @@ namespace RoadTrafficSimulator
         private Random rng;
         private readonly double CAR_ADDITION_WAIT_TIME = 3;
         private double lastCarAddedTime;
-        private Color[] colors = { Color.Red, Color.Green, Color.Beige, Color.Blue, Color.Yellow, Color.Purple, Color.White, Color.Black };
-        private Dictionary<Car, Color> carColor;
 
         public WorldManager(Game game)
         {
@@ -37,14 +35,13 @@ namespace RoadTrafficSimulator
 
             rng = new Random(NUM_CARS);
             lastCarAddedTime = 0;
-            carColor = new Dictionary<Car, Color>();
         }
 
         public void Initialize()
         {
             // Generate world
-            // GenerateGrid();
-            GenerateHorizontalStrip();
+            GenerateGrid();
+            // GenerateHorizontalStrip();
 
             // Generate cars
             // TestNeighbors();
@@ -79,13 +76,13 @@ namespace RoadTrafficSimulator
             FourWayIntersection intersection6 = new FourWayIntersection(posIntersection6);
 
 
-            Road road12 = new Road(ref intersection1, ref intersection2, 1, 1, 120);
+            Road road12 = new Road(ref intersection1, ref intersection2, 2, 2, 120);
             Road road13 = new Road(ref intersection1, ref intersection3, 2, 2, 120);
-            Road road24 = new Road(ref intersection2, ref intersection4, 1, 1, 120);
-            Road road34 = new Road(ref intersection3, ref intersection4, 1, 1, 120);
-            Road road35 = new Road(ref intersection3, ref intersection5, 1, 3, 120);
-            Road road46 = new Road(ref intersection4, ref intersection6, 1, 1, 120);
-            Road road56 = new Road(ref intersection5, ref intersection6, 4, 1, 120);
+            Road road24 = new Road(ref intersection2, ref intersection4, 2, 2, 120);
+            Road road34 = new Road(ref intersection3, ref intersection4, 2, 2, 120);
+            Road road35 = new Road(ref intersection3, ref intersection5, 2, 3, 120);
+            Road road46 = new Road(ref intersection4, ref intersection6, 2, 2, 120);
+            Road road56 = new Road(ref intersection5, ref intersection6, 4, 2, 120);
 
             // Add the stuff
             world.AddIntersection(intersection1);
@@ -162,14 +159,6 @@ namespace RoadTrafficSimulator
             world.AddCar(cI);
             world.AddCar(cJ);
             NUM_CARS = world.Cars.Count;
-
-            carColor.Add(cA, colors[rng.Next(colors.Length)]);
-            carColor.Add(cB, colors[rng.Next(colors.Length)]);
-            carColor.Add(c1, colors[rng.Next(colors.Length)]);
-            carColor.Add(c2, colors[rng.Next(colors.Length)]);
-            carColor.Add(c3, colors[rng.Next(colors.Length)]);
-            carColor.Add(cI, colors[rng.Next(colors.Length)]);
-            carColor.Add(cJ, colors[rng.Next(colors.Length)]);
         }
         private void TestOvertaking()
         {
@@ -202,8 +191,6 @@ namespace RoadTrafficSimulator
             world.AddCar(cA);
             world.AddCar(cB);
 
-            carColor.Add(cA, colors[rng.Next(colors.Length)]);
-            carColor.Add(cB, colors[rng.Next(colors.Length)]);
             NUM_CARS = world.Cars.Count;
         }
 
@@ -253,10 +240,6 @@ namespace RoadTrafficSimulator
                     {
                         Car car = new Car(world.Cars.Count, carParams, randomLane);
                         world.AddCar(car);
-
-                        // Give the car a random color
-                        carColor.Add(car, colors[rng.Next(colors.Length)]);
-
                         added = true;
                     }
                 }
@@ -274,7 +257,7 @@ namespace RoadTrafficSimulator
             // Draw the stuff
             foreach (FourWayIntersection intersection in world.Intersections) rtsRenderer.DrawIntersection(intersection);
             foreach (Road road in world.Roads) rtsRenderer.DrawRoad(road);
-            foreach (Car car in world.Cars) rtsRenderer.DrawCar(car, carColor[car]);
+            foreach (Car car in world.Cars) rtsRenderer.DrawCar(car);
 
             // Print stats to console
             /*
