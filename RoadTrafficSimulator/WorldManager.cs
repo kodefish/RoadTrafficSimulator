@@ -134,7 +134,9 @@ namespace RoadTrafficSimulator
                 maxSpeed : 120,
                 maxAccleration : 1.3f,
                 brakingDeceleration: 3f,
-                politenessFactor: 0.0f);
+                politenessFactor: 0.0f,
+                headwayTime: 4.0f
+            );
             
             Road r = world.Roads[0];
             Lane[] lanes = r.InLanes;
@@ -175,7 +177,9 @@ namespace RoadTrafficSimulator
                 maxSpeed : 120,
                 maxAccleration : 0.3f,
                 brakingDeceleration: 3f,
-                politenessFactor: 1.0f);
+                politenessFactor: 1.0f,
+                headwayTime: 4f
+            );
             Car cA = new Car(0, carParamsA, laneUp, 0.3f);
             
             CarParams carParamsB = new CarParams(                            
@@ -185,7 +189,9 @@ namespace RoadTrafficSimulator
                 maxSpeed : 120,
                 maxAccleration : 1.3f,
                 brakingDeceleration: 3f,
-                politenessFactor: 1.0f);
+                politenessFactor: 1.0f,
+                headwayTime: 4f
+            );
             Car cB = new Car(1, carParamsB, laneUp, 0.1f);
 
             world.AddCar(cA);
@@ -218,7 +224,8 @@ namespace RoadTrafficSimulator
                             maxSpeed : 120,
                             maxAccleration : 1.3f,
                             brakingDeceleration: 3f,
-                            politenessFactor: 1.0f
+                            politenessFactor: 1.0f,
+                            headwayTime: 4f
                         );
                     }
                     else
@@ -231,7 +238,8 @@ namespace RoadTrafficSimulator
                             maxSpeed : 80,
                             maxAccleration : 0.3f,
                             brakingDeceleration: 2f,
-                            politenessFactor: 1.0f
+                            politenessFactor: 1.0f,
+                            headwayTime: 8f
                         );
                     }
 

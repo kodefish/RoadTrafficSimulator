@@ -39,7 +39,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
             // Gap adjustement
             float desiredGap =
                 MIN_BUMPER_TO_BUMPER_DISTANCE +
-                currSpeed * SAFE_TIME_HEADWAY +
+                currSpeed * curr.HeadwayTime +
                 currSpeed * approachingRate / (2 * (float) Math.Sqrt(a * b));
             float gapTerm = desiredGap / distanceToNextCar;
 

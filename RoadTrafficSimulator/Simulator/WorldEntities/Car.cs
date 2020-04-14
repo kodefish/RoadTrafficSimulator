@@ -17,7 +17,8 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             float maxSpeed,
             float maxAccleration,
             float brakingDeceleration,
-            float politenessFactor)
+            float politenessFactor,
+            float headwayTime)
         {
             Mass = mass;
             CarWidth = carWidth;
@@ -26,6 +27,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             MaxAccleration = maxAccleration;
             BrakingDeceleration = brakingDeceleration;
             PolitenessFactor = politenessFactor;
+            HeadwayTime = headwayTime;
         }
         public float Mass { get; }
         public float CarWidth { get; }
@@ -34,7 +36,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public float MaxAccleration { get; }
         public float BrakingDeceleration { get; }
         public float PolitenessFactor { get; }
-
+        public float HeadwayTime { get; }
     }
 
     class Car : RigidBody, IRTSGeometry<Rectangle>
@@ -51,6 +53,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public float CarWidth => carParams.CarWidth;
         public float CarLength => carParams.CarLength;
         public float PolitnessFactor => carParams.PolitenessFactor;
+        public float HeadwayTime => carParams.HeadwayTime;
 
         // AI Finite state machine
         public DrivingState DrivingState { get; private set; }
@@ -105,6 +108,8 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
                 throw new ArgumentException(String.Format("Car acceleration ({0} m/s2) too low! Min: {1} m/s2", carParams.MaxAccleration, IntelligentDriverModel.MIN_ACCELERATION));
             if (carParams.BrakingDeceleration > IntelligentDriverModel.MAX_BRAKING) 
                 throw new ArgumentException(String.Format("Car braking ({0} m/s2) too high! Max: {1} m/s2", carParams.MaxAccleration, IntelligentDriverModel.MAX_BRAKING));
+            if (carParams.HeadwayTime < IntelligentDriverModel.SAFE_TIME_HEADWAY) 
+                throw new ArgumentException(String.Format("Headway time ({0} s) too low! Min: {1} s", carParams.MaxAccleration, IntelligentDriverModel.SAFE_TIME_HEADWAY));
 
             this.carIdx = carIdx;
             // Align car with tangent of initial lane
