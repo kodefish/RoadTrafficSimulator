@@ -56,6 +56,39 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public DrivingState DrivingState { get; private set; }
         public float MaxOverrallSpeed => DrivingState.MaxSpeed();
 
+        // Physical properties
+        // Angle  (Velocity is along the y axis of the car -> angle is Angle of linear velocity - 90°)
+        private float _angle;
+
+        /// <summary>
+        /// Returns the last angle when car was moving
+        /// </summary>
+        public float Angle {
+            get {
+                if (LinearVelocity.Norm > 0)
+                {
+                    _angle = LinearVelocity.Angle - (float) Math.PI / 2;
+                }
+                return _angle;
+            }
+        }
+
+        // Direction (aligned with linear velocity)
+        private Vector2 _direction;
+
+        /// <summary>
+        /// Returns the last direction when car was moving
+        /// </summary>
+        public Vector2 Direction {
+            get {
+                if (LinearVelocity.Norm > 0)
+                {
+                    _direction = LinearVelocity.Normalized;
+                }
+                return _direction;
+            }
+        }
+
         /// <summary>
         /// Creates a car with a mass and an initial position
         /// </summary>
@@ -65,16 +98,18 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public Car(int carIdx, CarParams carParams, Lane initialLane, float lerpOffset = 0)
             : base(
                 carParams.Mass, 
-                ComputeCarMomentOfInertia(carParams), 
-                initialLane.Path.Lerp(lerpOffset), 
-                (-initialLane.Path.TangentOfProjectedPosition(initialLane.Path.Lerp(lerpOffset)).Normal).Angle)
+                initialLane.Path.Lerp(lerpOffset))
         {
-            this.carIdx = carIdx;
             // Make sure vehicle respects min and max acceleration params
             if (carParams.MaxAccleration < IntelligentDriverModel.MIN_ACCELERATION) 
                 throw new ArgumentException(String.Format("Car acceleration ({0} m/s2) too low! Min: {1} m/s2", carParams.MaxAccleration, IntelligentDriverModel.MIN_ACCELERATION));
             if (carParams.BrakingDeceleration > IntelligentDriverModel.MAX_BRAKING) 
                 throw new ArgumentException(String.Format("Car braking ({0} m/s2) too high! Max: {1} m/s2", carParams.MaxAccleration, IntelligentDriverModel.MAX_BRAKING));
+
+            this.carIdx = carIdx;
+            // Align car with tangent of initial lane
+            _angle = -initialLane.Path.TangentOfProjectedPosition(initialLane.Path.Lerp(lerpOffset)).Normal.Angle;
+            _direction = new Vector2((float)Math.Cos(_angle), (float)Math.Sin(_angle));
 
             DrivingState = new KeepLaneState(this, initialLane);
             DrivingState.OnEnter();
