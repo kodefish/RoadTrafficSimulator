@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using RoadTrafficSimulator.Simulator.Interfaces;
 using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
 using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
+using RoadTrafficSimulator.Simulator.DrivingLogic;
 using RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine;
 
 namespace RoadTrafficSimulator.Simulator.WorldEntities
@@ -80,7 +81,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
                 BezierCurve midlineCurve = new BezierCurve(
                     midline.Source, midline.Source + midline.Direction,
                     midline.Target, midline.Target + midline.Direction);
-                Path = Path.FromBezierCurve(midlineCurve, 1); // Only use one sample, since we know it's a straight line
+                Path = Path.FromBezierCurve(midlineCurve, 1, LANE_WIDTH / 2); // Only use one sample, since we know it's a straight line
             }
         }
 
@@ -125,9 +126,12 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             float distToNextCar, approachingRate;
             if (c2 == null)
             {
+                // Distance to next car is pretending there a car in the intersection that is min bumper distance away
+                // so the IDM will make the front of the car touch the end of the lane. Since the origin is in the middle
+                // of the car, we offset that distance by half the car length
                 distToNextCar = Vector2.Distance(
-                    c1.Position + c1.Direction * c1.CarLength / 2,
-                    Path.PathEnd); 
+                    c1.Position,
+                    Path.PathEnd + TargetSegment.Direction.Normal * (IntelligentDriverModel.MIN_BUMPER_TO_BUMPER_DISTANCE - c1.CarLength / 2)); 
                 approachingRate = c1.LinearVelocity.Norm;
             }
             else
