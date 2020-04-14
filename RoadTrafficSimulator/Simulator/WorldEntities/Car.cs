@@ -15,6 +15,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             float carWidth,
             float carLength,
             float maxSpeed,
+            float maxSteeringAngle,
             float maxAccleration,
             float brakingDeceleration,
             float politenessFactor,
@@ -24,6 +25,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             CarWidth = carWidth;
             CarLength = carLength;
             MaxSpeed = maxSpeed;
+            MaxSteeringAngle = maxSteeringAngle;
             MaxAccleration = maxAccleration;
             BrakingDeceleration = brakingDeceleration;
             PolitenessFactor = politenessFactor;
@@ -33,10 +35,37 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public float CarWidth { get; }
         public float CarLength { get; }
         public float MaxSpeed { get; }
+        public float MaxSteeringAngle { get; }
         public float MaxAccleration { get; }
         public float BrakingDeceleration { get; }
         public float PolitenessFactor { get; }
         public float HeadwayTime { get; }
+
+        public static CarParams Car => new CarParams(
+                    mass : 500,
+                    carWidth : 2,
+                    carLength : 3,
+                    maxSpeed : 120,
+                    maxSteeringAngle: (float)Math.PI / 6,
+                    maxAccleration : 1.3f,
+                    brakingDeceleration: 3f,
+                    politenessFactor: 1.0f,
+                    headwayTime: 4f
+                );
+
+        public static CarParams Truck => new CarParams(
+                    mass : 5000,
+                    carWidth : 2,
+                    carLength : 7,
+                    maxSpeed : 80,
+                    maxSteeringAngle: (float)Math.PI / 6,
+                    maxAccleration : 0.3f,
+                    brakingDeceleration: 2f,
+                    politenessFactor: 1.0f,
+                    headwayTime: 8f
+                );
+
+
     }
 
     class Car : RigidBody, IRTSGeometry<Rectangle>
@@ -47,11 +76,12 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         private readonly CarParams carParams;
 
         // Acceleration constant params
-        public float MaxCarSpeed => carParams.MaxSpeed;
-        public float MaxAcceleration => carParams.MaxAccleration;
-        public float BrakingDeceleration => carParams.BrakingDeceleration;
         public float CarWidth => carParams.CarWidth;
         public float CarLength => carParams.CarLength;
+        public float MaxCarSpeed => carParams.MaxSpeed;
+        public float MaxSteeringAngle => carParams.MaxSteeringAngle;
+        public float MaxAcceleration => carParams.MaxAccleration;
+        public float BrakingDeceleration => carParams.BrakingDeceleration;
         public float PolitnessFactor => carParams.PolitenessFactor;
         public float HeadwayTime => carParams.HeadwayTime;
 

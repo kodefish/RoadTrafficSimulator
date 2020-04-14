@@ -37,7 +37,6 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
     /// </summary>
     abstract class DrivingState
     {
-        private readonly float MAX_STEERING_ACCELERATION = 1.3f;
         protected Car car;
 
         /// <summary>
@@ -99,10 +98,11 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         /// <returns>Potential state change</returns>
         public virtual DrivingState Update(float deltaTime)
         {
-            // Direction of the force
-            Vector2 acceleration = 
-                ComputeTangentialAcceleration() + 
-                ComputeNormalAcceleration(deltaTime);
+            // Apply forward to drive the car
+            Vector2 acceleration = ComputeTangentialAcceleration();
+
+            // Only apply steering if the car is moving (can't really steer a stationnary car)
+            if (car.LinearVelocity.Norm > 0) acceleration += ComputeNormalAcceleration(deltaTime);
 
             Vector2 force = acceleration * car.Mass;            
             car.ApplyForce(force);
@@ -133,8 +133,10 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
             float error = Vector2.Dot(dist, normal);
             pidController.UpdateError(error, deltaTime);
             float adjustement = pidController.PIDError();
-            if (adjustement < -MAX_STEERING_ACCELERATION) adjustement = -MAX_STEERING_ACCELERATION;
-            if (adjustement > MAX_STEERING_ACCELERATION) adjustement = MAX_STEERING_ACCELERATION;
+            
+            float maxSteeringAcc = (float)Math.Tan(car.MaxSteeringAngle) * car.LinearVelocity.Norm;
+            if (adjustement < -maxSteeringAcc) adjustement = -maxSteeringAcc;
+            if (adjustement > maxSteeringAcc) adjustement = maxSteeringAcc;
 
             return normal * adjustement;
         }
