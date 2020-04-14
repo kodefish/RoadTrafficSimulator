@@ -49,7 +49,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
                     maxSteeringAngle: (float)Math.PI / 6,
                     maxAccleration : 1.3f,
                     brakingDeceleration: 3f,
-                    politenessFactor: 1.0f,
+                    politenessFactor: 0.3f,
                     headwayTime: 4f
                 );
 
@@ -61,7 +61,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
                     maxSteeringAngle: (float)Math.PI / 6,
                     maxAccleration : 0.3f,
                     brakingDeceleration: 2f,
-                    politenessFactor: 1.0f,
+                    politenessFactor: 0.7f,
                     headwayTime: 8f
                 );
 

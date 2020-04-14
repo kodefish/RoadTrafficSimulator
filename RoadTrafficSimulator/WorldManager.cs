@@ -75,9 +75,9 @@ namespace RoadTrafficSimulator
             Road road13 = new Road(ref intersection1, ref intersection3, 2, 2, 120);
             Road road24 = new Road(ref intersection2, ref intersection4, 2, 2, 120);
             Road road34 = new Road(ref intersection3, ref intersection4, 2, 2, 120);
-            Road road35 = new Road(ref intersection3, ref intersection5, 2, 3, 120);
+            Road road35 = new Road(ref intersection3, ref intersection5, 2, 2, 120);
             Road road46 = new Road(ref intersection4, ref intersection6, 2, 2, 120);
-            Road road56 = new Road(ref intersection5, ref intersection6, 4, 2, 120);
+            Road road56 = new Road(ref intersection5, ref intersection6, 2, 2, 120);
 
             // Add the stuff
             world.AddIntersection(intersection1);
