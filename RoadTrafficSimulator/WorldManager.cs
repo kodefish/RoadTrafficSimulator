@@ -48,8 +48,8 @@ namespace RoadTrafficSimulator
 
             // Generate cars
             // TestNeighbors();
-            // TestOvertaking();
-            FillWorld();
+            TestOvertaking();
+            // FillWorld();
         }
 
         private void GenerateGrid()
@@ -142,17 +142,17 @@ namespace RoadTrafficSimulator
             Road r = world.Roads[0];
             Lane[] lanes = r.InLanes;
             Lane laneUp = lanes[2];
-            Car cA = new Car(carParams, laneUp, 0.333f);
-            Car cB = new Car(carParams, laneUp, 0.666f);
+            Car cA = new Car(0, carParams, laneUp, 0.333f);
+            Car cB = new Car(1, carParams, laneUp, 0.666f);
 
             Lane laneMiddle = lanes[1];
-            Car c1 = new Car(carParams, laneMiddle, 0.25f);
-            Car c2 = new Car(carParams, laneMiddle, 0.5f);
-            Car c3 = new Car(carParams, laneMiddle, 0.75f);
+            Car c1 = new Car(2, carParams, laneMiddle, 0.25f);
+            Car c2 = new Car(3, carParams, laneMiddle, 0.5f);
+            Car c3 = new Car(4, carParams, laneMiddle, 0.75f);
 
             Lane laneDown = lanes[0];
-            Car cI = new Car(carParams, laneDown, 0.333f);
-            Car cJ = new Car(carParams, laneDown, 0.666f);
+            Car cI = new Car(5, carParams, laneDown, 0.333f);
+            Car cJ = new Car(6, carParams, laneDown, 0.666f);
 
             world.AddCar(cA);
             world.AddCar(cB);
@@ -187,7 +187,7 @@ namespace RoadTrafficSimulator
                 maxAccleration : 0.3f,
                 brakingDeceleration: 3f,
                 politenessFactor: 0.0f);
-            Car cA = new Car(carParamsA, laneUp, 0.3f);
+            Car cA = new Car(0, carParamsA, laneUp, 0.3f);
             
             CarParams carParamsB = new CarParams(                            
                 mass : 500,
@@ -197,7 +197,7 @@ namespace RoadTrafficSimulator
                 maxAccleration : 1.3f,
                 brakingDeceleration: 3f,
                 politenessFactor: 0.0f);
-            Car cB = new Car(carParamsB, laneUp, 0.1f);
+            Car cB = new Car(1, carParamsB, laneUp, 0.1f);
 
             world.AddCar(cA);
             world.AddCar(cB);
@@ -251,7 +251,7 @@ namespace RoadTrafficSimulator
                     Lane randomLane = lanes[rng.Next(0, lanes.Length)];
                     if (randomLane.FreeLaneSpace() > carParams.CarLength + IntelligentDriverModel.MIN_BUMPER_TO_BUMPER_DISTANCE)
                     {
-                        Car car = new Car(carParams, randomLane);
+                        Car car = new Car(world.Cars.Count, carParams, randomLane);
                         world.AddCar(car);
 
                         // Give the car a random color

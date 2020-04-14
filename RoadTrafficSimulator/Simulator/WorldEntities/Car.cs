@@ -39,6 +39,8 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 
     class Car : RigidBody, IRTSGeometry<Rectangle>
     {
+        private readonly int carIdx;
+
         // Car params
         private readonly CarParams carParams;
 
@@ -60,13 +62,14 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         /// <param name="carParams">Description of the car</param>
         /// <param name="initialLane">Starting lane</param>
         /// <param name="lerpOffset">Offset along the lane trajectory</param>
-        public Car(CarParams carParams, Lane initialLane, float lerpOffset = 0)
+        public Car(int carIdx, CarParams carParams, Lane initialLane, float lerpOffset = 0)
             : base(
                 carParams.Mass, 
                 ComputeCarMomentOfInertia(carParams), 
                 initialLane.Path.Lerp(lerpOffset), 
                 (-initialLane.Path.TangentOfProjectedPosition(initialLane.Path.Lerp(lerpOffset)).Normal).Angle)
         {
+            this.carIdx = carIdx;
             // Make sure vehicle respects min and max acceleration params
             if (carParams.MaxAccleration < IntelligentDriverModel.MIN_ACCELERATION) 
                 throw new ArgumentException(String.Format("Car acceleration ({0} m/s2) too low! Min: {1} m/s2", carParams.MaxAccleration, IntelligentDriverModel.MIN_ACCELERATION));
