@@ -49,6 +49,8 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         /// </summary>
         public Dictionary<int, LeaderCarInfo> LeaderCarInfo { get; }
 
+        private PIDController pidController;
+
         /// <summary>
         /// Creates a car controller that follows some path
         /// </summary>
@@ -60,6 +62,8 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
             this.Path = path;
 
             LeaderCarInfo = new Dictionary<int, LeaderCarInfo>();
+
+            pidController = new PIDController(0.0f, 0.0f, 0.0f);
         }
 
         public void SetLeaderCarInfo(int laneIdx, LeaderCarInfo leaderCarInfo)
@@ -95,7 +99,9 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         public virtual DrivingState Update(float deltaTime)
         {
             // Direction of the force
-            Vector2 acceleration = ComputeTangentialAcceleration() + ComputeNormalAcceleration(deltaTime);
+            Vector2 acceleration = 
+                ComputeTangentialAcceleration() + 
+                ComputeNormalAcceleration(deltaTime);
 
             Vector2 force = acceleration * car.Mass;            
             car.ApplyForce(force);
@@ -121,18 +127,15 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
             // Get orthogonal distance to path
             Segment closestSegment = Path.Segments[Path.ClosestSegment(car.Position)];
             Vector2 target = closestSegment.ProjectOntoSupportingLine(car.Position);
+            Vector2 dist = target - car.Position;
+            Vector2 normal = closestSegment.Direction.Normal;
+            float error = Vector2.Dot(dist, normal);
+            pidController.UpdateError(error);
+            float adjustement = pidController.PIDError();
+            if (adjustement < -car.BrakingDeceleration) adjustement = -car.BrakingDeceleration;
+            if (adjustement > car.MaxAcceleration) adjustement = car.MaxAcceleration;
 
-            Vector2 desired = target - car.Position;
-            float distance = desired.Norm;
-            if (distance > 0)
-            {
-                desired = desired.Normalized * Math.Min(car.MaxCarSpeed, distance / deltaTime);
-               
-                // Compute normal dV 
-                Vector2 dV = desired - Vector2.Dot(car.LinearVelocity, desired) * desired.Normalized;
-                return desired / deltaTime;
-            }
-            else return new Vector2();
+            return normal * adjustement;
         }
 
         private float Map(float s, float a1, float a2, float b1, float b2)
