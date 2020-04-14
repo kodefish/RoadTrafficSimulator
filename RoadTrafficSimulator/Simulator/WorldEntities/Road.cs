@@ -166,8 +166,8 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 
             for (int i = 0; i < lanes.Length; i++)
             {
-                lanes[i].SourceSegment = sourceSubSegment[i];
-                lanes[i].TargetSegment = targetSubSegment[i];
+                lanes[lanes.Length - 1 - i].SourceSegment = sourceSubSegment[i];
+                lanes[lanes.Length - 1 - i].TargetSegment = targetSubSegment[i];
             }
         }
 
