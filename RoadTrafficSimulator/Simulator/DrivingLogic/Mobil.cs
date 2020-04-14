@@ -1,4 +1,5 @@
 using System;
+using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
 using RoadTrafficSimulator.Simulator.WorldEntities;
 using RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine;
 
@@ -18,10 +19,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
         {
             Lane[] possibleLanes = currentLane.NeighboringLanes;
             VehicleNeighbors currentVehicleNeighbors = currentLane.VehicleNeighbors(car);
-            float maxIncentiveCriterion = IncentiveCriterion(
-                car, 
-                currentVehicleNeighbors, currentVehicleNeighbors,
-                currentLane, currentLane);
+            float maxIncentiveCriterion = 0;
 
             // For each possible lane, compute safety and incentive criterions
             // Then, among lanes l s.t. safetyCriterion(l) > 0, pick l s.t. incentiveCriterion(l) is  maximal
@@ -96,7 +94,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
             // Acc bias is used to enfore rules or model obstructions (positive will have cars stay, and vice versa)
             float incentiveCriterion = nextAccCurrentCar - currAccCurrentCar
                 - politenessFactor * (currAccCurrVehicleBehind - nextAccCurrVehicleBehind + currAccCurrVehicleBehind - nextAccCurrVehicleBehind)
-                + accThreshold + accBias;
+                - accThreshold - accBias;
 
             return incentiveCriterion;
         }
@@ -105,12 +103,16 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
         {
             if (car == null) return 0;
             LeaderCarInfo leaderCarInfo = lane.ComputeLeaderCarInfo(car, carInFront);
-            return IntelligentDriverModel.ComputeAccelerationIntensity(
+            Vector2 trafficDirection = lane.Path.TangentOfProjectedPosition(car.Position);
+            Vector2 acc = IntelligentDriverModel.ComputeAccelerationIntensity(
                 car, 
-                lane.Path.TangentOfProjectedPosition(car.Position),
+                trafficDirection,
                 leaderCarInfo.DistToNextCar,
                 leaderCarInfo.ApproachingRate
-            ).Norm;
+            );
+
+            // Acceleration in direction of traffic (can be negaitve, -> vehicle will have to brake)
+            return Vector2.Dot(acc, trafficDirection); 
         }
     }
 }

@@ -65,6 +65,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         {
             LaneIdx = laneIdx;
             MaxSpeed = speedLimit;
+            AccelerationBias = accelerationBias;
 
             // Keep track of cars on the lane
             Cars = new List<Car>();
