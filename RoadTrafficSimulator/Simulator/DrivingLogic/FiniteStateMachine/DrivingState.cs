@@ -37,6 +37,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
     /// </summary>
     abstract class DrivingState
     {
+        private readonly float MAX_STEERING_ACCELERATION = 1.3f;
         protected Car car;
 
         /// <summary>
@@ -132,8 +133,8 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
             float error = Vector2.Dot(dist, normal);
             pidController.UpdateError(error, deltaTime);
             float adjustement = pidController.PIDError();
-            if (adjustement < -car.BrakingDeceleration) adjustement = -car.BrakingDeceleration;
-            if (adjustement > car.MaxAcceleration) adjustement = car.MaxAcceleration;
+            if (adjustement < -MAX_STEERING_ACCELERATION) adjustement = -MAX_STEERING_ACCELERATION;
+            if (adjustement > MAX_STEERING_ACCELERATION) adjustement = MAX_STEERING_ACCELERATION;
 
             return normal * adjustement;
         }

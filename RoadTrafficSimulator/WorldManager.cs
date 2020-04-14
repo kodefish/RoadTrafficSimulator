@@ -48,8 +48,8 @@ namespace RoadTrafficSimulator
 
             // Generate cars
             // TestNeighbors();
-            TestOvertaking();
-            // FillWorld();
+            // TestOvertaking();
+            FillWorld();
         }
 
         private void GenerateGrid()
@@ -231,7 +231,7 @@ namespace RoadTrafficSimulator
                             maxSpeed : 120,
                             maxAccleration : 1.3f,
                             brakingDeceleration: 3f,
-                            politenessFactor: 0.0f
+                            politenessFactor: 1.0f
                         );
                     }
                     else
@@ -244,7 +244,7 @@ namespace RoadTrafficSimulator
                             maxSpeed : 80,
                             maxAccleration : 0.3f,
                             brakingDeceleration: 2f,
-                            politenessFactor: 0.0f
+                            politenessFactor: 1.0f
                         );
                     }
 
