@@ -7,7 +7,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 {
     class Road : IRTSUpdateable, IRTSGeometry<Rectangle>
     {
-        private readonly float speedLimit;
+        public readonly float SpeedLimit;
 
         // Road Geometry
         public FourWayIntersection SourceIntersection { get; private set; }
@@ -36,6 +36,12 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
                 return new Segment(sepSrc, sepDst);
             }
         }
+
+        public Segment OutLanesSourceSegment => new Segment(RoadStartSegment.Source, RoadMidline.Source);
+        public Segment OutLanesTargetSegment => new Segment(RoadTargetSegment.Target, RoadMidline.Target);
+
+        public Segment InLanesSourceSegment => new Segment(RoadTargetSegment.Source, RoadMidline.Target);
+        public Segment InLanesTargetSegment => new Segment(RoadStartSegment.Target, RoadMidline.Source);
         public Vector2 Position
         {
             get
@@ -86,7 +92,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             int numInLanes, int numOutLanes, 
             float speedLimit)
         {
-            this.speedLimit = speedLimit;
+            this.SpeedLimit = speedLimit;
 
             SourceIntersection = source;
             TargetIntersection = target;
@@ -103,7 +109,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         private Lane[] InitLanes(int numLanes)
         {
             Lane[] lanes = new Lane[numLanes];
-            for (int i = 0; i < numLanes; i++) lanes[i] = new Lane(i, speedLimit);
+            for (int i = 0; i < numLanes; i++) lanes[i] = new Lane(i, SpeedLimit, TargetIntersection);
 
             // Setup lane neighbors
             for (int i = 0; i < numLanes; i++)
@@ -147,14 +153,10 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public void ComputeLaneGeometry()
         {
             // In lanes go from top half of target segment, to bottom half of source segment
-            Segment outLanesSources = new Segment(RoadStartSegment.Source, RoadMidline.Source);
-            Segment outLanesTargets = new Segment(RoadTargetSegment.Target, RoadMidline.Target);
-            SetLaneSourceAndTargets(OutLanes, outLanesSources, outLanesTargets);
+            SetLaneSourceAndTargets(OutLanes, OutLanesSourceSegment, OutLanesTargetSegment);
 
             // Out lanes go from top half of source segment, to bottom half of target segment
-            Segment inLanesSources = new Segment(RoadTargetSegment.Source, RoadMidline.Target);
-            Segment inLanesTargets = new Segment(RoadStartSegment.Target, RoadMidline.Source);
-            SetLaneSourceAndTargets(InLanes, inLanesSources, inLanesTargets);
+            SetLaneSourceAndTargets(InLanes, InLanesSourceSegment, InLanesTargetSegment);
         }
 
         private void SetLaneSourceAndTargets(Lane[] lanes, Segment sourceSegment, Segment targetSegment)

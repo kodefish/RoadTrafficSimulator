@@ -59,6 +59,8 @@
     <Compile Include="Simulator\DrivingLogic\IntelligentDriverModel.cs" />
     <Compile Include="Simulator\DrivingLogic\Mobil.cs" />
     <Compile Include="Simulator\DrivingLogic\PIDController.cs" />
+    <Compile Include="Simulator\IntersectionLogic\TrafficLightFSM.cs" />
+    <Compile Include="Simulator\IntersectionLogic\TrafficLightEnums.cs" />
     <Compile Include="Simulator\Interfaces\IRTSGeometry.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

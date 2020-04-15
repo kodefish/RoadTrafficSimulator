@@ -36,6 +36,15 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             }
         }    
 
+        private readonly FourWayIntersection TargetIntersection;
+        private Lane _nextLane;
+        public Lane NextLane {
+            get {
+                if (_nextLane == null) return TargetIntersection.NextLane(this);
+                else return _nextLane;
+            }
+        }
+
         // Lane geometry
         private Segment _sourceSegment;
         public Segment _targetSegment;
@@ -62,11 +71,27 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         /// Contruct a lane between two segments. Default acceleration bias
         /// set to 0.2 as recommended by MOBIL paper, which is classic European rules
         /// </summary>
-        public Lane(int laneIdx, float speedLimit, float accelerationBias = 0.2f)
+        public Lane(int laneIdx, float speedLimit, FourWayIntersection targetIntersection, float accelerationBias = 0.2f)
         {
             LaneIdx = laneIdx;
             MaxSpeed = speedLimit;
             AccelerationBias = accelerationBias;
+            TargetIntersection = targetIntersection;
+
+            // Keep track of cars on the lane
+            Cars = new List<Car>();
+        }
+
+        /// <summary>
+        /// Contruct a lane between two segments. Default acceleration bias
+        /// set to 0.2 as recommended by MOBIL paper, which is classic European rules
+        /// </summary>
+        public Lane(int laneIdx, float speedLimit, Lane nextLane, float accelerationBias = 0.2f)
+        {
+            LaneIdx = laneIdx;
+            MaxSpeed = speedLimit;
+            AccelerationBias = accelerationBias;
+            _nextLane = nextLane;            
 
             // Keep track of cars on the lane
             Cars = new List<Car>();
