@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
 using Vector2 = RoadTrafficSimulator.Simulator.DataStructures.LinAlg.Vector2;
@@ -54,10 +55,10 @@ namespace RoadTrafficSimulator.Graphics
         public void Draw(Rectangle rect, Color c, Vector2 location, Vector2 origin, Vector2 scale, float angle)
         {
             Microsoft.Xna.Framework.Rectangle sourceRectangle = new Microsoft.Xna.Framework.Rectangle(
-                (int)rect.Origin.X,
-                (int)rect.Origin.Y,
-                (int)rect.Width,
-                (int)rect.Length);
+                (int)Math.Round(rect.Origin.X),
+                (int)Math.Round(rect.Origin.Y),
+                (int)Math.Round(rect.Width),
+                (int)Math.Round(rect.Length));
 
             primitives2D.DrawRectangle(
                 LinAlgConversion.XNAVector(location), 
