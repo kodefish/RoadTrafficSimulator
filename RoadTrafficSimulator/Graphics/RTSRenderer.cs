@@ -74,10 +74,12 @@ namespace RoadTrafficSimulator.Graphics
             DrawScaledSegment(road.RoadMidline, Color.Yellow);
 
             // Draw lane normals
+            /*
             DrawScaledSegment(new Segment(road.InLanesSourceSegment.Midpoint, road.InLanesSourceSegment.Midpoint + road.InLanesSourceSegment.Direction.Normal), Color.Honeydew);
             DrawScaledSegment(new Segment(road.InLanesTargetSegment.Midpoint, road.InLanesTargetSegment.Midpoint + road.InLanesTargetSegment.Direction.Normal), Color.Honeydew);
             DrawScaledSegment(new Segment(road.OutLanesSourceSegment.Midpoint, road.OutLanesSourceSegment.Midpoint + road.OutLanesSourceSegment.Direction.Normal), Color.Honeydew);
             DrawScaledSegment(new Segment(road.OutLanesTargetSegment.Midpoint, road.OutLanesTargetSegment.Midpoint + road.OutLanesTargetSegment.Direction.Normal), Color.Honeydew);
+            */
         }
 
         public void DrawLane(Lane l, Color c)
@@ -86,7 +88,7 @@ namespace RoadTrafficSimulator.Graphics
             dRenderer.DrawPoint(l.Path.PathStart * Scale, Color.Green, 5);
             dRenderer.DrawPoint(l.Path.PathEnd * Scale, Color.Red, 5);
             foreach (Segment s in l.Path.Segments) DrawScaledSegment(s, c);
-        }
+    }
 
         public void DrawCar(Car c)
         {

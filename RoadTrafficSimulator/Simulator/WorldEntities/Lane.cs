@@ -102,11 +102,13 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             // Trajectoy is just a straight line between the source segment middle to the target segment middle
             if (SourceSegment != null && TargetSegment != null)
             {
-                Segment midline = new Segment(SourceSegment.Midpoint, TargetSegment.Midpoint);
+                Vector2 source = SourceSegment.Midpoint;
+                Vector2 target = TargetSegment.Midpoint;
+                float dist = Vector2.Distance(source, target) / 2;
                 BezierCurve midlineCurve = new BezierCurve(
-                    midline.Source, midline.Source + midline.Direction,
-                    midline.Target, midline.Target + midline.Direction);
-                Path = Path.FromBezierCurve(midlineCurve, 10, LANE_WIDTH / 2); // Only use one sample, since we know it's a straight line
+                    source, source + SourceSegment.Direction.Normal * dist,
+                    target, target - TargetSegment.Direction.Normal * dist);
+                Path = Path.FromBezierCurve(midlineCurve, 10, LANE_WIDTH / 2);
             }
         }
 

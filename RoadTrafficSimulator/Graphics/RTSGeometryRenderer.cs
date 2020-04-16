@@ -69,7 +69,7 @@ namespace RoadTrafficSimulator.Graphics
                 c);
         }
 
-        public void Draw(BezierCurve bCurve, Color c, float thickness, float step = 0.01f, bool drawTangent = false)
+        public void Draw(BezierCurve bCurve, Color c, float thickness = 1, float step = 0.01f, bool drawTangent = false)
         {
             for (float t = 0; t <= 1; t += step)
             {
