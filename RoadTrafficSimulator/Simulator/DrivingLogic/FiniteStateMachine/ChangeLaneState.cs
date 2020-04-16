@@ -28,6 +28,8 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
             this.nextLane = nextLane;
         }
 
+        public override Lane NextLane => null; //nextLane.NextLane;
+
         /// <summary>
         /// Returns the min between the car's maximum speed and the two lanes' speed limits
         /// </summary>

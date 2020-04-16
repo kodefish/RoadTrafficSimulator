@@ -33,15 +33,17 @@ namespace RoadTrafficSimulator
             world = new SimulatorWorld();
             rtsRenderer = new RTSRenderer();
 
-            rng = new Random(NUM_CARS);
+            NUM_CARS = 0;
+            rng = new Random(9);
             lastCarAddedTime = 0;
         }
 
         public void Initialize()
         {
-            FillWorld();
+            // FillWorld();
             // TestNeighbors();
             // TestOvertaking();
+            TestIntersection();
         }
 
         private void GenerateGrid()
@@ -122,6 +124,52 @@ namespace RoadTrafficSimulator
             world.AddIntersection(intersectionMiddle);
             world.AddRoad(road1);
             world.AddRoad(road2);
+        }
+
+        private void GenerateCross()
+        {
+            float scale = 10;
+            rtsRenderer.Scale = scale;
+            float displayWidth = game.GraphicsDevice.DisplayMode.Width / scale;
+            float displayHeight = game.GraphicsDevice.DisplayMode.Height / scale;
+
+            float paddingHor = displayWidth / 8;
+            float paddingVer = displayHeight / 8;
+
+            Vector2 posIntersection1 = new Vector2(paddingHor, displayHeight / 2);
+            FourWayIntersection intersection1 = new FourWayIntersection(posIntersection1);
+
+            Vector2 posIntersection2 = new Vector2(displayWidth / 2, paddingVer);
+            FourWayIntersection intersection2 = new FourWayIntersection(posIntersection2);
+
+            Vector2 posIntersection3 = new Vector2(displayWidth - paddingHor, displayHeight / 2);
+            FourWayIntersection intersection3 = new FourWayIntersection(posIntersection3);
+
+            Vector2 posIntersection4 = new Vector2(displayWidth / 2, displayHeight - paddingVer);
+            FourWayIntersection intersection4 = new FourWayIntersection(posIntersection4);
+
+            Vector2 middle = new Vector2(displayWidth / 2, displayHeight / 2);
+            FourWayIntersection intersectionMiddle = new FourWayIntersection(middle);
+
+            Road road1 = new Road(ref intersection1, ref intersectionMiddle, 3, 3, 30);
+            Road road2 = new Road(ref intersection2, ref intersectionMiddle, 3, 3, 30);
+            Road road3 = new Road(ref intersectionMiddle, ref intersection3, 3, 3, 30);
+            Road road4 = new Road(ref intersectionMiddle, ref intersection4, 3, 3, 30);
+
+            world.AddIntersection(intersection1);
+            world.AddIntersection(intersection2);
+            world.AddIntersection(intersection3);
+            world.AddIntersection(intersection4);
+            world.AddIntersection(intersectionMiddle);
+            world.AddRoad(road1);
+            world.AddRoad(road2);
+            world.AddRoad(road3);
+            world.AddRoad(road4);
+        }
+
+        private void TestIntersection() {
+            GenerateCross();
+            NUM_CARS = 1;
         }
 
         private void FillWorld() {

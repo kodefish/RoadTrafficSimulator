@@ -2,14 +2,31 @@ using System.Collections.Generic;
 using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
 using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
 using RoadTrafficSimulator.Simulator.WorldEntities;
+using System;
 
 namespace RoadTrafficSimulator.Simulator.IntersectionLogic
 {
+    enum LightStates { GO, WAIT_FOR_EMPTY };
     class TrafficLightFSM
     {
-        public Dictionary<Segment, List<Lane>> activeLanes;
+        private readonly FourWayIntersection intersection;
+        private readonly IntersectionFlowState currentIntersectionFlowState, nextIntersectionFlowState;
+        public readonly Dictionary<Segment, List<Lane>> activeLanes;
+        private readonly float greenLightTime;
 
-        public TrafficLightFSM() {
+        private float counter;
+        private LightStates currentLightState;
+
+        public TrafficLightFSM(
+            FourWayIntersection intersection, 
+            IntersectionFlowState currentIntersectionFlowState, 
+            IntersectionFlowState nextIntersectionFlowState, 
+            float greenLightTime
+        ) {
+            this.intersection = intersection;
+            this.currentIntersectionFlowState = currentIntersectionFlowState;
+            this.nextIntersectionFlowState = nextIntersectionFlowState;
+            this.greenLightTime = greenLightTime;
             activeLanes = new Dictionary<Segment, List<Lane>>();
         }
 
@@ -21,10 +38,43 @@ namespace RoadTrafficSimulator.Simulator.IntersectionLogic
 
         public List<Lane> GetPossibleNextLanes(Segment s)
         {
-            try { return activeLanes[s]; }
-            catch (KeyNotFoundException) { return new List<Lane>(); }
+            // Only let cars go through if the current light state is go and there are available lanes
+            if (currentLightState == LightStates.GO)
+            {
+                try { return activeLanes[s]; }
+                catch (KeyNotFoundException) { return new List<Lane>(); }
+            }
+            else return new List<Lane>();
         }
 
         public void Clear() => activeLanes.Clear();
+
+        public IntersectionFlowState Update(float deltaTime)
+        {
+            counter += deltaTime;
+            if (currentLightState == LightStates.WAIT_FOR_EMPTY)
+            {
+                // Wait for the intersection to be empty before letting cars go
+                if (intersection.IsEmpty()) currentLightState = LightStates.GO;
+            }
+            else
+            {
+                // Update counter and transition to next state if time is up
+                // Otherwise let cars keep going
+                if (counter > greenLightTime) return nextIntersectionFlowState;
+            }
+            return currentIntersectionFlowState;
+        }
+
+
+        public void OnEnter()
+        {
+            counter = 0;
+            currentLightState = LightStates.WAIT_FOR_EMPTY;
+        }
+        public void OnExit()
+        {
+            currentLightState = LightStates.WAIT_FOR_EMPTY;
+        }
     }
 }

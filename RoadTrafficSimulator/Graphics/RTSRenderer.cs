@@ -57,12 +57,9 @@ namespace RoadTrafficSimulator.Graphics
         public void DrawIntersection(FourWayIntersection intersection)
         {
             DrawScaledRectange(intersection.GetGeometricalFigure(), intersectionColor);
-            foreach (TrafficLightFSM state in intersection.trafficLightFSMs)
+            foreach (List<Lane> ll in intersection.CurrentTrafficLightState.activeLanes.Values)
             {
-                foreach (List<Lane> ll in state.activeLanes.Values)
-                {
-                    foreach (Lane l in ll) DrawLane(l, Color.Pink);
-                }
+                foreach (Lane l in ll) DrawLane(l, Color.Pink);
             }
         }
 

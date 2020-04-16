@@ -47,7 +47,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 
         // Lane geometry
         private Segment _sourceSegment;
-        public Segment _targetSegment;
+        private Segment _targetSegment;
         public Segment SourceSegment {
             get => _sourceSegment;
             set {
@@ -153,13 +153,24 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             float distToNextCar, approachingRate;
             if (c2 == null)
             {
-                // Distance to next car is pretending there a car in the intersection that is min bumper distance away
-                // so the IDM will make the front of the car touch the end of the lane. Since the origin is in the middle
-                // of the car, we offset that distance by half the car length
-                distToNextCar = Vector2.Distance(
-                    c1.Position,
-                    Path.PathEnd + TargetSegment.Direction.Normal * (IntelligentDriverModel.MIN_BUMPER_TO_BUMPER_DISTANCE - c1.CarLength / 2)); 
-                approachingRate = c1.LinearVelocity.Norm;
+                Lane nextLane = c1.DrivingState.NextLane;
+                if (nextLane == null)
+                {
+                    // If no next lane is available distance to next car is pretending there a car in the intersection that is min bumper distance away
+                    // so the IDM will make the front of the car touch the end of the lane. Since the origin is in the middle
+                    // of the car, we offset that distance by half the car length
+                    distToNextCar = Vector2.Distance(
+                        c1.Position,
+                        Path.PathEnd + TargetSegment.Direction.Normal * (IntelligentDriverModel.MIN_BUMPER_TO_BUMPER_DISTANCE - c1.CarLength / 2)); 
+                    approachingRate = c1.LinearVelocity.Norm;
+                }
+                else
+                {
+                    // If there is a next lane, the distance is the distance to the end of the current lane + the distance to the first car
+                    // in the next lane
+                    distToNextCar = Vector2.Distance(c1.Position, Path.PathEnd) + nextLane.FreeLaneSpace();
+                    approachingRate = c1.LinearVelocity.Norm - (nextLane.Cars.Count > 0 ? nextLane.Cars[0].LinearVelocity.Norm : 0);
+                }
             }
             else
             {

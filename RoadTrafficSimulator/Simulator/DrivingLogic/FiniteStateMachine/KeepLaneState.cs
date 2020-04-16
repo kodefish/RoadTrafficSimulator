@@ -14,6 +14,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
     {
         private Lane lane;
 
+
         /// <summary>
         /// Create lane keep state.
         /// </summary>
@@ -23,6 +24,8 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         {
             this.lane = lane;
         }
+
+        public override Lane NextLane => lane.NextLane;
 
         /// <summary>
         /// Returns the min between the car's maximum speed and the lane's speed limit
@@ -56,8 +59,8 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         {
             DrivingState state = base.Update(deltaTime);
             // TODO Determine if I need to change lanes or if I'm at the end of a lane, and trigger a state change
-            if (false) // End of the lane reached
-                state = null; // New wait for light state
+            if (Path.InverseLerp(car.Position) > 0.9f && NextLane != null) // End of the lane reached
+                state = new KeepLaneState(car, NextLane); // New wait for light state
             else 
             {
                 // Check via MOBIL for potential lane change

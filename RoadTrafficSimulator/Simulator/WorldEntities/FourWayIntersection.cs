@@ -18,7 +18,10 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         // Road information
         private static int MAX_ROADS = 4;
         private List<Road> roads;
-        public TrafficLightFSM[] trafficLightFSMs;
+
+        private IntersectionFlowState currentIntersectionFlowState;
+        private TrafficLightFSM[] trafficLightFSMs;
+        public TrafficLightFSM CurrentTrafficLightState => trafficLightFSMs[(int)currentIntersectionFlowState];
         private int roadCount { get => roads.Count; }
 
         public float Width
@@ -54,7 +57,10 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 
         internal Lane NextLane(Lane lane)
         {
-            throw new NotImplementedException();
+            // Get currently possible lanes based on intersection lights. Null means red light
+            List<Lane> possibleLanes = CurrentTrafficLightState.GetPossibleNextLanes(lane.TargetSegment);
+            if (possibleLanes.Count > 0) return possibleLanes[new Random().Next(possibleLanes.Count)];
+            else return null;
         }
 
         // Adds road to intersection, if possible
@@ -66,6 +72,19 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
                 ConfigureLanes();
             }
             else throw new ArgumentOutOfRangeException(String.Format("Max number ({0}) roads already reached!", roadCount));
+        }
+
+        internal bool IsEmpty()
+        {
+            bool isEmpty = true;
+            foreach (TrafficLightFSM state in trafficLightFSMs)
+            {
+                foreach (List<Lane> ll in state.activeLanes.Values)
+                {
+                    foreach (Lane l in ll) isEmpty = isEmpty && l.Cars.Count == 0;
+                }
+            }
+            return isEmpty;
         }
 
         public void RemoveRoad(Road road)
@@ -84,11 +103,12 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 
             // Compute intersection lanes as these depend on the road geometry
             trafficLightFSMs = new TrafficLightFSM[] {
-                new TrafficLightFSM(), // NS_FR
-                new TrafficLightFSM(), // NS_L
-                new TrafficLightFSM(), // EW_FR
-                new TrafficLightFSM(), // EW_L
+                new TrafficLightFSM(this, IntersectionFlowState.NS_FR, IntersectionFlowState.NS_L, 3), // NS_FR
+                new TrafficLightFSM(this, IntersectionFlowState.NS_L, IntersectionFlowState.EW_FR, 3), // NS_L
+                new TrafficLightFSM(this, IntersectionFlowState.EW_FR, IntersectionFlowState.EW_L, 3), // EW_FR
+                new TrafficLightFSM(this, IntersectionFlowState.EW_L, IntersectionFlowState.NS_FR, 3), // EW_L
             };
+
             int laneIdx = 0;
             foreach (Road r in roads)
             {
@@ -205,8 +225,14 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 
         public void Update(float deltaTime)
         {
-            // TODO update light controllers
-            throw new NotImplementedException();
+            // Update light controllers
+            IntersectionFlowState nextIntersectionFlowState = CurrentTrafficLightState.Update(deltaTime);
+            if (nextIntersectionFlowState != currentIntersectionFlowState)
+            {
+                CurrentTrafficLightState.OnExit();
+                currentIntersectionFlowState = nextIntersectionFlowState;
+                CurrentTrafficLightState.OnEnter();
+            }
         }
 
         public Rectangle GetGeometricalFigure()

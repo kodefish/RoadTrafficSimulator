@@ -32,7 +32,9 @@ namespace RoadTrafficSimulator.Simulator
         {
             if (deltaTime > 0)
             {
-                // TODO: Update all the light controls
+                // Update all the light controls
+                foreach (FourWayIntersection i in Intersections) i.Update(deltaTime);
+
                 // Update all the lanes (compute new leader cars, take care of light controllers)
                 foreach (Road r in Roads) r.Update(deltaTime);
 

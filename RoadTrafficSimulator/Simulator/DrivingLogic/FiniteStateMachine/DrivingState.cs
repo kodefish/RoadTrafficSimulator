@@ -51,6 +51,8 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
 
         private PIDController pidController;
 
+        public abstract Lane NextLane { get; }
+
         /// <summary>
         /// Creates a car controller that follows some path
         /// </summary>
