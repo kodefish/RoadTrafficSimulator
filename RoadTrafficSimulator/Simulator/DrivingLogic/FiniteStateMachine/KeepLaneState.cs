@@ -59,7 +59,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         {
             DrivingState state = base.Update(deltaTime);
             // TODO Determine if I need to change lanes or if I'm at the end of a lane, and trigger a state change
-            if (Path.InverseLerp(car.Position) > 0.9f && NextLane != null) // End of the lane reached
+            if (Path.InverseLerp(car.Position + car.Direction * car.CarLength / 2) >= 1 && NextLane != null) // End of the lane reached
                 state = new KeepLaneState(car, NextLane); // New wait for light state
             else 
             {

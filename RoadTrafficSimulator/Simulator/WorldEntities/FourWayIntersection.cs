@@ -226,6 +226,10 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public void Update(float deltaTime)
         {
             // Update light controllers
+            foreach(List<Lane> ll in CurrentTrafficLightState.activeLanes.Values) 
+                foreach(Lane l in ll) 
+                    l.Update(deltaTime);
+
             IntersectionFlowState nextIntersectionFlowState = CurrentTrafficLightState.Update(deltaTime);
             if (nextIntersectionFlowState != currentIntersectionFlowState)
             {

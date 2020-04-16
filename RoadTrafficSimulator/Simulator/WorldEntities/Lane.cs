@@ -28,7 +28,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public float AccelerationBias { get; }  // Used in MOBIL, can be used to enforce various rules
         private Lane[] _neighboringLanes;
         public Lane[] NeighboringLanes {        // Neighboring lanes (left and right) in road
-            get => _neighboringLanes;
+            get => _neighboringLanes == null ? new Lane[0] : _neighboringLanes;
             set {
                 if (_neighboringLanes != null) 
                     throw new Exception("Neighboring lanes can only be set once!");
