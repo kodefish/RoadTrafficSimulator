@@ -18,14 +18,14 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         // Road information
         private static int MAX_ROADS = 4;
         private List<Road> roads;
-        private TrafficLightFSM[] trafficLightFSMs;
+        public TrafficLightFSM[] trafficLightFSMs;
         private int roadCount { get => roads.Count; }
 
         public float Width
         {
             get
             {
-                float maxHorizontalRoadWidth = 1;
+                float maxHorizontalRoadWidth = Lane.LANE_WIDTH;
                 foreach (Road r in roads)
                 {
                     if (!r.IsHorizontal) maxHorizontalRoadWidth = Math.Max(maxHorizontalRoadWidth, r.RoadWidth);
@@ -37,7 +37,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         {
             get
             {
-                float maxVerticalRoadWidth = 1;
+                float maxVerticalRoadWidth = Lane.LANE_WIDTH;
                 foreach (Road r in roads)
                 {
                     if (r.IsHorizontal) maxVerticalRoadWidth = Math.Max(maxVerticalRoadWidth, r.RoadWidth);
@@ -98,18 +98,18 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
                     // Get the lanes coming into the intersection along road r - depends on road orientation
                     // If the current intersection is the source intersection of the road, then the incoming lanes
                     // will be the incoming lanes of the road, and vice-versa
-                    Lane[] incomingLanes = r.SourceIntersection == this ? r.InLanes : r.OutLanes;
-                    Segment incomingTargetSegment = r.SourceIntersection == this ? r.InLanesTargetSegment : r.OutLanesTargetSegment;
+                    Lane[] incomingLanes = r.TargetIntersection == this ? r.OutLanes : r.InLanes;
+                    Segment incomingTargetSegment = r.TargetIntersection == this ? r.OutLanesTargetSegment : r.InLanesTargetSegment;
 
                     // Get the lanes going out of the intersection along road s
                     Lane[] outgoingLanes = s.SourceIntersection == this ? s.OutLanes : s.InLanes;
-                    Segment outgoingSourceSegment = r.SourceIntersection == this ? r.OutLanesSourceSegment : r.InLanesSourceSegment;
+                    Segment outgoingSourceSegment = s.SourceIntersection == this ? s.OutLanesSourceSegment : s.InLanesSourceSegment;
 
                     if (incomingLanes.Length > 0 && outgoingLanes.Length > 0)
                     {
                         // Determine turn direction (source: https://math.stackexchange.com/questions/555198/find-direction-of-angle-between-2-vectors)
-                        Vector2 incomingDirection = incomingTargetSegment.Direction;
-                        Vector2 outgoingDirection = outgoingSourceSegment.Direction;
+                        Vector2 incomingDirection = incomingTargetSegment.Direction.Normal;
+                        Vector2 outgoingDirection = outgoingSourceSegment.Direction.Normal;
 
                         CardinalDirection cardinalDirection = TrafficEnum.GetCardinalDirection(incomingDirection);
                         TurnDirection turnDirection = TrafficEnum.GetTurnDirection(incomingDirection, outgoingDirection);

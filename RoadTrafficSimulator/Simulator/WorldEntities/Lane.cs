@@ -106,7 +106,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
                 BezierCurve midlineCurve = new BezierCurve(
                     midline.Source, midline.Source + midline.Direction,
                     midline.Target, midline.Target + midline.Direction);
-                Path = Path.FromBezierCurve(midlineCurve, 1, LANE_WIDTH / 2); // Only use one sample, since we know it's a straight line
+                Path = Path.FromBezierCurve(midlineCurve, 10, LANE_WIDTH / 2); // Only use one sample, since we know it's a straight line
             }
         }
 

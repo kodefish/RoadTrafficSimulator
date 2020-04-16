@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using RoadTrafficSimulator.Simulator.WorldEntities;
+using RoadTrafficSimulator.Simulator.IntersectionLogic;
 using RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine;
 using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
 using Rectangle = RoadTrafficSimulator.Simulator.DataStructures.Geometry.Rectangle;
@@ -56,6 +57,13 @@ namespace RoadTrafficSimulator.Graphics
         public void DrawIntersection(FourWayIntersection intersection)
         {
             DrawScaledRectange(intersection.GetGeometricalFigure(), intersectionColor);
+            foreach (TrafficLightFSM state in intersection.trafficLightFSMs)
+            {
+                foreach (List<Lane> ll in state.activeLanes.Values)
+                {
+                    foreach (Lane l in ll) DrawLane(l, Color.Pink);
+                }
+            }
         }
 
         public void DrawRoad(Road road)
@@ -64,6 +72,12 @@ namespace RoadTrafficSimulator.Graphics
             foreach (Lane l in road.InLanes) DrawLane(l, colors[l.LaneIdx % colors.Length]);
             foreach (Lane l in road.OutLanes) DrawLane(l, colors[l.LaneIdx % colors.Length]);
             DrawScaledSegment(road.RoadMidline, Color.Yellow);
+
+            // Draw lane normals
+            DrawScaledSegment(new Segment(road.InLanesSourceSegment.Midpoint, road.InLanesSourceSegment.Midpoint + road.InLanesSourceSegment.Direction.Normal), Color.Honeydew);
+            DrawScaledSegment(new Segment(road.InLanesTargetSegment.Midpoint, road.InLanesTargetSegment.Midpoint + road.InLanesTargetSegment.Direction.Normal), Color.Honeydew);
+            DrawScaledSegment(new Segment(road.OutLanesSourceSegment.Midpoint, road.OutLanesSourceSegment.Midpoint + road.OutLanesSourceSegment.Direction.Normal), Color.Honeydew);
+            DrawScaledSegment(new Segment(road.OutLanesTargetSegment.Midpoint, road.OutLanesTargetSegment.Midpoint + road.OutLanesTargetSegment.Direction.Normal), Color.Honeydew);
         }
 
         public void DrawLane(Lane l, Color c)
@@ -71,6 +85,7 @@ namespace RoadTrafficSimulator.Graphics
             // Draw arrival points
             dRenderer.DrawPoint(l.Path.PathStart * Scale, Color.Green, 5);
             dRenderer.DrawPoint(l.Path.PathEnd * Scale, Color.Red, 5);
+            foreach (Segment s in l.Path.Segments) DrawScaledSegment(s, c);
         }
 
         public void DrawCar(Car c)

@@ -7,7 +7,7 @@ namespace RoadTrafficSimulator.Simulator.IntersectionLogic
 {
     class TrafficLightFSM
     {
-        private Dictionary<Segment, List<Lane>> activeLanes;
+        public Dictionary<Segment, List<Lane>> activeLanes;
 
         public TrafficLightFSM() {
             activeLanes = new Dictionary<Segment, List<Lane>>();

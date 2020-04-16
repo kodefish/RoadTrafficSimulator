@@ -108,14 +108,20 @@ namespace RoadTrafficSimulator
             Vector2 posIntersection1 = new Vector2(padding, displayHeight / 2);
             FourWayIntersection intersection1 = new FourWayIntersection(posIntersection1);
 
-            Vector2 posIntersection2 = new Vector2(displayWidth - padding, displayHeight / 2);
+            Vector2 posIntersection2 = new Vector2(displayWidth / 2, 0.8f * displayHeight);
             FourWayIntersection intersection2 = new FourWayIntersection(posIntersection2);
 
-            Road road = new Road(ref intersection1, ref intersection2, 3, 3, 30);
+            Vector2 middle = new Vector2(displayWidth / 2, displayHeight / 2);
+            FourWayIntersection intersectionMiddle = new FourWayIntersection(middle);
+
+            Road road1 = new Road(ref intersection1, ref intersectionMiddle, 3, 3, 30);
+            Road road2 = new Road(ref intersectionMiddle, ref intersection2, 3, 3, 30);
 
             world.AddIntersection(intersection1);
             world.AddIntersection(intersection2);
-            world.AddRoad(road);
+            world.AddIntersection(intersectionMiddle);
+            world.AddRoad(road1);
+            world.AddRoad(road2);
         }
 
         private void FillWorld() {

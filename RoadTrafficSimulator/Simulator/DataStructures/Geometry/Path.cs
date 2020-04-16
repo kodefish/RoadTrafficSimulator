@@ -39,7 +39,7 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
         public static Path FromBezierCurve(BezierCurve c, float numSamples = 10, float radius = 0.01f)
         {
             if (numSamples < 1) throw new ArgumentException(String.Format("Number of samples ({0}) must not be < 1!", numSamples));
-            float sampleRate = 1 / numSamples;
+            float sampleRate = 1f / numSamples;
             List<Segment> segments = new List<Segment>();
             for (float i = 0; i < 1; i += sampleRate)
                 segments.Add(new Segment(c.GetPosition(Math.Min(i, 1)), c.GetPosition(Math.Min(i + sampleRate, 1))));
