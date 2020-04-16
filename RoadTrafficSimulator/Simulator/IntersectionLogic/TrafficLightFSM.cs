@@ -56,27 +56,35 @@ namespace RoadTrafficSimulator.Simulator.IntersectionLogic
             counter += deltaTime;
             if (currentLightState == LightStates.WAIT_FOR_EMPTY)
             {
-                // Wait for the intersection to be empty before letting cars go
-                if (intersection.IsEmpty()) currentLightState = LightStates.GO;
+                // Wait for the intersection to be empty before moving to next state
+                if (ActiveLanesEmpty()) return nextIntersectionFlowState;
             }
             else
             {
-                // Update counter and transition to next state if time is up
-                // Otherwise let cars keep going
-                if (counter > greenLightTime) return nextIntersectionFlowState;
+                // Check counter and transition to waiting for an empty intersection if 
+                // time's up
+                if (counter > greenLightTime) currentLightState = LightStates.WAIT_FOR_EMPTY;
             }
             return currentIntersectionFlowState;
         }
 
+        private bool ActiveLanesEmpty()
+        {
+            bool isEmpty = true;
+            foreach (List<Lane> ll in activeLanes.Values)
+                foreach(Lane l in ll)
+                    isEmpty = isEmpty && l.Cars.Count == 0;
+            return isEmpty;
+        }
 
         public void OnEnter()
         {
             counter = 0;
-            currentLightState = LightStates.WAIT_FOR_EMPTY;
+            currentLightState = LightStates.GO;
         }
         public void OnExit()
         {
-            currentLightState = LightStates.WAIT_FOR_EMPTY;
+            currentLightState = LightStates.GO;
         }
     }
 }

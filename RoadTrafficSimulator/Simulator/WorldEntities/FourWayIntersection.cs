@@ -74,19 +74,6 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             else throw new ArgumentOutOfRangeException(String.Format("Max number ({0}) roads already reached!", roadCount));
         }
 
-        internal bool IsEmpty()
-        {
-            bool isEmpty = true;
-            foreach (TrafficLightFSM state in trafficLightFSMs)
-            {
-                foreach (List<Lane> ll in state.activeLanes.Values)
-                {
-                    foreach (Lane l in ll) isEmpty = isEmpty && l.Cars.Count == 0;
-                }
-            }
-            return isEmpty;
-        }
-
         public void RemoveRoad(Road road)
         {
             bool ok = roads.Remove(road);
