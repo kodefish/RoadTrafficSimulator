@@ -19,7 +19,7 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
         /// </summary>
         /// <param name="segments">Segments that make up the center of the path</param>
         /// <param name="radius">Width of the path</param>
-        private Path(List<Segment> segments, float radius = 0.5f)
+        public Path(List<Segment> segments, float radius = 0.5f)
         {
             if (radius < 0) throw new ArgumentException("Radius must be positive");
             if (segments == null) throw new ArgumentException("Segments must be non-null");

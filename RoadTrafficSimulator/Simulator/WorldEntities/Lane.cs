@@ -104,11 +104,16 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             {
                 Vector2 source = SourceSegment.Midpoint;
                 Vector2 target = TargetSegment.Midpoint;
+                /*
                 float dist = Vector2.Distance(source, target) / 2;
                 BezierCurve midlineCurve = new BezierCurve(
                     source, source + SourceSegment.Direction.Normal * dist,
                     target, target - TargetSegment.Direction.Normal * dist);
-                Path = Path.FromBezierCurve(midlineCurve, 10, LANE_WIDTH / 2);
+                Path = Path.FromBezierCurve(midlineCurve, 2, LANE_WIDTH / 2);
+                */
+                List<Segment> segments = new List<Segment>();
+                segments.Add(new Segment(source, target));
+                Path = new Path(segments, LANE_WIDTH / 2);
             }
         }
 

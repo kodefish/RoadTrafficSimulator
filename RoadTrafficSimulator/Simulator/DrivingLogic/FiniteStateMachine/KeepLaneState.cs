@@ -64,7 +64,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
             {
                 state = new KeepLaneState(car, NextLane); // New wait for light state
             }
-            else 
+            else if (0.2 < lerp && lerp < 0.8)
             {
                 // Check via MOBIL for potential lane change
                 Lane newLane = Mobil.OptimalLane(car, lane);
