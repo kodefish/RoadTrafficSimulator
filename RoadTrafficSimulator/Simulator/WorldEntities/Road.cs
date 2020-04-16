@@ -99,17 +99,17 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 
             this.NumInLanes = numInLanes;
             this.NumOutLanes = numOutLanes;
-            InLanes = InitLanes(numInLanes);
-            OutLanes = InitLanes(numOutLanes);
+            InLanes = InitLanes(numInLanes, SourceIntersection);
+            OutLanes = InitLanes(numOutLanes, TargetIntersection);
 
             SourceIntersection.AddRoad(this);
             TargetIntersection.AddRoad(this);
         }
 
-        private Lane[] InitLanes(int numLanes)
+        private Lane[] InitLanes(int numLanes, FourWayIntersection laneTargetIntersection)
         {
             Lane[] lanes = new Lane[numLanes];
-            for (int i = 0; i < numLanes; i++) lanes[i] = new Lane(i, SpeedLimit, TargetIntersection);
+            for (int i = 0; i < numLanes; i++) lanes[i] = new Lane(i, SpeedLimit, laneTargetIntersection);
 
             // Setup lane neighbors
             for (int i = 0; i < numLanes; i++)

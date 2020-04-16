@@ -103,10 +103,10 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 
             // Compute intersection lanes as these depend on the road geometry
             trafficLightFSMs = new TrafficLightFSM[] {
-                new TrafficLightFSM(this, IntersectionFlowState.NS_FR, IntersectionFlowState.NS_L, 3), // NS_FR
-                new TrafficLightFSM(this, IntersectionFlowState.NS_L, IntersectionFlowState.EW_FR, 3), // NS_L
-                new TrafficLightFSM(this, IntersectionFlowState.EW_FR, IntersectionFlowState.EW_L, 3), // EW_FR
-                new TrafficLightFSM(this, IntersectionFlowState.EW_L, IntersectionFlowState.NS_FR, 3), // EW_L
+                new TrafficLightFSM(this, IntersectionFlowState.NS_FR, IntersectionFlowState.NS_L, 10), // NS_FR
+                new TrafficLightFSM(this, IntersectionFlowState.NS_L, IntersectionFlowState.EW_FR, 10), // NS_L
+                new TrafficLightFSM(this, IntersectionFlowState.EW_FR, IntersectionFlowState.EW_L, 10), // EW_FR
+                new TrafficLightFSM(this, IntersectionFlowState.EW_L, IntersectionFlowState.NS_FR, 10)  // EW_L
             };
 
             int laneIdx = 0;

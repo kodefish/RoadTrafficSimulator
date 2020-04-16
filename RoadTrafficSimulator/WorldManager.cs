@@ -34,7 +34,7 @@ namespace RoadTrafficSimulator
             rtsRenderer = new RTSRenderer();
 
             NUM_CARS = 0;
-            rng = new Random(9);
+            rng = new Random(2);
             lastCarAddedTime = 0;
         }
 
@@ -169,7 +169,7 @@ namespace RoadTrafficSimulator
 
         private void TestIntersection() {
             GenerateCross();
-            NUM_CARS = 1;
+            NUM_CARS = 50;
         }
 
         private void FillWorld() {

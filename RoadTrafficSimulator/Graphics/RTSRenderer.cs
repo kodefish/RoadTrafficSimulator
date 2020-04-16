@@ -66,8 +66,8 @@ namespace RoadTrafficSimulator.Graphics
         public void DrawRoad(Road road)
         {
             DrawScaledRectange(road.GetGeometricalFigure(), roadColor);
-            foreach (Lane l in road.InLanes) DrawLane(l, colors[l.LaneIdx % colors.Length]);
-            foreach (Lane l in road.OutLanes) DrawLane(l, colors[l.LaneIdx % colors.Length]);
+            // foreach (Lane l in road.InLanes) DrawLane(l, colors[l.LaneIdx % colors.Length]);
+            // foreach (Lane l in road.OutLanes) DrawLane(l, colors[l.LaneIdx % colors.Length]);
             DrawScaledSegment(road.RoadMidline, Color.Yellow);
 
             // Draw lane normals
@@ -92,10 +92,12 @@ namespace RoadTrafficSimulator.Graphics
             Color color;
             if (c.DrivingState is KeepLaneState) color = Color.Green;
             else if (c.DrivingState is ChangeLaneState) color = Color.Yellow;
-            else /*if (c.DrivingState is WaitingForLightState)*/ color = Color.Red;
+            else color = Color.Red;
             DrawScaledRectange(c.GetGeometricalFigure(), color);
             Segment carVel = new Segment(c.Position, c.Position + c.LinearVelocity);
-            DrawScaledSegment(carVel, Color.Yellow, 2);
+            DrawScaledSegment(carVel, Color.Magenta, 2);
+
+            foreach (Segment s in c.DrivingState.Path.Segments) DrawScaledSegment(s, Color.White);
 
         }
     }
