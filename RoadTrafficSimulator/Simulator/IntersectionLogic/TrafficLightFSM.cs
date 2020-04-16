@@ -11,7 +11,7 @@ namespace RoadTrafficSimulator.Simulator.IntersectionLogic
     {
         private readonly FourWayIntersection intersection;
         private readonly IntersectionFlowState currentIntersectionFlowState, nextIntersectionFlowState;
-        public readonly Dictionary<Segment, List<Lane>> activeLanes;
+        public readonly Dictionary<int, List<Lane>> activeLanes;
         private readonly float greenLightTime;
 
         private float counter;
@@ -27,13 +27,13 @@ namespace RoadTrafficSimulator.Simulator.IntersectionLogic
             this.currentIntersectionFlowState = currentIntersectionFlowState;
             this.nextIntersectionFlowState = nextIntersectionFlowState;
             this.greenLightTime = greenLightTime;
-            activeLanes = new Dictionary<Segment, List<Lane>>();
+            activeLanes = new Dictionary<int, List<Lane>>();
         }
 
         public void AddActiveLane(Segment key, Lane l) 
         {
-            if (!activeLanes.ContainsKey(key)) activeLanes.Add(key, new List<Lane>());
-            activeLanes[key].Add(l);
+            if (!activeLanes.ContainsKey(key.GetHashCode())) activeLanes.Add(key.GetHashCode(), new List<Lane>());
+            activeLanes[key.GetHashCode()].Add(l);
         }
 
         public List<Lane> GetPossibleNextLanes(Segment s)
@@ -41,7 +41,9 @@ namespace RoadTrafficSimulator.Simulator.IntersectionLogic
             // Only let cars go through if the current light state is go and there are available lanes
             if (currentLightState == LightStates.GO)
             {
-                try { return activeLanes[s]; }
+                try { 
+                    List<Lane> result = activeLanes[s.GetHashCode()];
+                    return result; }
                 catch (KeyNotFoundException) { return new List<Lane>(); }
             }
             else return new List<Lane>();
