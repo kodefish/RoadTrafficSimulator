@@ -96,9 +96,6 @@ namespace RoadTrafficSimulator.Graphics
             DrawScaledRectange(c.GetGeometricalFigure(), color);
             Segment carVel = new Segment(c.Position, c.Position + c.LinearVelocity);
             DrawScaledSegment(carVel, Color.Magenta, 2);
-
-            foreach (Segment s in c.DrivingState.Path.Segments) DrawScaledSegment(s, Color.White);
-
         }
     }
 }

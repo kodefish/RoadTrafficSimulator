@@ -174,7 +174,7 @@ namespace RoadTrafficSimulator
 
         private void FillWorld() {
             GenerateGrid();
-            NUM_CARS = 100;
+            NUM_CARS = 50;
         }
 
         private void TestNeighbors()
