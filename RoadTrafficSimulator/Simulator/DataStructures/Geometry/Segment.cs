@@ -126,5 +126,16 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
         {
             return String.Format("Segment from: {0} to {1}", Source, Target);
         }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+                hash = hash * 23 + Source.GetHashCode();
+                hash = hash * 23 + Target.GetHashCode();
+                return hash;
+            }
+        }
     }
 }
