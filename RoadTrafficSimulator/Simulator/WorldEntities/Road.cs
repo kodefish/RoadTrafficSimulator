@@ -221,6 +221,11 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         /// </summary>
         ~Road()
         {
+            Remove();
+        }
+
+        public void Remove()
+        {
             SourceIntersection.RemoveRoad(this);
             TargetIntersection.RemoveRoad(this);
         }

@@ -19,7 +19,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 
         // Road information
         private static int MAX_ROADS = 4;
-        private List<Road> roads;
+        public List<Road> Roads;
 
         private IntersectionFlowState currentIntersectionFlowState;
         private TrafficLightFSM[] trafficLightFSMs;
@@ -28,7 +28,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         /// Current traffic light state, controls the flow of traffic through the intersection
         /// </summary>
         public TrafficLightFSM CurrentTrafficLightState => trafficLightFSMs[(int)currentIntersectionFlowState];
-        private int roadCount { get => roads.Count; }
+        private int roadCount { get => Roads.Count; }
 
         /// <summary>
         /// Width of the intersection along the x-axis. Based on the roads connected to it and the
@@ -39,7 +39,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             get
             {
                 float maxHorizontalRoadWidth = Lane.LANE_WIDTH;
-                foreach (Road r in roads)
+                foreach (Road r in Roads)
                 {
                     if (!r.IsHorizontal) maxHorizontalRoadWidth = Math.Max(maxHorizontalRoadWidth, r.RoadWidth);
                 }
@@ -56,7 +56,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             get
             {
                 float maxVerticalRoadWidth = Lane.LANE_WIDTH;
-                foreach (Road r in roads)
+                foreach (Road r in Roads)
                 {
                     if (r.IsHorizontal) maxVerticalRoadWidth = Math.Max(maxVerticalRoadWidth, r.RoadWidth);
                 }
@@ -71,7 +71,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         public FourWayIntersection(Vector2 origin)
         {
             Origin = origin;
-            roads = new List<Road>();
+            Roads = new List<Road>();
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         {
             if (roadCount < MAX_ROADS)
             {
-                roads.Add(road);
+                Roads.Add(road);
 
                 // Reconfigure the geometry since height and width may have changed
                 ConfigureGeometry();
@@ -110,7 +110,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         /// <param name="road"></param>
         public void RemoveRoad(Road road)
         {
-            bool ok = roads.Remove(road);
+            bool ok = Roads.Remove(road);
                 // Reconfigure the geometry since height and width may have changed
             if (ok) ConfigureGeometry();
         }
@@ -125,7 +125,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             // which in turn depends on the intersection width, which depends on the roads
             // So every time a road is added, we need to recompute the geometry of all the lanes
             // so all contraints are satifsied
-            foreach (Road r in roads) r.ComputeLaneGeometry();
+            foreach (Road r in Roads) r.ComputeLaneGeometry();
 
             // Compute intersection lanes as these depend on the road geometry
             trafficLightFSMs = new TrafficLightFSM[] {
@@ -136,9 +136,9 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             };
 
             int laneIdx = 0;
-            foreach (Road r in roads)
+            foreach (Road r in Roads)
             {
-                foreach (Road s in roads)
+                foreach (Road s in Roads)
                 {
                     if (r == s) continue; // foreach road s that is not r
                     // Get the lanes coming into the intersection along road r - depends on road orientation
