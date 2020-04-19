@@ -62,6 +62,16 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
             return nextAccNextVehicleBehind - nextVehicleBehind.BrakingDeceleration;
         }
 
+        /// <summary>
+        /// Computes the incentive criterion of a car, based on itself and it's neighbors. The criterion
+        /// is positive if a lane change is beneficial.
+        /// </summary>
+        /// <param name="car">Car to perform lane change</param>
+        /// <param name="neighborsCurrLane">Leading and following vehicles in current lane</param>
+        /// <param name="neighborsNextLane">Leading and following vehicles in next lane</param>
+        /// <param name="currentLane">Car's current lane</param>
+        /// <param name="nextLane">Car's potential next lane</param>
+        /// <returns>Incentive criterion.</returns>
         private static float IncentiveCriterion(
             Car car, 
             VehicleNeighbors neighborsCurrLane,
@@ -99,6 +109,13 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
             return incentiveCriterion;
         }
 
+        /// <summary>
+        /// Compute the longitudinal acceleration of a car in a lane, based on the IDM
+        /// </summary>
+        /// <param name="car">Car to compute acceleration of</param>
+        /// <param name="carInFront">Car in front of the current car, may be null if current car is the leader</param>
+        /// <param name="lane">Lane the two cars are in</param>
+        /// <returns></returns>
         private static float AccelerationOfCarInLane(Car car, Car carInFront, Lane lane)
         {
             if (car == null) return 0;
