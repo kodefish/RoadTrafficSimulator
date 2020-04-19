@@ -119,7 +119,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
         private static float AccelerationOfCarInLane(Vehicle car, Vehicle carInFront, Lane lane)
         {
             if (car == null) return 0;
-            LeaderCarInfo leaderCarInfo = lane.ComputeLeaderCarInfo(car, carInFront);
+            LeaderVehicleInfo leaderCarInfo = lane.ComputeLeaderCarInfo(car, carInFront);
             Vector2 trafficDirection = lane.Path.TangentOfProjectedPosition(car.Position);
             Vector2 acc = IntelligentDriverModel.ComputeAccelerationIntensity(
                 car, 

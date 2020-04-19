@@ -9,14 +9,14 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
     /// <summary>
     /// Information about the car directly in front
     /// </summary>
-    struct LeaderCarInfo
+    struct LeaderVehicleInfo
     {
         /// <summary>
         /// Encapsulates distance to next car and approaching rate
         /// </summary>
         /// <param name="distanceToNextCar">Bumper to bumper distance to next car</param>
         /// <param name="approachingRate">Difference in car velocities</param>
-        public LeaderCarInfo(float distanceToNextCar, float approachingRate)
+        public LeaderVehicleInfo(float distanceToNextCar, float approachingRate)
         {
             DistToNextCar = distanceToNextCar;
             ApproachingRate = approachingRate;
@@ -47,7 +47,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         /// <summary>
         /// Information about car directly in front
         /// </summary>
-        public Dictionary<int, LeaderCarInfo> LeaderCarInfo { get; }
+        public Dictionary<int, LeaderVehicleInfo> LeaderVehicleInfo { get; }
 
         /// <summary>
         /// Reference to a simple PID controller implementation
@@ -69,7 +69,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
             this.car = car;
             this.Path = path;
 
-            LeaderCarInfo = new Dictionary<int, LeaderCarInfo>();
+            LeaderVehicleInfo = new Dictionary<int, LeaderVehicleInfo>();
 
             pidController = new PIDController(9.0f, 0.0f, 9.0f);
         }
@@ -78,10 +78,10 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         /// Allow lanes to give information about the car in front 
         /// </summary>
         /// <param name="laneIdx">Lane index of lane corresponding to info</param>
-        /// <param name="leaderCarInfo">Information about car in front in lane</param>
-        public void SetLeaderCarInfo(int laneIdx, LeaderCarInfo leaderCarInfo)
+        /// <param name="leaderVehicleInfo">Information about car in front in lane</param>
+        public void SetLeaderVehicleInfo(int laneIdx, LeaderVehicleInfo leaderVehicleInfo)
         {
-            LeaderCarInfo[laneIdx] = leaderCarInfo;
+            LeaderVehicleInfo[laneIdx] = leaderVehicleInfo;
         }
 
         /// <summary>

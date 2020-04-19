@@ -43,7 +43,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         /// </summary>
         public override void OnEnter()
         {
-            lane.AddCar(car);
+            lane.AddVehicle(car);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         /// </summary>
         public override void OnExit()
         {
-            lane.RemoveCar(car);
+            lane.RemoveVehicle(car);
         }
 
         /// <summary>
@@ -89,8 +89,8 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
             Vector2 laneDirAcc = IntelligentDriverModel.ComputeAccelerationIntensity(
                 car, 
                 laneDir,
-                LeaderCarInfo[lane.LaneIdx].DistToNextCar,
-                LeaderCarInfo[lane.LaneIdx].ApproachingRate
+                LeaderVehicleInfo[lane.LaneIdx].DistToNextCar,
+                LeaderVehicleInfo[lane.LaneIdx].ApproachingRate
                 );
             
             Vector2 vehicleDir = Path.TangentOfProjectedPosition(car.Position);

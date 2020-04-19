@@ -131,7 +131,7 @@ namespace RoadTrafficSimulator.Simulator.IntersectionLogic
             bool isEmpty = true;
             foreach (List<Lane> ll in activeLanes.Values)
                 foreach(Lane l in ll)
-                    isEmpty = isEmpty && l.Cars.Count == 0;
+                    isEmpty = isEmpty && l.Vehicles.Count == 0;
             return isEmpty;
         }
 

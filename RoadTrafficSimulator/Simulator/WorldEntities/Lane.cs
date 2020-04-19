@@ -9,6 +9,9 @@ using RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine;
 
 namespace RoadTrafficSimulator.Simulator.WorldEntities
 {
+    /// <summary>
+    /// Struct represents two vehicles, front and back of some other vehicle that may or may not be in the same lane
+    /// </summary>
     struct VehicleNeighbors
     {
         public VehicleNeighbors(Vehicle vehicleBack, Vehicle vehicleFront)
@@ -16,18 +19,50 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             VehicleBack = vehicleBack;
             VehicleFront = vehicleFront;
         }
+
+        /// <summary>
+        /// Vehicle behind
+        /// </summary>
         public Vehicle VehicleBack { get; }
+
+        /// <summary>
+        /// Vehicle in front
+        /// </summary>
         public Vehicle VehicleFront { get; }
     }
+
+    /// <summary>
+    /// Represents a lane in a road.
+    /// </summary>
     class Lane : IRTSUpdateable
     {
         // Lane params
-        public const float LANE_WIDTH = 3;      // Width of a lane, in meters
-        public int LaneIdx;                     // Lane index in lane[] of parent road
-        public float MaxSpeed { get; }          // Speedlimit
-        public float AccelerationBias { get; }  // Used in MOBIL, can be used to enforce various rules
+        /// <summary>
+        /// Width of a lane, in meters
+        /// </summary>
+        public const float LANE_WIDTH = 3;
+
+        /// <summary>
+        /// Lane index in lane[] of parent road
+        /// </summary>
+        public int LaneIdx;
+
+        /// <summary>
+        /// Speed limit in current lane, in [m/s]
+        /// </summary>
+        public float MaxSpeed { get; }
+
+        /// <summary>
+        /// Used in MOBIL, can be used to enforce various rules. A positive bias incentivises
+        /// vehicles to stay in the lane, and a negative one to leave.
+        /// </summary>
+        public float AccelerationBias { get; }
+
         private Lane[] _neighboringLanes;
-        public Lane[] NeighboringLanes {        // Neighboring lanes (left and right) in road
+        /// <summary>
+        /// Neighboring lanes (left and right) in road. Can only be set once.
+        /// </summary>
+        public Lane[] NeighboringLanes {
             get => _neighboringLanes == null ? new Lane[0] : _neighboringLanes;
             set {
                 if (_neighboringLanes != null) 
@@ -36,8 +71,22 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             }
         }    
 
+        /// <summary>
+        /// Reference to target intersection
+        /// </summary>
         private readonly FourWayIntersection TargetIntersection;
+
+        /// <summary>
+        /// If null, means lane has a dynamic next lane (based on target intersection)
+        /// </summary>
         private Lane _nextLane;
+
+        /// <summary>
+        /// Lane to take after the current lane's end is reached. Can either be
+        /// set in the contructor when it's fixed (e.g. an intersection lane's 
+        /// next lane will always be available) or dynamic (a road lane's next 
+        /// lane may be null if the upcoming traffic light is red).
+        /// </summary>
         public Lane NextLane {
             get {
                 if (_nextLane == null) return TargetIntersection.NextLane(this);
@@ -48,29 +97,50 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         // Lane geometry
         private Segment _sourceSegment;
         private Segment _targetSegment;
+
+        /// <summary>
+        /// Source segment of the lane
+        /// </summary>
         public Segment SourceSegment {
             get => _sourceSegment;
             set {
                 _sourceSegment = value;
-                UpdateMidlineAndTrajectory();
+                UpdatePath();
             }
         }
+
+        /// <summary>
+        /// Target segment of the lane
+        /// </summary>
         public Segment TargetSegment {
             get => _targetSegment;
             set {
                 _targetSegment = value;
-                UpdateMidlineAndTrajectory();
+                UpdatePath();
             }
         }
 
         // Lane logic
-        public List<Vehicle> Cars { get; private set; }
+        /// <summary>
+        /// List of vehicles in the lane
+        /// </summary>
+        public List<Vehicle> Vehicles { get; private set; }
+
+        /// <summary>
+        /// Path corresponding to the midline of the lane
+        /// </summary>
         public Path Path { get; private set; }
 
         /// <summary>
         /// Contruct a lane between two segments. Default acceleration bias
-        /// set to 0.2 as recommended by MOBIL paper, which is classic European rules
+        /// set to 0.2 as recommended by MOBIL paper, which is classic European rules. 
+        /// In this case, the lane's next lane is dynamic, based on target intersection's
+        /// traffic light state
         /// </summary>
+        /// <param name="laneIdx">Index of the lane</param>
+        /// <param name="speedLimit">Speed limit, in m/s</param>
+        /// <param name="targetIntersection">Target intersection</param>
+        /// <param name="accelerationBias">Acceleration bias</param>
         public Lane(int laneIdx, float speedLimit, FourWayIntersection targetIntersection, float accelerationBias = 0.2f)
         {
             LaneIdx = laneIdx;
@@ -79,13 +149,19 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             TargetIntersection = targetIntersection;
 
             // Keep track of cars on the lane
-            Cars = new List<Vehicle>();
+            Vehicles = new List<Vehicle>();
         }
 
         /// <summary>
         /// Contruct a lane between two segments. Default acceleration bias
-        /// set to 0.2 as recommended by MOBIL paper, which is classic European rules
+        /// set to 0.2 as recommended by MOBIL paper, which is classic European rules. 
+        /// In this case, the lane's next lane is static, based on turn direction and
+        /// source segment (computed in Intersection)
         /// </summary>
+        /// <param name="laneIdx">Index of the lane</param>
+        /// <param name="speedLimit">Speed limit, in m/s</param>
+        /// <param name="nextLane">Next lane to follow</param>
+        /// <param name="accelerationBias">Acceleration bias</param>
         public Lane(int laneIdx, float speedLimit, Lane nextLane, float accelerationBias = 0.2f)
         {
             LaneIdx = laneIdx;
@@ -94,66 +170,90 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             _nextLane = nextLane;            
 
             // Keep track of cars on the lane
-            Cars = new List<Vehicle>();
+            Vehicles = new List<Vehicle>();
         }
 
-        private void UpdateMidlineAndTrajectory()
+        /// <summary>
+        /// Updates the path of the midline of the lane
+        /// </summary>
+        private void UpdatePath()
         {
             // Trajectoy is just a straight line between the source segment middle to the target segment middle
             if (SourceSegment != null && TargetSegment != null)
             {
                 Vector2 source = SourceSegment.Midpoint;
                 Vector2 target = TargetSegment.Midpoint;
-                /*
-                float dist = Vector2.Distance(source, target) / 2;
-                BezierCurve midlineCurve = new BezierCurve(
-                    source, source + SourceSegment.Direction.Normal * dist,
-                    target, target - TargetSegment.Direction.Normal * dist);
-                Path = Path.FromBezierCurve(midlineCurve, 2, LANE_WIDTH / 2);
-                */
                 List<Segment> segments = new List<Segment>();
                 segments.Add(new Segment(source, target));
                 Path = new Path(segments, LANE_WIDTH / 2);
             }
         }
 
-        public void AddCar(Vehicle c)
+        /// <summary>
+        /// Add a vehicle to the lane
+        /// </summary>
+        /// <param name="v">Vehicle to add</param>
+        public void AddVehicle(Vehicle v)
         {
-            Cars.Add(c);
-            SortCars();
+            Vehicles.Add(v);
+
+            // Only need to sort vehicles when adding/removing 
+            // since when overtaking, a vehicle will leave the lane
+            SortVehicles();
         }
 
-        public void RemoveCar(Vehicle c)
+        /// <summary>
+        /// Remove vehicle from a lane (vehicle has left the lane)
+        /// </summary>
+        /// <param name="v">Vehicle leaving the lane</param>
+        public void RemoveVehicle(Vehicle v)
         {
-            Cars.Remove(c);
-            SortCars();
+            Vehicles.Remove(v);
+            // Only need to sort vehicles when adding/removing 
+            // since when overtaking, a vehicle will leave the lane
+            SortVehicles();
         }
 
-        private void SortCars()
+        /// <summary>
+        /// Sort the vehicles from nearest to furthest from the source segment
+        /// </summary>
+        private void SortVehicles()
         {
             // Sort cars by distance from path start
-            Cars.Sort((a, b) => Path.DistanceOfProjectionAlongPath(a.Position).CompareTo(Path.DistanceOfProjectionAlongPath(b.Position)));
+            Vehicles.Sort((a, b) => Path.DistanceOfProjectionAlongPath(a.Position).CompareTo(Path.DistanceOfProjectionAlongPath(b.Position)));
         }
 
+        /// <summary>
+        /// Update the lane's vehicles leader car information
+        /// </summary>
+        /// <param name="deltaTime">Time since last update</param>
         public void Update(float deltaTime)
         {
-            if (Cars.Count == 0) return;
+            // No vehicles, no problem
+            if (Vehicles.Count == 0) return;
 
-            // For all the cars that have a car in front of them
-            for (int i = 0; i < Cars.Count - 1; i++)
+            // For all the cars that have a car in front of them, update the leading car info
+            for (int i = 0; i < Vehicles.Count - 1; i++)
             {
-                Cars[i].DrivingState.SetLeaderCarInfo(LaneIdx, ComputeLeaderCarInfo(Cars[i], Cars[i + 1]));
+                Vehicles[i].DrivingState.SetLeaderVehicleInfo(LaneIdx, ComputeLeaderCarInfo(Vehicles[i], Vehicles[i + 1]));
             }
 
-            // Car that is at the head of the lane
-            // TODO do some fancy shit with the next lane based on intersection lights
-            // For noew, Just set the end of the lane
-            Cars[Cars.Count - 1].DrivingState.SetLeaderCarInfo(LaneIdx, ComputeLeaderCarInfo(Cars[Cars.Count - 1]));
+            // Car that is at the head of the lane has no leader, so distance to next car
+            // will either be distance to end of the lane if the next lane is unavailable (red light)
+            // or distance to end of the lane + distance to the first vehicle in the next lane
+            Vehicles[Vehicles.Count - 1].DrivingState.SetLeaderVehicleInfo(LaneIdx, ComputeLeaderVehicleInfo(Vehicles[Vehicles.Count - 1]));
         }
 
-        public LeaderCarInfo ComputeLeaderCarInfo(Vehicle c) => ComputeLeaderCarInfo(c, null);
+        /// <summary>
+        /// Compute leader vehicle info for vehicle closest to end of the lane
+        /// </summary>
+        /// <param name="v">Leading vehicle</param>
+        public LeaderVehicleInfo ComputeLeaderVehicleInfo(Vehicle v) => ComputeLeaderCarInfo(v, null);
 
-        public LeaderCarInfo ComputeLeaderCarInfo(Vehicle c1, Vehicle c2)
+        /// <summary>
+        /// Compute distance and approaching rate between two cars
+        /// </summary>
+        public LeaderVehicleInfo ComputeLeaderCarInfo(Vehicle c1, Vehicle c2)
         {
             float distToNextCar, approachingRate;
             if (c2 == null)
@@ -174,7 +274,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
                     // If there is a next lane, the distance is the distance to the end of the current lane + the distance to the first car
                     // in the next lane
                     distToNextCar = Vector2.Distance(c1.Position, Path.PathEnd) + nextLane.FreeLaneSpace();
-                    approachingRate = c1.LinearVelocity.Norm - (nextLane.Cars.Count > 0 ? nextLane.Cars[0].LinearVelocity.Norm : 0);
+                    approachingRate = c1.LinearVelocity.Norm - (nextLane.Vehicles.Count > 0 ? nextLane.Vehicles[0].LinearVelocity.Norm : 0);
                 }
             }
             else
@@ -182,27 +282,33 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
                 distToNextCar = Vehicle.ComputeBumperToBumperVector(c1, c2).Norm;
                 approachingRate = Vector2.Distance(c2.LinearVelocity, c1.LinearVelocity);
             }
-            return new LeaderCarInfo(distToNextCar, approachingRate); 
+            return new LeaderVehicleInfo(distToNextCar, approachingRate); 
         }
 
+        /// <summary>
+        /// Space until first vehicle in the lane, starting from the source.
+        /// </summary>
         public float FreeLaneSpace()
         {
-            if (Cars.Count > 0) return Path.DistanceOfProjectionAlongPath(Cars[0].Position) - Cars[0].VehicleLength / 2;
+            if (Vehicles.Count > 0) return Path.DistanceOfProjectionAlongPath(Vehicles[0].Position) - Vehicles[0].VehicleLength / 2;
             else return Path.Length;
         }
 
-
+        /// <summary>
+        /// Computes the neighbors (front and back) of a vehicle. If the vehicle is not in the lane,
+        /// the projected position of the car is taken. Complexity is log(n) since we use binary search.
+        /// </summary>
         public VehicleNeighbors VehicleNeighbors(Vehicle car)
         {
             // Assume cars are sorted and binary search for least index j s.t. InvLerp(j) > InvLerp(c)
             float carVal = Path.InverseLerp(car.Position);
 
             int firstGreaterThanIdx = -1;
-            int low = 0, high = Cars.Count - 1;
+            int low = 0, high = Vehicles.Count - 1;
             while (low <= high)
             {
                 int m = low + (high - low + 1) / 2;
-                float mVal = Path.InverseLerp(Cars[m].Position);
+                float mVal = Path.InverseLerp(Vehicles[m].Position);
 
                 if (mVal <= carVal)
                 {
@@ -225,23 +331,24 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             }
             else if (firstGreaterThanIdx < 0)
             {
-                i = Cars.Count - 1;
+                i = Vehicles.Count - 1;
             }
             else 
             {
                 j = firstGreaterThanIdx;
-                i = Cars.Contains(car) ? j - 2 : j - 1;
+                // If the vehicle is in the lane, then j-1 will equal the vehicle, so take j - 2 to get the car behind
+                i = Vehicles.Contains(car) ? j - 2 : j - 1;
             }
 
             // Check if there is a vehicle at the same position as c
-            if (i > 0 && Cars[i].Position.Equals(car.Position))
-                return new VehicleNeighbors(Cars[i], Cars[i]);
-            else if (j > 0 && Cars[j].Position.Equals(car.Position)) // Should absolutely never happen, but ey you never know and better be robust
-                return new VehicleNeighbors(Cars[j], Cars[j]); // If you feeling fancy, throw an exception that something went horribly wrong
+            if (i > 0 && Vehicles[i].Position.Equals(car.Position))
+                return new VehicleNeighbors(Vehicles[i], Vehicles[i]);
+            else if (j > 0 && Vehicles[j].Position.Equals(car.Position)) // Should absolutely never happen, but ey you never know and better be robust
+                return new VehicleNeighbors(Vehicles[j], Vehicles[j]); // If you feeling fancy, throw an exception that something went horribly wrong
             else
                 return new VehicleNeighbors(
-                    i < 0 ? null : Cars[i], 
-                    j < 0 ? null : Cars[j]
+                    i < 0 ? null : Vehicles[i], 
+                    j < 0 ? null : Vehicles[j]
                 );
         }
 
