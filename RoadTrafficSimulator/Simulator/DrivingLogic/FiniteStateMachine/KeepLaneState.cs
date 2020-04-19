@@ -12,8 +12,10 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
     /// </summary>
     class KeepLaneState : DrivingState
     {
+        /// <summary>
+        /// Lane to keep
+        /// </summary>
         private Lane lane;
-
 
         /// <summary>
         /// Create lane keep state.
@@ -25,16 +27,19 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
             this.lane = lane;
         }
 
+        /// <summary>
+        /// Get the next lane. In this case we just take the next lane of the currently kept lane.
+        /// </summary>
         public override Lane NextLane => lane.NextLane;
 
         /// <summary>
-        /// Returns the min between the car's maximum speed and the lane's speed limit
+        /// Returns the min between the car's maximum speed and the lane's speed limit.
         /// </summary>
         /// <returns>Maximum speed of the car in the current state</returns>
         public override float MaxSpeed() => Math.Min(car.MaxCarSpeed, lane.MaxSpeed);
 
         /// <summary>
-        /// Add the car to the lane
+        /// Add the car to the lane.
         /// </summary>
         public override void OnEnter()
         {
@@ -42,7 +47,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         }
 
         /// <summary>
-        /// Remove the car from the lane
+        /// Remove the car from the lane.
         /// </summary>
         public override void OnExit()
         {
@@ -51,24 +56,24 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
 
         /// <summary>
         /// Determine a state change based on if car should to change lanes
-        /// or car has reached the end of it's lane
+        /// or car has reached the end of it's lane.
         /// </summary>
-        /// <param name="deltaTime"></param>
+        /// <param name="deltaTime">Time since last update</param>
         /// <returns></returns>
         public override DrivingState Update(float deltaTime)
         {
             DrivingState state = base.Update(deltaTime);
-            // TODO Determine if I need to change lanes or if I'm at the end of a lane, and trigger a state change
+            // Determine if I need to change lanes or if I'm at the end of a lane, and trigger a state change
             float lerp = Path.InverseLerp(car.Position + car.Direction * car.CarLength / 2);
             if (lerp >= 0.99 && NextLane != null) // End of the lane reached
             {
-                state = new KeepLaneState(car, NextLane); // New wait for light state
+                state = new KeepLaneState(car, NextLane); // New wait for light state if next lane is available
             }
-            else if (0.2 < lerp && lerp < 0.8)
+            else if (0.2 < lerp && lerp < 0.8) // Allow lane changing from the first 20% of the lane, until 80%
             {
                 // Check via MOBIL for potential lane change
                 Lane newLane = Mobil.OptimalLane(car, lane);
-                if (newLane.LaneIdx != lane.LaneIdx) // Debug.WriteLine("Changine lane from {0} to {1}", lane.LaneIdx, newLane.LaneIdx);
+                if (newLane.LaneIdx != lane.LaneIdx) 
                     state = new ChangeLaneState(car, lane, newLane);
             }
             return state;

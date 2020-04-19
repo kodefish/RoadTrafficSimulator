@@ -12,10 +12,17 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
     /// </summary>
     class ChangeLaneState : DrivingState
     {
+        /// <summary>
+        /// Lanes that the vehicle is in
+        /// </summary>
         private Lane currentLane, nextLane;
 
         /// <summary>
-        /// Create lane keep state.
+        /// Create lane change state. The  path is just set to the next lane's path,
+        /// and the PID controller takes care of providing a smooth lane change. During
+        /// the change lane state, the vehicle is considered to be in both lanes at
+        /// once, therefore vehicles in both lanes will consider the lane changing car 
+        /// to be their leader.
         /// </summary>
         /// <param name="car">Car to control</param>
         /// <param name="currentLane">Lane car is changing from</param>
@@ -28,7 +35,10 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
             this.nextLane = nextLane;
         }
 
-        public override Lane NextLane => null; //nextLane.NextLane;
+        /// <summary>
+        /// Next lane corresponds to target lane's next lane
+        /// </summary>
+        public override Lane NextLane => nextLane.NextLane;
 
         /// <summary>
         /// Returns the min between the car's maximum speed and the two lanes' speed limits

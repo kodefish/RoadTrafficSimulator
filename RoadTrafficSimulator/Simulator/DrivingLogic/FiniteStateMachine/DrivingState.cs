@@ -49,8 +49,14 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         /// </summary>
         public Dictionary<int, LeaderCarInfo> LeaderCarInfo { get; }
 
+        /// <summary>
+        /// Reference to a simple PID controller implementation
+        /// </summary>
         private PIDController pidController;
 
+        /// <summary>
+        /// Next lane to take when end of current one is reached. May be null.
+        /// </summary>
         public abstract Lane NextLane { get; }
 
         /// <summary>
@@ -68,6 +74,11 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
             pidController = new PIDController(9.0f, 0.0f, 9.0f);
         }
 
+        /// <summary>
+        /// Allow lanes to give information about the car in front 
+        /// </summary>
+        /// <param name="laneIdx">Lane index of lane corresponding to info</param>
+        /// <param name="leaderCarInfo">Information about car in front in lane</param>
         public void SetLeaderCarInfo(int laneIdx, LeaderCarInfo leaderCarInfo)
         {
             LeaderCarInfo[laneIdx] = leaderCarInfo;
@@ -93,8 +104,8 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
 
         /// <summary>
         /// Update the driving mechanics.
-        /// 1. Apply force (accelerate / brake)
-        /// 2. Apply torque (steering)
+        /// 1. Apply tangential force (accelerate / brake)
+        /// 2. Apply normal force (steering)
         /// </summary>
         /// <param name="deltaTime">Time since last update</param>
         /// <returns>Potential state change</returns>
@@ -119,9 +130,8 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         protected abstract Vector2 ComputeTangentialAcceleration();
 
         /// <summary>
-        /// Computes the steering. Right now uses torque to rotate 
-        /// the rigid body, based on a target. Target computation
-        /// based on Craig Reynolds path following behavior
+        /// Computes the steering force, based on a PID controller. The controller
+        /// strives to minimize the distance to the path midline
         /// </summary>
         /// <param name="deltaTime"></param>
         /// <returns></returns>
@@ -143,6 +153,15 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
             return normal * adjustement;
         }
 
+        /// <summary>
+        /// Implementation of a map function of a value from one range to another.
+        /// </summary>
+        /// <param name="s">value to map</param>
+        /// <param name="a1">min first range</param>
+        /// <param name="a2">max first range</param>
+        /// <param name="b1">min second range</param>
+        /// <param name="b2">max second range</param>
+        /// <returns>s mapped to second range</returns>
         private float Map(float s, float a1, float a2, float b1, float b2)
         {
             return b1 + (s-a1)*(b2-b1)/(a2-a1);
