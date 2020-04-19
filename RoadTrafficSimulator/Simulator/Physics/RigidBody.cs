@@ -8,15 +8,30 @@ namespace RoadTrafficSimulator.Simulator.Physics
     /// </summary>
     abstract class RigidBody
     {
-        public float Mass { get; private set; }                         // In [kg]
+        /// <summary>
+        /// Mass of the rigid body, in [kg]
+        /// </summary>
+        public float Mass { get; private set; }
 
-        public Vector2 Position { get; set; }                           // In [meters]
+        /// <summary>
+        /// Position of the rigid body, in [meters]
+        /// </summary>
+        public Vector2 Position { get; set; }
 
-        public Vector2 LinearVelocity { get; private set; }             // In [meters/second]
+        /// <summary>
+        /// Linear velocity of the rigid body, in in [meters/second]
+        /// </summary>
+        public Vector2 LinearVelocity { get; private set; }
 
-        public Vector2 Force { get; private set; }                      // In [Newtons]
+        /// <summary>
+        /// Force applied to the rigid body, in [Newtons]
+        /// </summary>
+        public Vector2 Force { get; private set; }
 
-        public Vector2 Acceleration { get { return Force / Mass; } }    // In [meters/second^2]
+        /// <summary>
+        /// Acceleration of the rigid body, in [meters/second^2]
+        /// </summary>
+        public Vector2 Acceleration { get { return Force / Mass; } }
 
         /// <summary>
         /// Create a rigid body with mass, initial position, initial velocity, and initial force
@@ -72,6 +87,5 @@ namespace RoadTrafficSimulator.Simulator.Physics
             // Reset force to 0
             Force = new Vector2(0, 0);
         }
-
     }
 }
