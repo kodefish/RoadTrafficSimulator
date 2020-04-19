@@ -188,5 +188,10 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             Vector2 bumperToBumper = p2 - p1;
             return bumperToBumper;
         }
+
+        internal void Remove()
+        {
+            DrivingState.OnExit();
+        }
     }
 }

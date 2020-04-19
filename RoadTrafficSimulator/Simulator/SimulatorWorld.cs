@@ -26,7 +26,11 @@ namespace RoadTrafficSimulator.Simulator
         public void RemoveRoad(Road road) => Roads.Remove(road);
 
         public void AddCar(Car car) => Cars.Add(car);
-        public void RemoveCar(Car car) => Cars.Remove(car);
+        public void RemoveCar(Car car)
+        {
+            car.Remove();
+            Cars.Remove(car);
+        }
 
         public void Update(float deltaTime)
         {
