@@ -39,13 +39,7 @@ namespace RoadTrafficSimulator.Simulator.IntersectionLogic
         public List<Lane> GetPossibleNextLanes(Segment s)
         {
             // Only let cars go through if the current light state is go and there are available lanes
-            if (currentLightState == LightStates.GO)
-            {
-                try { 
-                    List<Lane> result = activeLanes[s.GetHashCode()];
-                    return result; }
-                catch (KeyNotFoundException) { return new List<Lane>(); }
-            }
+            if (currentLightState == LightStates.GO && activeLanes.ContainsKey(s.GetHashCode())) return activeLanes[s.GetHashCode()];
             else return new List<Lane>();
         }
 
