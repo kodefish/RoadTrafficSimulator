@@ -10,8 +10,19 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
     /// </summary>
     class Path
     {
+        /// <summary>
+        /// Craig Renolds path radius
+        /// </summary>
         public float Radius { get; private set; }
+
+        /// <summary>
+        /// List of segments that make up the path
+        /// </summary>
         public Segment[] Segments { get; private set; }
+
+        /// <summary>
+        /// Lenght of the path
+        /// </summary>
         public float Length { get; }
 
         /// <summary>

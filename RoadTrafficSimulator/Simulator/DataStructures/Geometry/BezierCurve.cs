@@ -29,6 +29,9 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
         }
 
         private float length = -1;
+        /// <summary>
+        /// Approximation of the length of the bezier curve
+        /// </summary>
         public float Length
         {
             get

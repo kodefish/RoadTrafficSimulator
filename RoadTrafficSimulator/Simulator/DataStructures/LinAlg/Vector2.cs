@@ -3,17 +3,49 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.LinAlg
 {
     class Vector2
     {
-        // Vector constants
+        /// <summary>
+        /// Vector (1, 0)
+        /// </summary>
         public static Vector2 UnitX => new Vector2(1, 0);
+
+        /// <summary>
+        /// Vector (0, 1)
+        /// </summary>
         public static Vector2 UnitY => new Vector2(0, 1);
+
+        /// <summary>
+        /// UnitY
+        /// </summary>
         public static Vector2 Up => UnitY;
+
+        /// <summary>
+        /// -UnitY
+        /// </summary>
         public static Vector2 Down => -UnitY;
+
+        /// <summary>
+        /// UnitX
+        /// </summary>
         public static Vector2 Right => UnitX;
+
+        /// <summary>
+        /// -UnitX
+        /// </summary>
         public static Vector2 Left => -UnitX;
 
+        /// <summary>
+        /// X component of the vector
+        /// </summary>
         public float X { get; }
+
+        /// <summary>
+        /// Y component of the vector
+        /// </summary>
         public float Y { get; }
 
+        /// <summary>
+        /// Creates a vector (0, 0)
+        /// </summary>
         public Vector2() => new Vector2(0, 0);
 
         /// <summary>
@@ -90,6 +122,11 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.LinAlg
             return String.Format("({0}, {1})", X, Y);
         }
 
+        /// <summary>
+        /// Compares two vectors. Equal if components are the same
+        /// </summary>
+        /// <param name="obj">Object to compare to</param>
+        /// <returns>true if obj is a Vector2 of same components</returns>
         public override bool Equals(object obj)
         {
             if (obj.GetType() == this.GetType())
@@ -101,6 +138,9 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.LinAlg
                 return base.Equals(obj);
         }
 
+        /// <summary>
+        /// Hash code computation
+        /// </summary>
         public override int GetHashCode()
         {
             unchecked

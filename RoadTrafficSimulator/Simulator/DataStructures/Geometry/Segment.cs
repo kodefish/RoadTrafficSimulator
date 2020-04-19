@@ -127,6 +127,10 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
             return String.Format("Segment from: {0} to {1}", Source, Target);
         }
 
+        /// <summary>
+        /// Hash code computation based on source and target points
+        /// </summary>
+        /// <returns>Hash code of segment</returns>
         public override int GetHashCode()
         {
             unchecked

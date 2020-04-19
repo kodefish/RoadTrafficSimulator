@@ -133,8 +133,7 @@ namespace RoadTrafficSimulator.Simulator.DataStructures.Geometry
         /// 2: Bottom
         /// 3: Right
         /// </summary>
-        /// <param name="i"></param>
-        /// <returns></returns>
+        /// <param name="i">Side of the rectangle</param>
         public Segment GetSide(int i)
         {
             if (i > 3) throw new ArgumentOutOfRangeException(String.Format("{0} is out of range (0-3)", i));
