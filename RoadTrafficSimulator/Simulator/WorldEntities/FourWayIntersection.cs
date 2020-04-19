@@ -8,11 +8,13 @@ using RoadTrafficSimulator.Simulator.IntersectionLogic;
 namespace RoadTrafficSimulator.Simulator.WorldEntities
 {
     /// <summary>
-    /// Supports up-to four incoming roads 
+    /// Represents an intersection. Supports up-to four incoming roads.
     /// </summary>
     class FourWayIntersection : IRTSUpdateable, IRTSGeometry<Rectangle>
     {
-        // Intersection information
+        /// <summary>
+        /// Center of the intersection
+        /// </summary>
         public Vector2 Origin { get; private set; }
 
         // Road information
@@ -21,9 +23,17 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 
         private IntersectionFlowState currentIntersectionFlowState;
         private TrafficLightFSM[] trafficLightFSMs;
+
+        /// <summary>
+        /// Current traffic light state, controls the flow of traffic through the intersection
+        /// </summary>
         public TrafficLightFSM CurrentTrafficLightState => trafficLightFSMs[(int)currentIntersectionFlowState];
         private int roadCount { get => roads.Count; }
 
+        /// <summary>
+        /// Width of the intersection along the x-axis. Based on the roads connected to it and the
+        /// number of lanes in them.
+        /// </summary>
         public float Width
         {
             get
@@ -36,6 +46,11 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
                 return maxHorizontalRoadWidth;
             }
         }
+
+        /// <summary>
+        /// Height of the intersection along the y-axis. Based on the roads connected to it and the
+        /// number of lanes in them.
+        /// </summary>
         public float Height
         {
             get
@@ -49,13 +64,23 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             }
         }
 
+        /// <summary>
+        /// Creates an intersection
+        /// </summary>
+        /// <param name="origin">Center of the intersection</param>
         public FourWayIntersection(Vector2 origin)
         {
             Origin = origin;
             roads = new List<Road>();
         }
 
-        internal Lane NextLane(Lane lane)
+        /// <summary>
+        /// Next lane after a given lane. Depends on traffic light state. If null, vehicle must stop
+        /// at the end of the lane
+        /// </summary>
+        /// <param name="lane">Incoming lane</param>
+        /// <returns>Outgoing lane</returns>
+        public Lane NextLane(Lane lane)
         {
             // Get currently possible lanes based on intersection lights. Null means red light
             List<Lane> possibleLanes = CurrentTrafficLightState.GetPossibleNextLanes(lane.TargetSegment);
@@ -63,24 +88,38 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             else return null;
         }
 
-        // Adds road to intersection, if possible
+        /// <summary>
+        /// Adds road to intersection, if possible
+        /// </summary>
+        /// <param name="road">Road to add</param>
         public void AddRoad(Road road)
         {
             if (roadCount < MAX_ROADS)
             {
                 roads.Add(road);
-                ConfigureLanes();
+
+                // Reconfigure the geometry since height and width may have changed
+                ConfigureGeometry();
             }
             else throw new ArgumentOutOfRangeException(String.Format("Max number ({0}) roads already reached!", roadCount));
         }
 
+        /// <summary>
+        /// Remove a road from the intersection
+        /// </summary>
+        /// <param name="road"></param>
         public void RemoveRoad(Road road)
         {
             bool ok = roads.Remove(road);
-            if (ok) ConfigureLanes();
+                // Reconfigure the geometry since height and width may have changed
+            if (ok) ConfigureGeometry();
         }
 
-        private void ConfigureLanes()
+        /// <summary>
+        /// Configure's the geometry of an intersection. Also triggers the geometry computation
+        /// in all the connected road.
+        /// </summary>
+        private void ConfigureGeometry()
         {
             // Compute Road geometry -> i.e lane placement as they rely on the road length
             // which in turn depends on the intersection width, which depends on the roads
@@ -179,8 +218,17 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             }
         }
 
+        /// <summary>
+        /// Dimensions of the intersection
+        /// </summary>
         public Vector2 Dimensions => new Vector2(Width, Height);
 
+        /// <summary>
+        /// Get the side segment of the intersection corresonding to the road that
+        /// heads towards another intersection.
+        /// </summary>
+        /// <param name="other">Other intersection</param>
+        /// <param name="roadWidth">Width of the road (may be smaller than that of the intersection)</param>
         public Segment GetRoadSegment(FourWayIntersection other, float roadWidth)
         {
             Vector2 direction = (other.Origin - this.Origin).Normalized;
@@ -210,13 +258,18 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             return new Segment(source, target);
         }
 
+        /// <summary>
+        /// Update traffic light state
+        /// </summary>
+        /// <param name="deltaTime">Time since last update</param>
         public void Update(float deltaTime)
         {
-            // Update light controllers
+            // Update the active lanes (cars need the leader info for IDM and MOBIL)
             foreach(List<Lane> ll in CurrentTrafficLightState.activeLanes.Values) 
                 foreach(Lane l in ll) 
                     l.Update(deltaTime);
 
+            // Update light controllers
             IntersectionFlowState nextIntersectionFlowState = CurrentTrafficLightState.Update(deltaTime);
             if (nextIntersectionFlowState != currentIntersectionFlowState)
             {
@@ -226,6 +279,10 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             }
         }
 
+        /// <summary>
+        /// Geometrical representation of an intersection
+        /// </summary>
+        /// <returns>Rectangle with intersections dimensions</returns>
         public Rectangle GetGeometricalFigure()
         {
             return new Rectangle(Origin, Width, Height);
