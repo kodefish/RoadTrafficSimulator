@@ -27,7 +27,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         /// <param name="car">Car to control</param>
         /// <param name="currentLane">Lane car is changing from</param>
         /// <param name="nextLane">Lane car is changing to</param>
-        public ChangeLaneState(Car car, Lane currentLane, Lane nextLane) 
+        public ChangeLaneState(Vehicle car, Lane currentLane, Lane nextLane) 
             : base(car, nextLane.Path)
         {
             if (currentLane.LaneIdx == nextLane.LaneIdx) throw new Exception("Lane change must occur between different lanes!");
@@ -44,7 +44,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         /// Returns the min between the car's maximum speed and the two lanes' speed limits
         /// </summary>
         /// <returns>Maximum speed of the car in the current state</returns>
-        public override float MaxSpeed() => Math.Min(car.MaxCarSpeed, Math.Min(currentLane.MaxSpeed, nextLane.MaxSpeed));
+        public override float MaxSpeed() => Math.Min(car.MaxVehicleSpeed, Math.Min(currentLane.MaxSpeed, nextLane.MaxSpeed));
 
         /// <summary>
         /// Add the car to the lane the car is merging into

@@ -11,13 +11,13 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 {
     struct VehicleNeighbors
     {
-        public VehicleNeighbors(Car vehicleBack, Car vehicleFront)
+        public VehicleNeighbors(Vehicle vehicleBack, Vehicle vehicleFront)
         {
             VehicleBack = vehicleBack;
             VehicleFront = vehicleFront;
         }
-        public Car VehicleBack { get; }
-        public Car VehicleFront { get; }
+        public Vehicle VehicleBack { get; }
+        public Vehicle VehicleFront { get; }
     }
     class Lane : IRTSUpdateable
     {
@@ -64,7 +64,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         }
 
         // Lane logic
-        public List<Car> Cars { get; private set; }
+        public List<Vehicle> Cars { get; private set; }
         public Path Path { get; private set; }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             TargetIntersection = targetIntersection;
 
             // Keep track of cars on the lane
-            Cars = new List<Car>();
+            Cars = new List<Vehicle>();
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             _nextLane = nextLane;            
 
             // Keep track of cars on the lane
-            Cars = new List<Car>();
+            Cars = new List<Vehicle>();
         }
 
         private void UpdateMidlineAndTrajectory()
@@ -117,13 +117,13 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             }
         }
 
-        public void AddCar(Car c)
+        public void AddCar(Vehicle c)
         {
             Cars.Add(c);
             SortCars();
         }
 
-        public void RemoveCar(Car c)
+        public void RemoveCar(Vehicle c)
         {
             Cars.Remove(c);
             SortCars();
@@ -151,9 +151,9 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             Cars[Cars.Count - 1].DrivingState.SetLeaderCarInfo(LaneIdx, ComputeLeaderCarInfo(Cars[Cars.Count - 1]));
         }
 
-        public LeaderCarInfo ComputeLeaderCarInfo(Car c) => ComputeLeaderCarInfo(c, null);
+        public LeaderCarInfo ComputeLeaderCarInfo(Vehicle c) => ComputeLeaderCarInfo(c, null);
 
-        public LeaderCarInfo ComputeLeaderCarInfo(Car c1, Car c2)
+        public LeaderCarInfo ComputeLeaderCarInfo(Vehicle c1, Vehicle c2)
         {
             float distToNextCar, approachingRate;
             if (c2 == null)
@@ -166,7 +166,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
                     // of the car, we offset that distance by half the car length
                     distToNextCar = Vector2.Distance(
                         c1.Position,
-                        Path.PathEnd + TargetSegment.Direction.Normal * (IntelligentDriverModel.MIN_BUMPER_TO_BUMPER_DISTANCE - c1.CarLength / 2)); 
+                        Path.PathEnd + TargetSegment.Direction.Normal * (IntelligentDriverModel.MIN_BUMPER_TO_BUMPER_DISTANCE - c1.VehicleLength / 2)); 
                     approachingRate = c1.LinearVelocity.Norm;
                 }
                 else
@@ -179,7 +179,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             }
             else
             {
-                distToNextCar = Car.ComputeBumperToBumperVector(c1, c2).Norm;
+                distToNextCar = Vehicle.ComputeBumperToBumperVector(c1, c2).Norm;
                 approachingRate = Vector2.Distance(c2.LinearVelocity, c1.LinearVelocity);
             }
             return new LeaderCarInfo(distToNextCar, approachingRate); 
@@ -187,12 +187,12 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
 
         public float FreeLaneSpace()
         {
-            if (Cars.Count > 0) return Path.DistanceOfProjectionAlongPath(Cars[0].Position) - Cars[0].CarLength / 2;
+            if (Cars.Count > 0) return Path.DistanceOfProjectionAlongPath(Cars[0].Position) - Cars[0].VehicleLength / 2;
             else return Path.Length;
         }
 
 
-        public VehicleNeighbors VehicleNeighbors(Car car)
+        public VehicleNeighbors VehicleNeighbors(Vehicle car)
         {
             // Assume cars are sorted and binary search for least index j s.t. InvLerp(j) > InvLerp(c)
             float carVal = Path.InverseLerp(car.Position);

@@ -15,7 +15,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
         /// <param name="currentLane">Car's current lane</param>
         /// <param name="possibleLane">All the possible future lanes</param>
         /// <returns>Optimal lane from possible lanes</returns>
-        public static Lane OptimalLane(Car car, Lane currentLane)
+        public static Lane OptimalLane(Vehicle car, Lane currentLane)
         {
             Lane[] possibleLanes = currentLane.NeighboringLanes;
             VehicleNeighbors currentVehicleNeighbors = currentLane.VehicleNeighbors(car);
@@ -54,7 +54,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
         /// </summary>
         /// <param name="car">Car changing lanes</param>
         /// <param name="nextLane">Car's target lane</param>
-        private static float SafetyCriterion(Car car, Car nextVehicleBehind, Lane nextLane)
+        private static float SafetyCriterion(Vehicle car, Vehicle nextVehicleBehind, Lane nextLane)
         {
             // Compute it's new acceleration based on the longitudinal model
             float nextAccNextVehicleBehind = AccelerationOfCarInLane(nextVehicleBehind, car, nextLane);
@@ -73,7 +73,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
         /// <param name="nextLane">Car's potential next lane</param>
         /// <returns>Incentive criterion.</returns>
         private static float IncentiveCriterion(
-            Car car, 
+            Vehicle car, 
             VehicleNeighbors neighborsCurrLane,
             VehicleNeighbors neighborsNextLane,
             Lane currentLane, 
@@ -116,7 +116,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic
         /// <param name="carInFront">Car in front of the current car, may be null if current car is the leader</param>
         /// <param name="lane">Lane the two cars are in</param>
         /// <returns></returns>
-        private static float AccelerationOfCarInLane(Car car, Car carInFront, Lane lane)
+        private static float AccelerationOfCarInLane(Vehicle car, Vehicle carInFront, Lane lane)
         {
             if (car == null) return 0;
             LeaderCarInfo leaderCarInfo = lane.ComputeLeaderCarInfo(car, carInFront);

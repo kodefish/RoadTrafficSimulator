@@ -180,22 +180,22 @@ namespace RoadTrafficSimulator
         private void TestNeighbors()
         {
             GenerateHorizontalStrip();
-            CarParams carParams = CarParams.Car;
+            VehicleParams carParams = VehicleParams.Car;
             
             Road r = world.Roads[0];
             Lane[] lanes = r.InLanes;
             Lane laneUp = lanes[2];
-            Car cA = new Car(0, carParams, laneUp, 0.333f);
-            Car cB = new Car(1, carParams, laneUp, 0.666f);
+            Vehicle cA = new Vehicle(0, carParams, laneUp, 0.333f);
+            Vehicle cB = new Vehicle(1, carParams, laneUp, 0.666f);
 
             Lane laneMiddle = lanes[1];
-            Car c1 = new Car(2, carParams, laneMiddle, 0.25f);
-            Car c2 = new Car(3, carParams, laneMiddle, 0.5f);
-            Car c3 = new Car(4, carParams, laneMiddle, 0.75f);
+            Vehicle c1 = new Vehicle(2, carParams, laneMiddle, 0.25f);
+            Vehicle c2 = new Vehicle(3, carParams, laneMiddle, 0.5f);
+            Vehicle c3 = new Vehicle(4, carParams, laneMiddle, 0.75f);
 
             Lane laneDown = lanes[0];
-            Car cI = new Car(5, carParams, laneDown, 0.333f);
-            Car cJ = new Car(6, carParams, laneDown, 0.666f);
+            Vehicle cI = new Vehicle(5, carParams, laneDown, 0.333f);
+            Vehicle cJ = new Vehicle(6, carParams, laneDown, 0.666f);
 
             world.AddCar(cA);
             world.AddCar(cB);
@@ -214,11 +214,11 @@ namespace RoadTrafficSimulator
             Lane[] lanes = r.InLanes;
             Lane laneUp = lanes[2];
 
-            CarParams carParamsA = CarParams.Truck;
-            Car cA = new Car(0, carParamsA, laneUp, 0.3f);
+            VehicleParams carParamsA = VehicleParams.Truck;
+            Vehicle cA = new Vehicle(0, carParamsA, laneUp, 0.3f);
             
-            CarParams carParamsB = CarParams.Car;
-            Car cB = new Car(1, carParamsB, laneUp, 0.1f);
+            VehicleParams carParamsB = VehicleParams.Car;
+            Vehicle cB = new Vehicle(1, carParamsB, laneUp, 0.1f);
 
             world.AddCar(cA);
             world.AddCar(cB);
@@ -239,16 +239,16 @@ namespace RoadTrafficSimulator
                 Lane[] lanes = rng.Next() % 2 == 0 ? randomRoad.OutLanes : randomRoad.InLanes;
                 if (lanes.Length > 0)
                 {
-                    CarParams carParams;
-                    if (rng.Next() % 4 != 0) carParams = CarParams.Car;
-                    else carParams = CarParams.Truck;
+                    VehicleParams carParams;
+                    if (rng.Next() % 4 != 0) carParams = VehicleParams.Car;
+                    else carParams = VehicleParams.Truck;
 
                     Lane randomLane = lanes[rng.Next(0, lanes.Length)];
-                    if (randomLane.FreeLaneSpace() > carParams.CarLength + IntelligentDriverModel.MIN_BUMPER_TO_BUMPER_DISTANCE)
+                    if (randomLane.FreeLaneSpace() > carParams.VehicleLength + IntelligentDriverModel.MIN_BUMPER_TO_BUMPER_DISTANCE)
                     {
                         // Offset to spawn the car into the lane, offset by carLength / 2
-                        float offset = carParams.CarLength / (2 * randomLane.Path.Length);
-                        Car car = new Car(world.Cars.Count, carParams, randomLane, offset);
+                        float offset = carParams.VehicleLength / (2 * randomLane.Path.Length);
+                        Vehicle car = new Vehicle(world.Cars.Count, carParams, randomLane, offset);
                         world.AddCar(car);
                         added = true;
                     }
@@ -267,7 +267,7 @@ namespace RoadTrafficSimulator
             // Draw the stuff
             foreach (FourWayIntersection intersection in world.Intersections) rtsRenderer.DrawIntersection(intersection);
             foreach (Road road in world.Roads) rtsRenderer.DrawRoad(road);
-            foreach (Car car in world.Cars) rtsRenderer.DrawCar(car);
+            foreach (Vehicle car in world.Cars) rtsRenderer.DrawCar(car);
 
             // Print stats to console
             /*

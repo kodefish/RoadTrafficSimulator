@@ -8,7 +8,7 @@ namespace RoadTrafficSimulator.Simulator
     {
         public List<FourWayIntersection> Intersections { get; private set; }
         public List<Road> Roads { get; private set; }
-        public List<Car> Cars { get; private set; }
+        public List<Vehicle> Cars { get; private set; }
 
         // TODO add cars and light controllers
 
@@ -16,7 +16,7 @@ namespace RoadTrafficSimulator.Simulator
         {
             Intersections = new List<FourWayIntersection>();
             Roads = new List<Road>();
-            Cars = new List<Car>();
+            Cars = new List<Vehicle>();
         }
 
         public void AddIntersection(FourWayIntersection intersection) => Intersections.Add(intersection);
@@ -25,8 +25,8 @@ namespace RoadTrafficSimulator.Simulator
         public void AddRoad(Road road) => Roads.Add(road);
         public void RemoveRoad(Road road) => Roads.Remove(road);
 
-        public void AddCar(Car car) => Cars.Add(car);
-        public void RemoveCar(Car car)
+        public void AddCar(Vehicle car) => Cars.Add(car);
+        public void RemoveCar(Vehicle car)
         {
             car.Remove();
             Cars.Remove(car);
@@ -43,10 +43,10 @@ namespace RoadTrafficSimulator.Simulator
                 foreach (Road r in Roads) r.Update(deltaTime);
 
                 // Update car decisions
-                foreach (Car c in Cars) c.Update(deltaTime);
+                foreach (Vehicle c in Cars) c.Update(deltaTime);
 
                 // Apply the decisions using physics
-                foreach (Car c in Cars) c.IntegrateForces(deltaTime);
+                foreach (Vehicle c in Cars) c.IntegrateForces(deltaTime);
             }
         }
 

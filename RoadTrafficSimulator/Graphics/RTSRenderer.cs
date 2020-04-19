@@ -87,7 +87,7 @@ namespace RoadTrafficSimulator.Graphics
             foreach (Segment s in l.Path.Segments) DrawScaledSegment(s, c);
     }
 
-        public void DrawCar(Car c)
+        public void DrawCar(Vehicle c)
         {
             Color color;
             if (c.DrivingState is KeepLaneState) color = Color.Green;

@@ -37,7 +37,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
     /// </summary>
     abstract class DrivingState
     {
-        protected Car car;
+        protected Vehicle car;
 
         /// <summary>
         /// Path the driver tries to follow
@@ -64,7 +64,7 @@ namespace RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine
         /// </summary>
         /// <param name="car">Car to control</param>
         /// <param name="path">Path to follow</param>
-        public DrivingState(Car car, Path path)
+        public DrivingState(Vehicle car, Path path)
         {
             this.car = car;
             this.Path = path;

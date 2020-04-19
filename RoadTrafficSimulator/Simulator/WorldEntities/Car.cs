@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using RoadTrafficSimulator.Simulator.DataStructures.LinAlg;
 using RoadTrafficSimulator.Simulator.Physics;
 using RoadTrafficSimulator.Simulator.DrivingLogic;
@@ -9,11 +8,14 @@ using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
 
 namespace RoadTrafficSimulator.Simulator.WorldEntities
 {
-    struct CarParams
+    /// <summary>
+    /// Parametrisation of a vehicle. Includes information about the vehicle and driver
+    /// </summary>
+    struct VehicleParams
     {
-        public CarParams(float mass,
-            float carWidth,
-            float carLength,
+        public VehicleParams(float mass,
+            float vehicleWidth,
+            float vehicleLength,
             float maxSpeed,
             float maxSteeringAngle,
             float maxAccleration,
@@ -22,8 +24,8 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             float headwayTime)
         {
             Mass = mass;
-            CarWidth = carWidth;
-            CarLength = carLength;
+            VehicleWidth = vehicleWidth;
+            VehicleLength = vehicleLength;
             MaxSpeed = maxSpeed;
             MaxSteeringAngle = maxSteeringAngle;
             MaxAccleration = maxAccleration;
@@ -31,20 +33,59 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             PolitenessFactor = politenessFactor;
             HeadwayTime = headwayTime;
         }
+
+        /// <summary>
+        /// Mass of the vehicle
+        /// </summary>
         public float Mass { get; }
-        public float CarWidth { get; }
-        public float CarLength { get; }
+
+        /// <summary>
+        /// Vehicle width, in meters
+        /// </summary>
+        public float VehicleWidth { get; }
+
+        /// <summary>
+        /// Vehicle length, in meters
+        /// </summary>
+        public float VehicleLength { get; }
+
+        /// <summary>
+        /// Max speed of the vehicle, in m/s
+        /// </summary>
         public float MaxSpeed { get; }
+
+        /// <summary>
+        /// Maximum steering angle, in radians
+        /// </summary>
         public float MaxSteeringAngle { get; }
+
+        /// <summary>
+        /// Maximum acceleration, in m/s2
+        /// </summary>
         public float MaxAccleration { get; }
+
+        /// <summary>
+        /// Braking deceleration, positive number, in m/s2
+        /// </summary>
         public float BrakingDeceleration { get; }
+
+        /// <summary>
+        /// Politeness factor of the driver. 0 -> egoistic, 1 -> altruistic
+        /// </summary>
         public float PolitenessFactor { get; }
+
+        /// <summary>
+        /// Time to vehicle in front, driving schools recommend 2s
+        /// </summary>
         public float HeadwayTime { get; }
 
-        public static CarParams Car => new CarParams(
+        /// <summary>
+        /// Paramerters characterising a car
+        /// </summary>
+        public static VehicleParams Car => new VehicleParams(
                     mass : 500,
-                    carWidth : 2,
-                    carLength : 3,
+                    vehicleWidth : 2,
+                    vehicleLength : 3,
                     maxSpeed : 120,
                     maxSteeringAngle: (float)Math.PI / 6,
                     maxAccleration : 1.3f,
@@ -53,10 +94,13 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
                     headwayTime: 4f
                 );
 
-        public static CarParams Truck => new CarParams(
+        /// <summary>
+        /// Paramerters characterising a truck
+        /// </summary>
+        public static VehicleParams Truck => new VehicleParams(
                     mass : 5000,
-                    carWidth : 2,
-                    carLength : 7,
+                    vehicleWidth : 2,
+                    vehicleLength : 7,
                     maxSpeed : 80,
                     maxSteeringAngle: (float)Math.PI / 6,
                     maxAccleration : 0.3f,
@@ -64,26 +108,27 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
                     politenessFactor: 0.7f,
                     headwayTime: 8f
                 );
-
-
     }
 
-    class Car : RigidBody, IRTSGeometry<Rectangle>
+    /// <summary>
+    /// Class representing a vehicle 
+    /// </summary>
+    class Vehicle : RigidBody, IRTSGeometry<Rectangle>
     {
-        private readonly int carIdx;
+        private readonly int vehicleIdx;
 
         // Car params
-        private readonly CarParams carParams;
+        private readonly VehicleParams vehicleParams;
 
         // Acceleration constant params
-        public float CarWidth => carParams.CarWidth;
-        public float CarLength => carParams.CarLength;
-        public float MaxCarSpeed => carParams.MaxSpeed;
-        public float MaxSteeringAngle => carParams.MaxSteeringAngle;
-        public float MaxAcceleration => carParams.MaxAccleration;
-        public float BrakingDeceleration => carParams.BrakingDeceleration;
-        public float PolitnessFactor => carParams.PolitenessFactor;
-        public float HeadwayTime => carParams.HeadwayTime;
+        public float VehicleWidth => vehicleParams.VehicleWidth;
+        public float VehicleLength => vehicleParams.VehicleLength;
+        public float MaxVehicleSpeed => vehicleParams.MaxSpeed;
+        public float MaxSteeringAngle => vehicleParams.MaxSteeringAngle;
+        public float MaxAcceleration => vehicleParams.MaxAccleration;
+        public float BrakingDeceleration => vehicleParams.BrakingDeceleration;
+        public float PolitnessFactor => vehicleParams.PolitenessFactor;
+        public float HeadwayTime => vehicleParams.HeadwayTime;
 
         // AI Finite state machine
         public DrivingState DrivingState { get; private set; }
@@ -125,35 +170,32 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         /// <summary>
         /// Creates a car with a mass and an initial position
         /// </summary>
-        /// <param name="carParams">Description of the car</param>
+        /// <param name="vehicleParams">Description of the car</param>
         /// <param name="initialLane">Starting lane</param>
         /// <param name="lerpOffset">Offset along the lane trajectory</param>
-        public Car(int carIdx, CarParams carParams, Lane initialLane, float lerpOffset = 0)
+        public Vehicle(int vehicleIdx, VehicleParams vehicleParams, Lane initialLane, float lerpOffset = 0)
             : base(
-                carParams.Mass, 
+                vehicleParams.Mass, 
                 initialLane.Path.Lerp(lerpOffset))
         {
             // Make sure vehicle respects min and max acceleration params
-            if (carParams.MaxAccleration < IntelligentDriverModel.MIN_ACCELERATION) 
-                throw new ArgumentException(String.Format("Car acceleration ({0} m/s2) too low! Min: {1} m/s2", carParams.MaxAccleration, IntelligentDriverModel.MIN_ACCELERATION));
-            if (carParams.BrakingDeceleration > IntelligentDriverModel.MAX_BRAKING) 
-                throw new ArgumentException(String.Format("Car braking ({0} m/s2) too high! Max: {1} m/s2", carParams.MaxAccleration, IntelligentDriverModel.MAX_BRAKING));
-            if (carParams.HeadwayTime < IntelligentDriverModel.SAFE_TIME_HEADWAY) 
-                throw new ArgumentException(String.Format("Headway time ({0} s) too low! Min: {1} s", carParams.MaxAccleration, IntelligentDriverModel.SAFE_TIME_HEADWAY));
+            if (vehicleParams.MaxAccleration < IntelligentDriverModel.MIN_ACCELERATION) 
+                throw new ArgumentException(String.Format("Car acceleration ({0} m/s2) too low! Min: {1} m/s2", vehicleParams.MaxAccleration, IntelligentDriverModel.MIN_ACCELERATION));
+            if (vehicleParams.BrakingDeceleration > IntelligentDriverModel.MAX_BRAKING) 
+                throw new ArgumentException(String.Format("Car braking ({0} m/s2) too high! Max: {1} m/s2", vehicleParams.MaxAccleration, IntelligentDriverModel.MAX_BRAKING));
+            if (vehicleParams.HeadwayTime < IntelligentDriverModel.SAFE_TIME_HEADWAY) 
+                throw new ArgumentException(String.Format("Headway time ({0} s) too low! Min: {1} s", vehicleParams.MaxAccleration, IntelligentDriverModel.SAFE_TIME_HEADWAY));
 
-            this.carIdx = carIdx;
+            this.vehicleIdx = vehicleIdx;
+
             // Align car with tangent of initial lane
             _angle = -initialLane.Path.TangentOfProjectedPosition(initialLane.Path.Lerp(lerpOffset)).Normal.Angle;
             _direction = new Vector2((float)Math.Cos(_angle), (float)Math.Sin(_angle));
 
+            // Vehicle starts in a keep lane state
             DrivingState = new KeepLaneState(this, initialLane);
             DrivingState.OnEnter();
-            this.carParams = carParams;
-        }
-
-        private static float ComputeCarMomentOfInertia(CarParams carParams)
-        {
-            return carParams.Mass * (carParams.CarWidth * carParams.CarWidth + carParams.CarLength * carParams.CarLength);
+            this.vehicleParams = vehicleParams;
         }
 
         /// <summary>
@@ -172,24 +214,36 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
             }
         }
 
+        /// <summary>
+        /// Geometrical representation of the vehicle
+        /// </summary>
+        /// <returns>Rectangle representation of the vehicle</returns>
         public Rectangle GetGeometricalFigure()
         {
-            return new Rectangle(Position, CarWidth, CarLength, Angle);
+            return new Rectangle(Position, VehicleWidth, VehicleLength, Angle);
         }
 
-        public static Vector2 ComputeBumperToBumperVector(Car c1, Car c2)
+        /// <summary>
+        /// Computes vector from the two points closest to one another between two vehicles
+        /// </summary>
+        /// <param name="v1">First vehicle</param>
+        /// <param name="v2">Second vehicle</param>
+        public static Vector2 ComputeBumperToBumperVector(Vehicle v1, Vehicle v2)
         {
             // Get closest corner of c2
-            Vector2 p1 = c2.GetGeometricalFigure().ClosestVertex(c1.Position);
+            Vector2 p1 = v2.GetGeometricalFigure().ClosestVertex(v1.Position);
             // Get closest corner of c1
-            Vector2 p2 = c1.GetGeometricalFigure().ClosestVertex(p1);
+            Vector2 p2 = v1.GetGeometricalFigure().ClosestVertex(p1);
 
             // Closest corner c1 <-> closest corner c2
             Vector2 bumperToBumper = p2 - p1;
             return bumperToBumper;
         }
 
-        internal void Remove()
+        /// <summary>
+        /// Actions to perform when a car is being removed from the world
+        /// </summary>
+        public void Remove()
         {
             DrivingState.OnExit();
         }
