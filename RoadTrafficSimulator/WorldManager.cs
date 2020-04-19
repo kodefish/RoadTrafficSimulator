@@ -40,10 +40,10 @@ namespace RoadTrafficSimulator
 
         public void Initialize()
         {
-            FillWorld();
+            // FillWorld();
             // TestNeighbors();
             // TestOvertaking();
-            // TestIntersection();
+            TestIntersection();
         }
 
         private void GenerateGrid()
@@ -169,7 +169,7 @@ namespace RoadTrafficSimulator
 
         private void TestIntersection() {
             GenerateCross();
-            NUM_CARS = 50;
+            NUM_CARS = 10;
         }
 
         private void FillWorld() {
