@@ -14,9 +14,9 @@ namespace RoadTrafficSimulator
         [STAThread]
         static void Main()
         {
-            // Outputs Debug.WriteLine to console
-            TextWriterTraceListener myWriter = new TextWriterTraceListener(System.Console.Out);
-            Debug.Listeners.Add(myWriter);
+            // Outputs Debug.WriteLine to console on Linux
+            // TextWriterTraceListener myWriter = new TextWriterTraceListener(System.Console.Out);
+            // Debug.Listeners.Add(myWriter);
             using (var game = new RoadTrafficSimulator())
                 game.Run();
         }
