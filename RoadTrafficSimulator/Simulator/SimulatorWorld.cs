@@ -9,26 +9,26 @@ namespace RoadTrafficSimulator.Simulator
         /// <summary>
         /// List of intersections
         /// </summary>
-        public List<FourWayIntersection> Intersections { get; private set; }
+        public HashSet<FourWayIntersection> Intersections { get; private set; }
 
         /// <summary>
         /// List of roads
         /// </summary>
-        public List<Road> Roads { get; private set; }
+        public HashSet<Road> Roads { get; private set; }
 
         /// <summary>
         /// List of cars
         /// </summary>
-        public List<Vehicle> Cars { get; private set; }
+        public HashSet<Vehicle> Cars { get; private set; }
 
         /// <summary>
         /// Simulator world that takes care of updating intersections, roads, and cars
         /// </summary>
         public SimulatorWorld()
         {
-            Intersections = new List<FourWayIntersection>();
-            Roads = new List<Road>();
-            Cars = new List<Vehicle>();
+            Intersections = new HashSet<FourWayIntersection>();
+            Roads = new HashSet<Road>();
+            Cars = new HashSet<Vehicle>();
         }
 
         /// <summary>

@@ -287,5 +287,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         {
             return new Rectangle(Origin, Width, Height);
         }
+
+        public override int GetHashCode() => Origin.GetHashCode();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Diagnostics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
@@ -182,7 +183,7 @@ namespace RoadTrafficSimulator
             GenerateHorizontalStrip();
             VehicleParams carParams = VehicleParams.Car;
             
-            Road r = world.Roads[0];
+            Road r = world.Roads.ToList()[0];
             Lane[] lanes = r.InLanes;
             Lane laneUp = lanes[2];
             Vehicle cA = new Vehicle(0, carParams, laneUp, 0.333f);
@@ -210,7 +211,7 @@ namespace RoadTrafficSimulator
         {
             GenerateHorizontalStrip();
 
-            Road r = world.Roads[0];
+            Road r = world.Roads.ToList()[0];
             Lane[] lanes = r.InLanes;
             Lane laneUp = lanes[2];
 
@@ -235,7 +236,7 @@ namespace RoadTrafficSimulator
 
             while (!added && numTries++ < 2 * world.Roads.Count)
             {
-                Road randomRoad = world.Roads[rng.Next(0, world.Roads.Count)];
+                Road randomRoad = world.Roads.ToList()[rng.Next(0, world.Roads.Count)];
                 Lane[] lanes = rng.Next() % 2 == 0 ? randomRoad.OutLanes : randomRoad.InLanes;
                 if (lanes.Length > 0)
                 {

@@ -278,5 +278,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         /// Geometrical representation of a road is a rectangle
         /// </summary>
         public Rectangle GetGeometricalFigure() => new Rectangle(Position, RoadWidth, RoadLength, Direction.Angle - (float)Math.PI / 2); // Minus 90° cuz direction is along Y-axis
+
+        public override int GetHashCode() => Position.GetHashCode();
     }
 }

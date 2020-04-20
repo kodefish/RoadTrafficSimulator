@@ -247,5 +247,7 @@ namespace RoadTrafficSimulator.Simulator.WorldEntities
         {
             DrivingState.OnExit();
         }
+
+        public override int GetHashCode() => vehicleIdx;
     }
 }
