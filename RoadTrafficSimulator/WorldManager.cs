@@ -231,8 +231,11 @@ namespace RoadTrafficSimulator
 
         private void ParseFile()
         {
+            NUM_CARS = 150;
             GeoGebraParser ggbParser = new GeoGebraParser("Content/WorldData/geogebra.xml");
-            ggbParser.Parse();
+            Tuple<List<FourWayIntersection>, List<Road>> worldEntities = ggbParser.Parse();
+            worldEntities.Item1.ForEach(x => world.AddIntersection(x));
+            worldEntities.Item2.ForEach(x => world.AddRoad(x));
         }
         private void AddRandomCar(Random rng)
         {
