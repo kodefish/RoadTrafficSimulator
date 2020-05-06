@@ -74,6 +74,7 @@
     <Compile Include="Simulator\WorldEntities\Lane.cs" />
     <Compile Include="Simulator\WorldEntities\Road.cs" />
     <Compile Include="Simulator\SimulatorWorld.cs" />
+    <Compile Include="WorldData\GeoGebraParser.cs" />
     <Compile Include="WorldManager.cs" />
   </ItemGroup>
   <ItemGroup>

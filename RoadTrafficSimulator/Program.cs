@@ -16,7 +16,7 @@ namespace RoadTrafficSimulator
         {
             // Outputs Debug.WriteLine to console
             TextWriterTraceListener myWriter = new TextWriterTraceListener(System.Console.Out);
-            Debug.Listeners.Add(myWriter);
+            // Debug.Listeners.Add(myWriter);
             using (var game = new RoadTrafficSimulator())
                 game.Run();
         }

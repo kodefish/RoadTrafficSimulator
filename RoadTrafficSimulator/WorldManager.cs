@@ -12,6 +12,7 @@ using RoadTrafficSimulator.Simulator.DrivingLogic.FiniteStateMachine;
 using RoadTrafficSimulator.Graphics;
 using Vector2 = RoadTrafficSimulator.Simulator.DataStructures.LinAlg.Vector2;
 using RoadTrafficSimulator.Simulator.DataStructures.Geometry;
+using RoadTrafficSimulator.WorldData;
 
 namespace RoadTrafficSimulator
 {
@@ -41,10 +42,11 @@ namespace RoadTrafficSimulator
 
         public void Initialize()
         {
-            FillWorld();
+            // FillWorld();
             // TestNeighbors();
             // TestOvertaking();
             // TestIntersection();
+            ParseFile();
         }
 
         private void GenerateGrid()
@@ -227,6 +229,11 @@ namespace RoadTrafficSimulator
             NUM_CARS = world.Cars.Count;
         }
 
+        private void ParseFile()
+        {
+            GeoGebraParser ggbParser = new GeoGebraParser("Content/WorldData/geogebra.xml");
+            ggbParser.Parse();
+        }
         private void AddRandomCar(Random rng)
         {
             // Try adding a car until one succeeds (adding may fail if the selected lane does not have enough free space)
